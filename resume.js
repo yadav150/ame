@@ -10,7 +10,6 @@ let resumeData = {
     customTitle: '', customContent: ''
 };
 
-// ===== Visibility State (NEW) =====
 let visibilityState = {
     education: true,
     experience: true,
@@ -21,6 +20,10 @@ let visibilityState = {
     interests: true,
     custom: true
 };
+
+let darkMode = false;
+let currentTemplate = 'modern';
+let accentColor = '#4f46e5'; // NEW
 
 // ===== DOM refs =====
 const preview = document.getElementById('resumePreview');
@@ -36,14 +39,12 @@ function loadData() {
         } catch (e) {}
     }
 
-    // Load visibility state (NEW)
     const savedVisibility = localStorage.getItem('resumeBuilderVisibility');
     if (savedVisibility) {
         try {
             Object.assign(visibilityState, JSON.parse(savedVisibility));
         } catch (e) {}
     }
-    // Sync checkboxes
     document.querySelectorAll('.section-toggle').forEach(cb => {
         const section = cb.dataset.section;
         if (section in visibilityState) {
@@ -56,6 +57,19 @@ function loadData() {
         }
     });
 
+    const savedTemplate = localStorage.getItem('resumeBuilderTemplate');
+    if (savedTemplate) {
+        currentTemplate = savedTemplate;
+        document.getElementById('templateSelector').value = currentTemplate;
+    }
+
+    // NEW: load accent color
+    const savedAccent = localStorage.getItem('resumeBuilderAccent');
+    if (savedAccent) {
+        accentColor = savedAccent;
+        document.getElementById('accentColorPicker').value = accentColor;
+    }
+
     populateForm();
     renderPreview();
 }
@@ -65,7 +79,7 @@ function saveData() {
     localStorage.setItem('resumeBuilderData', JSON.stringify(resumeData));
 }
 
-// ===== Populate form from resumeData =====
+// ===== Populate form =====
 function populateForm() {
     document.getElementById('fullName').value = resumeData.fullName || '';
     document.getElementById('profTitle').value = resumeData.profTitle || '';
@@ -113,7 +127,6 @@ function renderEntries(containerId, entries, type) {
         </div>
     `).join('');
 
-    // --- Attach drag events ---
     const items = container.querySelectorAll('.entry-item');
     items.forEach(item => {
         item.addEventListener('dragstart', (e) => {
@@ -163,7 +176,6 @@ function renderEntries(containerId, entries, type) {
         });
     });
 
-    // --- Input field events ---
     container.querySelectorAll('.entry-field').forEach(inp => {
         inp.addEventListener('input', (e) => {
             const idx = parseInt(inp.dataset.index);
@@ -177,7 +189,6 @@ function renderEntries(containerId, entries, type) {
         });
     });
 
-    // --- Remove button events ---
     container.querySelectorAll('.entry-remove').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const idx = parseInt(btn.dataset.index);
@@ -273,20 +284,29 @@ form.querySelectorAll('input, textarea').forEach(el => {
 });
 
 // ===== Theme toggle =====
-let darkMode = false;
 document.getElementById('themeToggle')?.addEventListener('click', () => {
     darkMode = !darkMode;
     document.getElementById('themeToggle').innerHTML = darkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-    renderPreview(); // re-render to apply dark class
+    renderPreview();
 });
 
 // ===== Template Switcher =====
-let currentTemplate = 'modern';
 document.getElementById('templateSelector')?.addEventListener('change', function(e) {
     currentTemplate = e.target.value;
     localStorage.setItem('resumeBuilderTemplate', currentTemplate);
     renderPreview();
 });
+
+// ===== Accent Color Picker (NEW) =====
+document.getElementById('accentColorPicker')?.addEventListener('input', function(e) {
+    accentColor = e.target.value;
+    localStorage.setItem('resumeBuilderAccent', accentColor);
+    applyAccentColor(accentColor);
+});
+
+function applyAccentColor(color) {
+    preview.style.setProperty('--preview-primary', color);
+}
 
 // ===== Font & size =====
 document.getElementById('fontSelector')?.addEventListener('change', (e) => {
@@ -296,7 +316,7 @@ document.getElementById('fontSizeSelector')?.addEventListener('change', (e) => {
     preview.style.fontSize = e.target.value;
 });
 
-// ===== Section Visibility Toggles (NEW) =====
+// ===== Section Visibility Toggles =====
 document.querySelectorAll('.section-toggle').forEach(cb => {
     cb.addEventListener('change', function() {
         const section = this.dataset.section;
@@ -337,11 +357,12 @@ document.getElementById('resetResumeBtn')?.addEventListener('click', () => {
         localStorage.removeItem('resumeBuilderData');
         localStorage.removeItem('resumeBuilderTemplate');
         localStorage.removeItem('resumeBuilderVisibility');
+        localStorage.removeItem('resumeBuilderAccent');
         location.reload();
     }
 });
 
-// ===== RENDER PREVIEW (UPDATED with visibility checks) =====
+// ===== RENDER PREVIEW =====
 function renderPreview() {
     const d = resumeData;
     const photoHtml = d.photo ? `<img src="${d.photo}" alt="Profile" class="preview-avatar" />` : `<div class="preview-avatar" style="display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#94a3b8;font-size:2.5rem;"><i class="fas fa-user"></i></div>`;
@@ -415,10 +436,11 @@ function renderPreview() {
     html += `</div>`;
     preview.innerHTML = html;
 
-    // Apply template class and dark mode
+    // Apply template class, dark mode, and accent color
     preview.className = 'builder__preview-content';
     preview.classList.add('template-' + currentTemplate);
     if (darkMode) preview.classList.add('dark');
+    applyAccentColor(accentColor);
 }
 
 // ===== PDF Export =====
