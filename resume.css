@@ -1,0 +1,208 @@
+/* ===== Resume Builder Layout ===== */
+.builder {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    min-height: calc(100vh - 72px);
+    margin-top: 72px;
+    background: var(--bg-alt);
+}
+.builder-nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 100; background: var(--bg); border-bottom: 1px solid var(--border); }
+
+.builder__form {
+    background: var(--bg);
+    padding: 30px 24px;
+    overflow-y: auto;
+    max-height: calc(100vh - 72px);
+    border-right: 1px solid var(--border);
+}
+.builder__form-inner { max-width: 600px; margin: 0 auto; }
+.builder__form-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 30px; display: flex; align-items: center; gap: 12px; }
+
+.form-section {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+}
+.form-section__title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-weight: 500; font-size: 0.9rem; margin-bottom: 4px; }
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    background: var(--bg-alt);
+}
+.form-group input:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+}
+.photo-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--bg-alt);
+    border: 2px dashed var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--text-light);
+    overflow: hidden;
+    margin-top: 6px;
+}
+.photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Entry (Education / Experience / Project) */
+.entry-item {
+    background: var(--bg-alt);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    position: relative;
+}
+.entry-item .entry-remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+.entry-item .form-group { margin-bottom: 8px; }
+.entry-item .form-group:last-child { margin-bottom: 0; }
+
+.add-btn { font-size: 0.8rem; padding: 4px 14px; }
+
+/* Skills */
+.skill-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.skill-tag {
+    background: rgba(79,70,229,0.1);
+    color: var(--primary);
+    padding: 4px 14px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.skill-tag .remove-skill { cursor: pointer; color: var(--text-light); font-size: 0.8rem; }
+.skill-tag .remove-skill:hover { color: #ef4444; }
+
+/* Form actions */
+.form-actions { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+
+/* ===== Preview Panel ===== */
+.builder__preview {
+    background: #f1f5f9;
+    padding: 24px;
+    overflow-y: auto;
+    max-height: calc(100vh - 72px);
+}
+.builder__preview-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg);
+    padding: 12px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.preview-controls { display: flex; gap: 10px; align-items: center; }
+.preview-control {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+}
+.preview-control:hover { background: var(--border); }
+.builder__preview-content {
+    background: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    min-height: 800px;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    color: #1e293b;
+    line-height: 1.6;
+}
+/* Resume preview inner styles */
+.resume-preview { max-width: 100%; }
+.resume-preview .preview-header { text-align: center; margin-bottom: 24px; }
+.resume-preview .preview-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 12px;
+    display: block;
+    background: #e2e8f0;
+}
+.resume-preview .preview-name { font-size: 2rem; font-weight: 700; }
+.resume-preview .preview-title { font-size: 1.1rem; color: var(--text-light); }
+.resume-preview .preview-contact { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; font-size: 0.9rem; color: var(--text-light); margin: 8px 0 16px; }
+.resume-preview .preview-section { margin-bottom: 20px; }
+.resume-preview .preview-section h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 4px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.resume-preview .preview-entry { margin-bottom: 12px; }
+.resume-preview .preview-entry strong { display: block; font-weight: 600; }
+.resume-preview .preview-entry .preview-meta { font-size: 0.85rem; color: var(--text-light); }
+.resume-preview .preview-skills { display: flex; flex-wrap: wrap; gap: 6px; }
+.resume-preview .preview-skills span {
+    background: rgba(79,70,229,0.08);
+    padding: 2px 14px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+}
+
+/* Dark theme (applied via JS) */
+.builder__preview-content.dark {
+    background: #0f172a;
+    color: #e2e8f0;
+}
+.builder__preview-content.dark .preview-title,
+.builder__preview-content.dark .preview-contact,
+.builder__preview-content.dark .preview-meta { color: #94a3b8; }
+.builder__preview-content.dark .preview-section h4 { border-color: #334155; }
+.builder__preview-content.dark .preview-skills span { background: rgba(255,255,255,0.06); color: #e2e8f0; }
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .builder { grid-template-columns: 1fr; }
+    .builder__form { max-height: none; border-right: none; }
+    .builder__preview { max-height: none; }
+    .builder__form { padding: 20px 16px; }
+    .builder__preview { padding: 16px; }
+}
+@media (max-width: 576px) {
+    .builder__preview-toolbar { flex-direction: column; align-items: stretch; }
+    .preview-controls { flex-wrap: wrap; }
+}
