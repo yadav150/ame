@@ -570,7 +570,7 @@ ul { list-style: none; }
 .scroll-top.visible { opacity: 1; pointer-events: all; }
 .scroll-top:hover { background: var(--primary-dark); transform: translateY(-4px); }
 
-/* ===== Fade-in on scroll (utility) ===== */
+/* ===== Fade-in on scroll ===== */
 .fade-in {
     opacity: 0;
     transform: translateY(30px);
