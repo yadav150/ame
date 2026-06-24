@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder by Ame 💖💖</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js">
+    </script>
+    <!-- html2pdf.js for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
+    </script>
+</head>
+<body>
+
+    <!-- ==================== NAVIGATION ==================== -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">📄</span>
+                Resume Builder by Ame <span class="heart">💖💖</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="resume-form.html" class="nav-link">Build Resume</a>
+                <div class="auth-buttons" id="auth-buttons">
+                    <button class="btn btn-outline btn-sm" id="login-btn-nav" onclick="openLoginModal()">
+                        🔑 Login
+                    </button>
+                    <button class="btn btn-primary btn-sm" id="signup-btn-nav" onclick="openSignupModal()">
+                        ✨ Sign Up
+                    </button>
+                    <div class="user-menu hidden" id="user-menu">
+                        <span class="user-email" id="user-email-display"></span>
+                        <button class="btn btn-outline btn-sm" id="logout-btn-nav" onclick="handleLogout()">
+                            🚪 Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ==================== HERO SECTION ==================== -->
+    <section class="hero-section fade-in-section" id="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <span class="hero-badge">🎯 Professional Resume Builder</span>
+                <h1 class="hero-title">
+                    Build Your <span class="gradient-text">Dream Resume</span> in Minutes
+                </h1>
+                <p class="hero-description">
+                    Create stunning, professional resumes effortlessly. Our intuitive builder helps you
+                    showcase your skills, experience, and achievements with a beautiful, ATS-friendly design.
+                    <strong>Completely free. No sign-up required to build!</strong>
+                </p>
+                <div class="hero-cta">
+                    <a href="resume-form.html" class="btn btn-primary btn-lg pulse-animation">
+                        🚀 Start Building Resume
+                    </a>
+                    <span class="hero-subtext">✨ Join 10,000+ happy users</span>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-resume-preview">
+                    <div class="mini-resume">
+                        <div class="mini-resume-header">
+                            <div class="mini-photo"></div>
+                            <div class="mini-name"></div>
+                        </div>
+                        <div class="mini-line"></div>
+                        <div class="mini-line short"></div>
+                        <div class="mini-line"></div>
+                        <div class="mini-line medium"></div>
+                        <div class="mini-line short"></div>
+                    </div>
+                </div>
+                <div class="floating-icon icon-1">📝</div>
+                <div class="floating-icon icon-2">💼</div>
+                <div class="floating-icon icon-3">⭐</div>
+            </div>
+        </div>
+        <div class="hero-wave">
+            <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+                <path d="M0,50 C360,100 720,0 1080,50 C1260,75 1380,60 1440,50 L1440,100 L0,100 Z" fill="var(--bg-white)"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- ==================== FEATURES SECTION ==================== -->
+    <section class="features-section fade-in-section" id="features">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-badge">✨ Features</span>
+                <h2>Everything You Need for a <span class="gradient-text">Winning Resume</span></h2>
+                <p>Powerful tools designed to make your resume stand out from the crowd.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Professional Design</h3>
+                    <p>Clean, modern templates crafted by design experts to impress recruiters at first glance.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👁️</div>
+                    <h3>Live Preview</h3>
+                    <p>See every change instantly as you type. No surprises — what you see is what you get.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Fully Responsive</h3>
+                    <p>Build and preview your resume on any device — desktop, tablet, or mobile phone.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3>Instant PDF Download</h3>
+                    <p>Generate a high-quality, print-ready PDF with a single click. Perfect formatting guaranteed.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🖼️</div>
+                    <h3>Photo Upload</h3>
+                    <p>Add your professional photo with smart cropping and perfect placement.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Your Data, Your Control</h3>
+                    <p>Everything stays on your device. No data is ever uploaded to any server.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== BENEFITS SECTION ==================== -->
+    <section class="benefits-section fade-in-section" id="benefits">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-badge">💡 Why Choose Us</span>
+                <h2>Benefits That <span class="gradient-text">Make a Difference</span></h2>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-number">01</div>
+                    <div class="benefit-content">
+                        <h3>Save Hours of Formatting</h3>
+                        <p>No more struggling with Word or Google Docs. Our smart layout engine handles all alignment, spacing, and formatting automatically.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-number">02</div>
+                    <div class="benefit-content">
+                        <h3>ATS-Friendly Output</h3>
+                        <p>Our resumes are designed to pass through Applicant Tracking Systems, ensuring your application reaches human eyes.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-number">03</div>
+                    <div class="benefit-content">
+                        <h3>Stand Out to Employers</h3>
+                        <p>A professionally formatted resume shows attention to detail and sets you apart from other candidates.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-number">04</div>
+                    <div class="benefit-content">
+                        <h3>100% Free, Always</h3>
+                        <p>No hidden fees, no premium tiers. Every feature is available to everyone, forever.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CTA SECTION ==================== -->
+    <section class="cta-section fade-in-section" id="cta">
+        <div class="section-container">
+            <div class="cta-card">
+                <h2>Ready to Land Your <span class="gradient-text">Dream Job?</span></h2>
+                <p>Join thousands of professionals who have built stunning resumes with our builder.</p>
+                <a href="resume-form.html" class="btn btn-primary btn-lg">
+                    ✨ Start Building Now — It's Free!
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <span class="footer-logo">📄 Resume Builder by Ame 💖💖</span>
+                <p>Professional resumes made simple.</p>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="resume-form.html">Build Resume</a>
+                <a href="#features">Features</a>
+                <a href="#benefits">Benefits</a>
+            </div>
+            <div class="footer-bottom">
+                <p>Made with 💖 by Ame &copy; <span id="current-year"></span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== LOGIN MODAL ==================== -->
+    <div class="modal-overlay hidden" id="login-modal-overlay">
+        <div class="modal" id="login-modal">
+            <button class="modal-close" onclick="closeLoginModal()" aria-label="Close">✕</button>
+            <div class="modal-header">
+                <span class="modal-icon">🔑</span>
+                <h2>Welcome Back!</h2>
+                <p>Log in to access your saved resumes.</p>
+            </div>
+            <form class="modal-form" id="login-form" onsubmit="handleLoginSubmit(event)">
+                <div class="input-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" placeholder="you@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="login-submit-btn">
+                    🔑 Log In
+                </button>
+                <p class="modal-switch">
+                    Don't have an account?
+                    <a href="#" onclick="switchToSignup(event)">Sign Up</a>
+                </p>
+                <p class="modal-switch">
+                    <a href="#" onclick="handleForgotPassword(event)">Forgot Password?</a>
+                </p>
+            </form>
+            <div class="modal-divider"><span>or</span></div>
+            <button class="btn btn-outline btn-full" onclick="handleGoogleSignIn()">
+                <span class="google-icon">G</span> Sign in with Google
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== SIGNUP MODAL ==================== -->
+    <div class="modal-overlay hidden" id="signup-modal-overlay">
+        <div class="modal" id="signup-modal">
+            <button class="modal-close" onclick="closeSignupModal()" aria-label="Close">✕</button>
+            <div class="modal-header">
+                <span class="modal-icon">✨</span>
+                <h2>Create Account</h2>
+                <p>Sign up to save and manage your resumes.</p>
+            </div>
+            <form class="modal-form" id="signup-form" onsubmit="handleSignupSubmit(event)">
+                <div class="input-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" placeholder="Your full name" required>
+                </div>
+                <div class="input-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" placeholder="you@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Min 6 characters" required minlength="6">
+                </div>
+                <div class="input-group">
+                    <label for="signup-confirm">Confirm Password</label>
+                    <input type="password" id="signup-confirm" placeholder="Re-enter password" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="signup-submit-btn">
+                    ✨ Create Account
+                </button>
+                <p class="modal-switch">
+                    Already have an account?
+                    <a href="#" onclick="switchToLogin(event)">Log In</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== TOAST CONTAINER ==================== -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
