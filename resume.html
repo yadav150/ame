@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Resume Builder — Create Your Resume</title>
+    <title>Resume Builder</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="resume.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -18,7 +18,7 @@
     <script src="resume.js" defer></script>
 </head>
 <body>
-    <!-- Minimal Nav for Builder -->
+    <!-- Minimal Nav -->
     <nav class="navbar builder-nav">
         <div class="container navbar__container">
             <a href="index.html" class="navbar__logo"><i class="fas fa-file-alt"></i><span>Resume<span class="navbar__logo-highlight">Builder</span></span></a>
@@ -32,142 +32,83 @@
             <div class="builder__form-inner">
                 <h2 class="builder__form-title"><i class="fas fa-pen-fancy"></i> Create Your Resume</h2>
 
-                <!-- ===== SECTION 1: PERSONAL DETAILS ===== -->
+                <!-- ===== PERSONAL DETAILS ===== -->
                 <section class="form-section">
                     <h3 class="form-section__title">1. Personal Details</h3>
-
-                    <div class="form-group">
-                        <label>Full Name <span class="required">*</span></label>
-                        <input type="text" id="applicantName" placeholder="e.g. YADAV SUBBA" />
-                    </div>
-                    <div class="form-group">
-                        <label>Father's Name</label>
-                        <input type="text" id="fatherName" placeholder="e.g. LT DILLI SINGH SUBBA" />
-                    </div>
-                    <div class="form-group">
-                        <label>Mother's Name</label>
-                        <input type="text" id="motherName" placeholder="e.g. DIL MAYA SUBBA" />
-                    </div>
-                    <div class="form-group">
-                        <label>Date of Birth</label>
-                        <input type="text" id="dob" placeholder="e.g. 08/09/2003" />
-                    </div>
-                    <div class="form-group">
-                        <label>Gender</label>
-                        <select id="gender">
-                            <option value="">-- Select Gender --</option>
-                            <option value="MALE">MALE</option>
-                            <option value="FEMALE">FEMALE</option>
-                            <option value="OTHER">OTHER</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Category</label>
-                        <select id="category">
-                            <option value="">-- Select Category --</option>
-                            <option value="General">General</option>
-                            <option value="OBC/MOBC">OBC/MOBC</option>
-                            <option value="SC">SC</option>
-                            <option value="ST">ST</option>
-                            <option value="EWS">EWS</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Marital Status</label>
-                        <select id="maritalStatus">
-                            <option value="">-- Select Marital Status --</option>
-                            <option value="UNMARRIED">UNMARRIED</option>
-                            <option value="MARRIED">MARRIED</option>
-                            <option value="DIVORCED">DIVORCED</option>
-                            <option value="WIDOWED">WIDOWED</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Known Languages</label>
-                        <input type="text" id="knownLanguages" placeholder="e.g. NEPALI, ENGLISH, HINDI" />
-                    </div>
-                    <div class="form-group">
-                        <label>Mobile Number <span class="required">*</span></label>
-                        <input type="tel" id="mobileNumber" placeholder="e.g. 7896579939" />
-                    </div>
-                    <div class="form-group">
-                        <label>Email Address <span class="required">*</span></label>
-                        <input type="email" id="emailAddress" placeholder="yadavsubba2003@gmail.com" />
-                    </div>
-                    <div class="form-group">
-                        <label>Address / P.O.</label>
-                        <input type="text" id="address" placeholder="e.g. HAWAIPUR, PO Dayagmukh" />
-                    </div>
-                    <div class="form-group">
-                        <label>Experience</label>
-                        <input type="text" id="experience" placeholder="e.g. FRESHER" />
-                    </div>
+                    <div class="form-group"><label>Full Name</label><input type="text" id="applicantName" /></div>
+                    <div class="form-group"><label>Designation</label><input type="text" id="designation" /></div>
+                    <div class="form-group"><label>Address</label><textarea id="address" rows="3"></textarea></div>
+                    <div class="form-group"><label>Mobile Number</label><input type="tel" id="mobileNumber" /></div>
+                    <div class="form-group"><label>Email Address</label><input type="email" id="emailAddress" /></div>
                 </section>
 
-                <!-- ===== SECTION 2: OBJECTIVE ===== -->
+                <!-- ===== CAREER OBJECTIVE ===== -->
                 <section class="form-section">
-                    <h3 class="form-section__title">2. Objective / Career Goal</h3>
-                    <div class="form-group">
-                        <textarea id="objective" rows="4" placeholder="e.g. To work with an organization where I can learn new skills and increase my abilities for the organizational goals as well as myself."></textarea>
-                    </div>
+                    <h3 class="form-section__title">2. Career Objective</h3>
+                    <div class="form-group"><textarea id="objective" rows="4"></textarea></div>
                 </section>
 
-                <!-- ===== SECTION 3: EDUCATIONAL QUALIFICATIONS ===== -->
+                <!-- ===== ACADEMIC QUALIFICATIONS ===== -->
                 <section class="form-section" id="educationSection">
                     <div class="form-section__header">
-                        <h3 class="form-section__title">3. Educational Qualifications</h3>
-                        <button class="btn btn--primary btn--small add-btn" data-section="education"><i class="fas fa-plus"></i> Add More</button>
+                        <h3 class="form-section__title">3. Academic Qualifications</h3>
+                        <button class="btn btn--primary btn--small add-btn" data-section="education"><i class="fas fa-plus"></i> Add Row</button>
                     </div>
                     <div class="entry-list" id="educationList"></div>
                 </section>
 
-                <!-- ===== SECTION 4: OTHER QUALIFICATIONS ===== -->
-                <section class="form-section" id="otherQualificationSection">
-                    <div class="form-section__header">
-                        <h3 class="form-section__title">4. Other Qualifications</h3>
-                        <button class="btn btn--primary btn--small add-btn" data-section="otherQualification"><i class="fas fa-plus"></i> Add More</button>
-                    </div>
-                    <div class="entry-list" id="otherQualificationList"></div>
+                <!-- ===== OTHER QUALIFICATIONS ===== -->
+                <section class="form-section">
+                    <h3 class="form-section__title">4. Other Qualifications</h3>
+                    <div class="form-group"><textarea id="otherQualifications" rows="4" placeholder="Each qualification on a new line"></textarea></div>
                 </section>
 
-                <!-- ===== SECTION 5: FINAL STEPS ===== -->
+                <!-- ===== WORK EXPERIENCE ===== -->
                 <section class="form-section">
-                    <h3 class="form-section__title">5. Final Steps</h3>
+                    <h3 class="form-section__title">5. Work Experience</h3>
+                    <div class="form-group"><textarea id="workExperience" rows="4" placeholder="Each experience on a new line"></textarea></div>
+                </section>
 
-                    <div class="form-group">
-                        <label>Upload Photo (optional)</label>
-                        <div class="file-upload-group">
-                            <label class="file-upload-label">
-                                <i class="fas fa-upload"></i> Choose Photo
-                                <input type="file" id="photoUpload" accept="image/*" />
-                            </label>
-                            <div class="photo-preview" id="photoPreview"><i class="fas fa-user"></i></div>
-                        </div>
+                <!-- ===== PERSONAL INFORMATION ===== -->
+                <section class="form-section">
+                    <h3 class="form-section__title">6. Personal Information</h3>
+                    <div class="form-group"><label>Father's Name</label><input type="text" id="fatherName" /></div>
+                    <div class="form-group"><label>Date of Birth</label><input type="text" id="dob" placeholder="e.g. 1999-08-07" /></div>
+                    <div class="form-group"><label>Language Known</label><input type="text" id="languageKnown" /></div>
+                    <div class="form-group"><label>Gender</label>
+                        <select id="gender">
+                            <option value="">-- Select --</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
                     </div>
-
-                    <div class="form-group">
-                        <label>Place (for Declaration)</label>
-                        <input type="text" id="place" placeholder="e.g. Guwahati" />
+                    <div class="form-group"><label>Nationality</label><input type="text" id="nationality" /></div>
+                    <div class="form-group"><label>Marital Status</label>
+                        <select id="maritalStatus">
+                            <option value="">-- Select --</option>
+                            <option value="Unmarried">Unmarried</option>
+                            <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                            <option value="Widowed">Widowed</option>
+                        </select>
                     </div>
+                </section>
 
+                <!-- ===== DECLARATION ===== -->
+                <section class="form-section">
+                    <h3 class="form-section__title">7. Declaration</h3>
+                    <div class="form-group"><label>Place</label><input type="text" id="place" /></div>
                     <div class="form-group declaration-group">
                         <label class="declaration-label">
                             <input type="checkbox" id="declaration" checked />
-                            I hereby declare that the above particulars of facts and information stated are true, correct and complete to the best of my belief and knowledge.
+                            I hereby declared that the above information given by me is true to best of my Knowledge.
                         </label>
                     </div>
-
                     <button class="btn btn--primary btn--large" style="width:100%;justify-content:center;" onclick="generateResume()">
-                        <i class="fas fa-file-pdf"></i> Generate My Resume
+                        <i class="fas fa-file-pdf"></i> Generate Resume
                     </button>
                 </section>
-
-                <!-- Hidden controls -->
-                <div class="form-actions" style="display:none;">
-                    <button class="btn btn--primary" id="loadSampleBtn"><i class="fas fa-file-import"></i> Load Sample</button>
-                    <button class="btn btn--primary" id="clearFormBtn"><i class="fas fa-undo"></i> Clear Form</button>
-                    <button class="btn btn--outline" id="resetResumeBtn"><i class="fas fa-trash"></i> Reset Resume</button>
-                </div>
             </div>
         </div>
 
@@ -176,22 +117,7 @@
             <div class="builder__preview-toolbar">
                 <span><i class="fas fa-eye"></i> Live Preview</span>
                 <div class="preview-controls">
-                    <select id="templateSelector">
-                        <option value="modern">Modern</option>
-                        <option value="classic">Classic</option>
-                        <option value="creative">Creative</option>
-                        <option value="minimal">Minimal</option>
-                    </select>
-
-                    <button class="preview-control" id="layoutToggle" title="Toggle Layout">
-                        <i class="fas fa-columns"></i> <span id="layoutLabel">Two Column</span>
-                    </button>
-
-                    <input type="color" id="accentColorPicker" value="#4f46e5" title="Choose accent color" />
-
-                    <button class="preview-control" id="downloadPdfBtn" title="Download PDF">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </button>
+                    <button class="preview-control" id="downloadPdfBtn" title="Download PDF"><i class="fas fa-file-pdf"></i> PDF</button>
                     <button class="preview-control" id="themeToggle"><i class="fas fa-moon"></i></button>
                     <select id="fontSelector">
                         <option value="'Inter', sans-serif">Inter</option>
