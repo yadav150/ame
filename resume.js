@@ -23,7 +23,8 @@ let visibilityState = {
 
 let darkMode = false;
 let currentTemplate = 'modern';
-let accentColor = '#4f46e5'; // NEW
+let accentColor = '#4f46e5';
+let currentLayout = 'single'; // NEW: 'single' or 'two-column'
 
 // ===== DOM refs =====
 const preview = document.getElementById('resumePreview');
@@ -63,11 +64,20 @@ function loadData() {
         document.getElementById('templateSelector').value = currentTemplate;
     }
 
-    // NEW: load accent color
     const savedAccent = localStorage.getItem('resumeBuilderAccent');
     if (savedAccent) {
         accentColor = savedAccent;
         document.getElementById('accentColorPicker').value = accentColor;
+    }
+
+    // NEW: load layout
+    const savedLayout = localStorage.getItem('resumeBuilderLayout');
+    if (savedLayout) {
+        currentLayout = savedLayout;
+        const label = document.querySelector('#layoutToggle span');
+        if (label) {
+            label.textContent = currentLayout === 'two-column' ? 'Single Column' : 'Two Column';
+        }
     }
 
     populateForm();
@@ -297,7 +307,7 @@ document.getElementById('templateSelector')?.addEventListener('change', function
     renderPreview();
 });
 
-// ===== Accent Color Picker (NEW) =====
+// ===== Accent Color Picker =====
 document.getElementById('accentColorPicker')?.addEventListener('input', function(e) {
     accentColor = e.target.value;
     localStorage.setItem('resumeBuilderAccent', accentColor);
@@ -307,6 +317,17 @@ document.getElementById('accentColorPicker')?.addEventListener('input', function
 function applyAccentColor(color) {
     preview.style.setProperty('--preview-primary', color);
 }
+
+// ===== Layout Toggle (NEW) =====
+document.getElementById('layoutToggle')?.addEventListener('click', function() {
+    currentLayout = (currentLayout === 'single') ? 'two-column' : 'single';
+    localStorage.setItem('resumeBuilderLayout', currentLayout);
+    const label = this.querySelector('span');
+    if (label) {
+        label.textContent = currentLayout === 'two-column' ? 'Single Column' : 'Two Column';
+    }
+    renderPreview();
+});
 
 // ===== Font & size =====
 document.getElementById('fontSelector')?.addEventListener('change', (e) => {
@@ -358,11 +379,12 @@ document.getElementById('resetResumeBtn')?.addEventListener('click', () => {
         localStorage.removeItem('resumeBuilderTemplate');
         localStorage.removeItem('resumeBuilderVisibility');
         localStorage.removeItem('resumeBuilderAccent');
+        localStorage.removeItem('resumeBuilderLayout');
         location.reload();
     }
 });
 
-// ===== RENDER PREVIEW =====
+// ===== RENDER PREVIEW (UPDATED with layout support) =====
 function renderPreview() {
     const d = resumeData;
     const photoHtml = d.photo ? `<img src="${d.photo}" alt="Profile" class="preview-avatar" />` : `<div class="preview-avatar" style="display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#94a3b8;font-size:2.5rem;"><i class="fas fa-user"></i></div>`;
@@ -394,52 +416,77 @@ function renderPreview() {
 
     const skillsHtml = d.skills.length ? `<div class="preview-skills">${d.skills.map(s => `<span>${s}</span>`).join('')}</div>` : '';
 
-    let html = `
-        <div class="resume-preview">
-            <div class="preview-header">
-                ${photoHtml}
-                <div class="preview-name">${d.fullName || 'Your Name'}</div>
-                <div class="preview-title">${d.profTitle || 'Professional Title'}</div>
-                <div class="preview-contact">${contactHtml || 'contact@example.com'}</div>
-            </div>
-            ${d.summary ? `<div class="preview-section"><h4>Summary</h4><p>${d.summary}</p></div>` : ''}
-    `;
-
+    // Build main content sections (shared between layouts)
+    let mainSections = '';
     if (visibilityState.education && d.education.length) {
-        html += `<div class="preview-section"><h4>Education</h4>${eduHtml}</div>`;
+        mainSections += `<div class="preview-section"><h4>Education</h4>${eduHtml}</div>`;
     }
     if (visibilityState.experience && d.experience.length) {
-        html += `<div class="preview-section"><h4>Work Experience</h4>${expHtml}</div>`;
-    }
-    if (d.skills.length) {
-        html += `<div class="preview-section"><h4>Skills</h4>${skillsHtml}</div>`;
+        mainSections += `<div class="preview-section"><h4>Work Experience</h4>${expHtml}</div>`;
     }
     if (visibilityState.project && d.projects.length) {
-        html += `<div class="preview-section"><h4>Projects</h4>${projHtml}</div>`;
+        mainSections += `<div class="preview-section"><h4>Projects</h4>${projHtml}</div>`;
     }
     if (visibilityState.certifications && d.certifications) {
-        html += `<div class="preview-section"><h4>Certifications</h4><div>${d.certifications}</div></div>`;
+        mainSections += `<div class="preview-section"><h4>Certifications</h4><div>${d.certifications}</div></div>`;
     }
     if (visibilityState.achievements && d.achievements) {
-        html += `<div class="preview-section"><h4>Achievements</h4><div>${d.achievements}</div></div>`;
+        mainSections += `<div class="preview-section"><h4>Achievements</h4><div>${d.achievements}</div></div>`;
     }
     if (visibilityState.languages && d.languages) {
-        html += `<div class="preview-section"><h4>Languages</h4><div>${d.languages}</div></div>`;
+        mainSections += `<div class="preview-section"><h4>Languages</h4><div>${d.languages}</div></div>`;
     }
     if (visibilityState.interests && d.interests) {
-        html += `<div class="preview-section"><h4>Interests</h4><div>${d.interests}</div></div>`;
+        mainSections += `<div class="preview-section"><h4>Interests</h4><div>${d.interests}</div></div>`;
     }
     if (visibilityState.custom && d.customTitle && d.customContent) {
-        html += `<div class="preview-section"><h4>${d.customTitle}</h4><div>${d.customContent}</div></div>`;
+        mainSections += `<div class="preview-section"><h4>${d.customTitle}</h4><div>${d.customContent}</div></div>`;
     }
 
-    html += `</div>`;
+    // Sidebar content for two-column (photo, name, title, contact, skills, summary)
+    const sidebarContent = `
+        <div class="preview-header">
+            ${photoHtml}
+            <div class="preview-name">${d.fullName || 'Your Name'}</div>
+            <div class="preview-title">${d.profTitle || 'Professional Title'}</div>
+            <div class="preview-contact">${contactHtml || 'contact@example.com'}</div>
+        </div>
+        ${d.skills.length ? `<div class="preview-section"><h4>Skills</h4>${skillsHtml}</div>` : ''}
+        ${d.summary ? `<div class="preview-section"><h4>Summary</h4><p>${d.summary}</p></div>` : ''}
+    `;
+
+    let html = '';
+    if (currentLayout === 'two-column') {
+        html = `
+            <div class="resume-preview">
+                <div class="preview-sidebar">${sidebarContent}</div>
+                <div class="preview-main">${mainSections}</div>
+            </div>
+        `;
+    } else {
+        // Single column: everything stacked
+        html = `
+            <div class="resume-preview">
+                <div class="preview-header">
+                    ${photoHtml}
+                    <div class="preview-name">${d.fullName || 'Your Name'}</div>
+                    <div class="preview-title">${d.profTitle || 'Professional Title'}</div>
+                    <div class="preview-contact">${contactHtml || 'contact@example.com'}</div>
+                </div>
+                ${d.summary ? `<div class="preview-section"><h4>Summary</h4><p>${d.summary}</p></div>` : ''}
+                ${mainSections}
+                ${d.skills.length ? `<div class="preview-section"><h4>Skills</h4>${skillsHtml}</div>` : ''}
+            </div>
+        `;
+    }
+
     preview.innerHTML = html;
 
-    // Apply template class, dark mode, and accent color
+    // Apply template class, dark mode, accent color, and layout
     preview.className = 'builder__preview-content';
     preview.classList.add('template-' + currentTemplate);
     if (darkMode) preview.classList.add('dark');
+    if (currentLayout === 'two-column') preview.classList.add('layout-two-column');
     applyAccentColor(accentColor);
 }
 
