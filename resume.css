@@ -1,3 +1,11 @@
+/* ===== CSS Variables (global for this page) ===== */
+:root {
+    --primary: #4f46e5;
+    --primary-dark: #4338ca;
+    --primary-light: #818cf8;
+    /* other variables like --bg, --text, etc. are defined in style.css */
+}
+
 /* ===== Resume Builder Layout ===== */
 .builder {
     display: grid;
@@ -287,6 +295,7 @@
     color: var(--primary);
     font-weight: 600;
 }
+
 /* ===== Accent color applied via JS ===== */
 .builder__preview-content {
     --preview-primary: var(--primary, #4f46e5);
