@@ -15,7 +15,6 @@
     <script src="resume.js" defer></script>
 </head>
 <body>
-    <!-- Minimal Nav -->
     <nav class="navbar builder-nav">
         <div class="container navbar__container">
             <a href="index.html" class="navbar__logo"><i class="fas fa-file-alt"></i><span>Resume<span class="navbar__logo-highlight">Builder</span></span></a>
@@ -29,115 +28,76 @@
             <div class="builder__form-inner">
                 <h2 class="builder__form-title"><i class="fas fa-pen-fancy"></i> Create Your Resume</h2>
 
-                <!-- ===== PERSONAL DETAILS ===== -->
+                <!-- ===== PERSONAL INFORMATION ===== -->
                 <section class="form-section">
-                    <h3 class="form-section__title">1. Personal Details</h3>
-                    <div class="form-group"><label>Full Name</label><input type="text" id="applicantName" /></div>
-                    <div class="form-group"><label>Designation</label><input type="text" id="designation" /></div>
-                    <div class="form-group"><label>Village</label><input type="text" id="village" /></div>
-                    <div class="form-group"><label>Mouza</label><input type="text" id="mouza" /></div>
-                    <div class="form-group"><label>P.O.</label><input type="text" id="po" /></div>
-                    <div class="form-group"><label>P.S.</label><input type="text" id="ps" /></div>
-                    <div class="form-group"><label>Revenue</label><input type="text" id="revenue" /></div>
-                    <div class="form-group"><label>Sub Division</label><input type="text" id="subDivision" /></div>
-                    <div class="form-group"><label>District</label><input type="text" id="district" /></div>
-                    <div class="form-group"><label>State</label><input type="text" id="state" /></div>
-                    <div class="form-group"><label>Mobile Number</label><input type="tel" id="mobileNumber" /></div>
-                    <div class="form-group"><label>Email Address</label><input type="email" id="emailAddress" /></div>
+                    <h3 class="form-section__title">Personal Information</h3>
+                    <div class="form-group"><label>Full Name <span class="required">*</span></label><input type="text" id="fullName" /></div>
+                    <div class="form-group"><label>Email Address <span class="required">*</span></label><input type="email" id="email" /></div>
+                    <div class="form-group"><label>Phone Number <span class="required">*</span></label><input type="tel" id="phone" /></div>
+                    <div class="form-group"><label>Address <span class="required">*</span></label><input type="text" id="address" /></div>
                 </section>
 
-                <!-- ===== CAREER OBJECTIVE ===== -->
+                <!-- ===== PROFILE ===== -->
                 <section class="form-section">
-                    <h3 class="form-section__title">2. Career Objective</h3>
-                    <div class="form-group"><textarea id="objective" rows="4"></textarea></div>
+                    <h3 class="form-section__title">Profile <span class="required">*</span></h3>
+                    <div class="form-group"><textarea id="profile" rows="5" placeholder="Describe your professional background..."></textarea></div>
                 </section>
 
-                <!-- ===== ACADEMIC QUALIFICATIONS ===== -->
+                <!-- ===== PROFESSIONAL EXPERIENCE ===== -->
+                <section class="form-section" id="experienceSection">
+                    <div class="form-section__header">
+                        <h3 class="form-section__title">Professional Experience</h3>
+                        <button class="btn btn--primary btn--small add-btn" id="addExpBtn"><i class="fas fa-plus"></i> Add</button>
+                    </div>
+                    <div class="entry-list" id="experienceList"></div>
+                </section>
+
+                <!-- ===== EDUCATION ===== -->
                 <section class="form-section" id="educationSection">
                     <div class="form-section__header">
-                        <h3 class="form-section__title">3. Academic Qualifications</h3>
-                        <button class="btn btn--primary btn--small add-btn" id="addEducationBtn"><i class="fas fa-plus"></i> Add Row</button>
+                        <h3 class="form-section__title">Education</h3>
+                        <button class="btn btn--primary btn--small add-btn" id="addEduBtn"><i class="fas fa-plus"></i> Add</button>
                     </div>
                     <div class="entry-list" id="educationList"></div>
                 </section>
 
-                <!-- ===== OTHER QUALIFICATIONS ===== -->
+                <!-- ===== PHOTO UPLOAD ===== -->
                 <section class="form-section">
-                    <h3 class="form-section__title">4. Other Qualifications</h3>
-                    <div class="form-group"><textarea id="otherQualifications" rows="4" placeholder="Each qualification on a new line"></textarea></div>
-                </section>
-
-                <!-- ===== WORK EXPERIENCE ===== -->
-                <section class="form-section">
-                    <h3 class="form-section__title">5. Work Experience</h3>
-                    <div class="form-group"><textarea id="workExperience" rows="4" placeholder="Each experience on a new line"></textarea></div>
-                </section>
-
-                <!-- ===== SKILLS ===== -->
-                <section class="form-section">
-                    <h3 class="form-section__title">6. Skills</h3>
-                    <div class="form-group"><textarea id="skills" rows="4" placeholder="Each skill on a new line"></textarea></div>
-                </section>
-
-                <!-- ===== PERSONAL INFORMATION ===== -->
-                <section class="form-section">
-                    <h3 class="form-section__title">7. Personal Information</h3>
-                    <div class="form-group"><label>Father's Name</label><input type="text" id="fatherName" /></div>
-                    <div class="form-group"><label>Date of Birth</label><input type="text" id="dob" placeholder="e.g. 1999-08-07" /></div>
-                    <div class="form-group"><label>Language Known</label><input type="text" id="languageKnown" /></div>
-                    <div class="form-group"><label>Gender</label>
-                        <select id="gender">
-                            <option value="">-- Select --</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label>Nationality</label><input type="text" id="nationality" /></div>
-                    <div class="form-group"><label>Marital Status</label>
-                        <select id="maritalStatus">
-                            <option value="">-- Select --</option>
-                            <option value="Unmarried">Unmarried</option>
-                            <option value="Married">Married</option>
-                            <option value="Divorced">Divorced</option>
-                            <option value="Widowed">Widowed</option>
-                        </select>
+                    <h3 class="form-section__title">Photo</h3>
+                    <div class="form-group">
+                        <div class="file-upload-group">
+                            <label class="file-upload-label">
+                                <i class="fas fa-upload"></i> Choose Photo
+                                <input type="file" id="photoUpload" accept="image/*" />
+                            </label>
+                            <div class="photo-preview" id="photoPreview"><i class="fas fa-user"></i></div>
+                        </div>
                     </div>
                 </section>
 
-                <!-- ===== DECLARATION ===== -->
-                <section class="form-section">
-                    <h3 class="form-section__title">8. Declaration</h3>
-                    <div class="form-group"><label>Place</label><input type="text" id="place" /></div>
-                    <div class="form-group declaration-group">
-                        <label class="declaration-label">
-                            <input type="checkbox" id="declaration" checked />
-                            I hereby declared that the above information given by me is true to best of my Knowledge.
-                        </label>
-                    </div>
-                    <button class="btn btn--primary btn--large" id="generateBtn" style="width:100%;justify-content:center;">
-                        <i class="fas fa-file-pdf"></i> Generate Resume
-                    </button>
-                    <div id="spinnerContainer" style="display:none; text-align:center; margin-top:16px;">
-                        <i class="fas fa-spinner fa-spin fa-2x" style="color:var(--primary);"></i>
-                        <p>Generating your resume, please wait...</p>
-                    </div>
-                </section>
+                <!-- ===== GENERATE BUTTON ===== -->
+                <button class="btn btn--primary btn--large" id="generateBtn" style="width:100%;justify-content:center; margin-top:16px;">
+                    <i class="fas fa-file-pdf"></i> Generate Resume
+                </button>
+                <div id="spinnerContainer" style="display:none; text-align:center; margin-top:16px;">
+                    <i class="fas fa-spinner fa-spin fa-2x" style="color:var(--primary);"></i>
+                    <p>Generating your resume, please wait...</p>
+                </div>
             </div>
         </div>
 
-        <!-- RIGHT PANEL: Placeholder (no live preview) -->
-        <div class="builder__preview" style="display:flex; align-items:center; justify-content:center; background:#f8fafc; text-align:center; color:#94a3b8;">
+        <!-- RIGHT PANEL -->
+        <div class="builder__preview">
             <div>
                 <i class="fas fa-file-alt" style="font-size:4rem; margin-bottom:1rem; opacity:0.3;"></i>
                 <h3>Resume Preview</h3>
                 <p>Fill in the form and click "Generate Resume" to create your PDF.</p>
-                <p style="font-size:0.85rem;">Your resume will be downloaded automatically.</p>
+                <p style="font-size:0.85rem;">All required fields must be filled (*).</p>
             </div>
         </div>
     </div>
 
     <!-- Hidden container for PDF generation -->
-    <div id="pdfContainer" style="position:absolute; left:-9999px; top:0; width:210mm; padding:15mm; background:white; font-family:Arial, sans-serif; color:#000; line-height:1.5; box-sizing:border-box;"></div>
+    <div id="pdfContainer" style="position:absolute; left:-9999px; top:0; width:210mm; padding:15px; background:#fff; box-sizing:border-box;"></div>
 </body>
 </html>
