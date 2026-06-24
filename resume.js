@@ -24,7 +24,7 @@ let visibilityState = {
 let darkMode = false;
 let currentTemplate = 'modern';
 let accentColor = '#4f46e5';
-let currentLayout = 'single'; // NEW: 'single' or 'two-column'
+let currentLayout = 'single';
 
 // ===== DOM refs =====
 const preview = document.getElementById('resumePreview');
@@ -70,7 +70,6 @@ function loadData() {
         document.getElementById('accentColorPicker').value = accentColor;
     }
 
-    // NEW: load layout
     const savedLayout = localStorage.getItem('resumeBuilderLayout');
     if (savedLayout) {
         currentLayout = savedLayout;
@@ -384,7 +383,7 @@ document.getElementById('resetResumeBtn')?.addEventListener('click', () => {
     }
 });
 
-// ===== Load Sample Data (NEW) =====
+// ===== Load Sample Data =====
 document.getElementById('loadSampleBtn')?.addEventListener('click', function() {
     if (!confirm('Load sample resume data? This will overwrite your current data.')) return;
 
@@ -438,11 +437,29 @@ document.getElementById('loadSampleBtn')?.addEventListener('click', function() {
     alert('Sample resume loaded successfully!');
 });
 
-// ===== RENDER PREVIEW (UPDATED with layout support) =====
+// ===== RENDER PREVIEW (UPDATED with Social Icons) =====
 function renderPreview() {
     const d = resumeData;
     const photoHtml = d.photo ? `<img src="${d.photo}" alt="Profile" class="preview-avatar" />` : `<div class="preview-avatar" style="display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#94a3b8;font-size:2.5rem;"><i class="fas fa-user"></i></div>`;
-    const contactHtml = [d.email, d.phone, d.address, d.linkedin, d.github, d.portfolio].filter(Boolean).join(' | ');
+
+    // ===== NEW: Build contact items with icons =====
+    const contactItems = [];
+    if (d.email) contactItems.push(`<a href="mailto:${d.email}" title="Email"><i class="fas fa-envelope"></i> ${d.email}</a>`);
+    if (d.phone) contactItems.push(`<a href="tel:${d.phone}" title="Phone"><i class="fas fa-phone"></i> ${d.phone}</a>`);
+    if (d.address) contactItems.push(`<span title="Address"><i class="fas fa-map-marker-alt"></i> ${d.address}</span>`);
+    if (d.linkedin) {
+        const linkedinUrl = d.linkedin.startsWith('http') ? d.linkedin : `https://${d.linkedin}`;
+        contactItems.push(`<a href="${linkedinUrl}" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i> LinkedIn</a>`);
+    }
+    if (d.github) {
+        const githubUrl = d.github.startsWith('http') ? d.github : `https://${d.github}`;
+        contactItems.push(`<a href="${githubUrl}" target="_blank" title="GitHub"><i class="fab fa-github"></i> GitHub</a>`);
+    }
+    if (d.portfolio) {
+        const portfolioUrl = d.portfolio.startsWith('http') ? d.portfolio : `https://${d.portfolio}`;
+        contactItems.push(`<a href="${portfolioUrl}" target="_blank" title="Portfolio"><i class="fas fa-external-link-alt"></i> Portfolio</a>`);
+    }
+    const contactHtml = contactItems.join(' <span class="contact-separator">|</span> ');
 
     const eduHtml = d.education.map(e => `
         <div class="preview-entry">
@@ -503,7 +520,7 @@ function renderPreview() {
             ${photoHtml}
             <div class="preview-name">${d.fullName || 'Your Name'}</div>
             <div class="preview-title">${d.profTitle || 'Professional Title'}</div>
-            <div class="preview-contact">${contactHtml || 'contact@example.com'}</div>
+            <div class="preview-contact">${contactHtml || '<span><i class="fas fa-envelope"></i> contact@example.com</span>'}</div>
         </div>
         ${d.skills.length ? `<div class="preview-section"><h4>Skills</h4>${skillsHtml}</div>` : ''}
         ${d.summary ? `<div class="preview-section"><h4>Summary</h4><p>${d.summary}</p></div>` : ''}
@@ -525,7 +542,7 @@ function renderPreview() {
                     ${photoHtml}
                     <div class="preview-name">${d.fullName || 'Your Name'}</div>
                     <div class="preview-title">${d.profTitle || 'Professional Title'}</div>
-                    <div class="preview-contact">${contactHtml || 'contact@example.com'}</div>
+                    <div class="preview-contact">${contactHtml || '<span><i class="fas fa-envelope"></i> contact@example.com</span>'}</div>
                 </div>
                 ${d.summary ? `<div class="preview-section"><h4>Summary</h4><p>${d.summary}</p></div>` : ''}
                 ${mainSections}
