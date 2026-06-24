@@ -31,8 +31,11 @@
     align-items: center;
     margin-bottom: 16px;
 }
+.form-section__title .required { color: #ef4444; font-size: 0.85rem; }
+
 .form-group { margin-bottom: 14px; }
 .form-group label { display: block; font-weight: 500; font-size: 0.9rem; margin-bottom: 4px; }
+.form-group label .required { color: #ef4444; }
 .form-group input, .form-group textarea, .form-group select {
     width: 100%;
     padding: 10px 14px;
@@ -49,7 +52,7 @@
     box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
 }
 
-/* Entry (Education rows) */
+/* Entry items */
 .entry-item {
     background: var(--bg-alt);
     border-radius: 10px;
@@ -73,7 +76,6 @@
 
 .add-btn { font-size: 0.8rem; padding: 4px 14px; }
 
-/* Right panel – no preview, just info */
 .builder__preview {
     padding: 40px;
     background: #f8fafc;
@@ -85,41 +87,47 @@
     min-height: calc(100vh - 72px);
 }
 
-/* ===== Declaration checkbox ===== */
-.declaration-group {
-    margin: 16px 0;
-}
-.declaration-label {
+/* File upload */
+.file-upload-group {
     display: flex;
-    align-items: flex-start;
-    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+}
+.file-upload-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-alt);
+    border: 1px dashed var(--border);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
     font-size: 0.9rem;
-    color: var(--text);
-    cursor: pointer;
-    line-height: 1.5;
+    color: var(--text-light);
 }
-.declaration-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    margin-top: 2px;
-    flex-shrink: 0;
-    accent-color: var(--primary);
-    cursor: pointer;
-}
+.file-upload-label:hover { border-color: var(--primary); color: var(--primary); }
+.file-upload-label input[type="file"] { display: none; }
 
-/* ===== Generate button ===== */
-#generateBtn {
-    margin-top: 8px;
-    font-size: 1.1rem;
-    padding: 14px 20px;
+.photo-preview {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: var(--bg-alt);
+    border: 2px dashed var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--text-light);
+    overflow: hidden;
 }
+.photo-preview img { width: 100%; height: 100%; object-fit: cover; }
 
-/* ===== Spinner ===== */
-#spinnerContainer {
-    margin-top: 16px;
-}
+#generateBtn { font-size: 1.1rem; padding: 14px 20px; }
+#spinnerContainer { margin-top: 16px; }
 
-/* ===== Responsive ===== */
 @media (max-width: 1024px) {
     .builder { grid-template-columns: 1fr; }
     .builder__form { max-height: none; border-right: none; }
