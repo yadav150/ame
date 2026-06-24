@@ -252,3 +252,38 @@
     padding-left: 28px; /* make room for the drag handle */
 }
 .entry-item .form-group:last-child { margin-bottom: 0; }
+/* ===== Section Visibility Toggles ===== */
+.form-section__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+.form-section__header .form-section__title {
+    margin-bottom: 0;
+    flex: 1;
+}
+.toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-light);
+    cursor: pointer;
+    user-select: none;
+}
+.toggle-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+.toggle-label span {
+    transition: color 0.2s;
+}
+.toggle-label:has(input:checked) span {
+    color: var(--primary);
+    font-weight: 600;
+}
