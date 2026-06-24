@@ -23,81 +23,125 @@
     </nav>
 
     <div class="builder">
-        <!-- LEFT PANEL: Form -->
         <div class="builder__form" id="resumeForm">
             <div class="builder__form-inner">
                 <h2 class="builder__form-title"><i class="fas fa-pen-fancy"></i> Create Your Resume</h2>
 
-                <!-- ===== PERSONAL INFORMATION ===== -->
-                <section class="form-section">
-                    <h3 class="form-section__title">Personal Information</h3>
-                    <div class="form-group"><label>Full Name <span class="required">*</span></label><input type="text" id="fullName" /></div>
-                    <div class="form-group"><label>Email Address <span class="required">*</span></label><input type="email" id="email" /></div>
-                    <div class="form-group"><label>Phone Number <span class="required">*</span></label><input type="tel" id="phone" /></div>
-                    <div class="form-group"><label>Address <span class="required">*</span></label><input type="text" id="address" /></div>
-                </section>
-
-                <!-- ===== PROFILE ===== -->
-                <section class="form-section">
-                    <h3 class="form-section__title">Profile <span class="required">*</span></h3>
-                    <div class="form-group"><textarea id="profile" rows="5" placeholder="Describe your professional background..."></textarea></div>
-                </section>
-
-                <!-- ===== PROFESSIONAL EXPERIENCE ===== -->
-                <section class="form-section" id="experienceSection">
-                    <div class="form-section__header">
-                        <h3 class="form-section__title">Professional Experience</h3>
-                        <button class="btn btn--primary btn--small add-btn" id="addExpBtn"><i class="fas fa-plus"></i> Add</button>
+                <!-- ===== SECTION 1: PERSONAL DETAILS ===== -->
+                <section class="form-section" id="section-personal">
+                    <h3 class="form-section__title">1. Personal Details</h3>
+                    <div class="form-group"><label>Applicant's Name <span class="required">*</span></label><input type="text" id="fullName" required /></div>
+                    <div class="form-group"><label>Father's Name <span class="required">*</span></label><input type="text" id="fatherName" required /></div>
+                    <div class="form-group"><label>Mother's Name <span class="required">*</span></label><input type="text" id="motherName" required /></div>
+                    <div class="form-group"><label>Mobile Number <span class="required">*</span></label><input type="tel" id="mobile" required /></div>
+                    <div class="form-group"><label>Email Address <span class="required">*</span></label><input type="email" id="email" required /></div>
+                    <div class="form-group"><label>Date of Birth <span class="required">*</span></label><input type="text" id="dob" placeholder="mm/dd/yyyy" required /></div>
+                    <div class="form-group">
+                        <label>Gender <span class="required">*</span></label>
+                        <select id="gender" required>
+                            <option value="">-- Select Gender --</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
                     </div>
-                    <div class="entry-list" id="experienceList"></div>
+                    <div class="form-group"><label>Known Languages <span class="required">*</span></label><input type="text" id="languages" placeholder="e.g., Assamese, English, Hindi" required /></div>
+                    <div class="form-group"><label>Address <span class="required">*</span></label><input type="text" id="address" placeholder="e.g., Pan Bazaar, Guwahati, Assam 781001" required /></div>
+                    <div class="form-group">
+                        <label>Category <span class="required">*</span></label>
+                        <select id="category" required>
+                            <option value="">-- Select Category --</option>
+                            <option value="General">General</option>
+                            <option value="OBC">OBC</option>
+                            <option value="SC">SC</option>
+                            <option value="ST">ST</option>
+                            <option value="EWS">EWS</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Marital Status <span class="required">*</span></label>
+                        <select id="maritalStatus" required>
+                            <option value="">-- Select Marital Status --</option>
+                            <option value="Unmarried">Unmarried</option>
+                            <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                            <option value="Widowed">Widowed</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Experience <span class="required">*</span></label><input type="text" id="experience" placeholder="e.g., 2 years in XYZ Company" required /></div>
                 </section>
 
-                <!-- ===== EDUCATION ===== -->
-                <section class="form-section" id="educationSection">
+                <!-- ===== SECTION 2: EDUCATIONAL QUALIFICATIONS ===== -->
+                <section class="form-section" id="section-education">
                     <div class="form-section__header">
-                        <h3 class="form-section__title">Education</h3>
-                        <button class="btn btn--primary btn--small add-btn" id="addEduBtn"><i class="fas fa-plus"></i> Add</button>
+                        <h3 class="form-section__title">2. Educational Qualifications</h3>
+                        <button class="btn btn--primary btn--small add-btn" id="addEduBtn"><i class="fas fa-plus"></i> Add More Education</button>
                     </div>
                     <div class="entry-list" id="educationList"></div>
                 </section>
 
-                <!-- ===== PHOTO UPLOAD ===== -->
-                <section class="form-section">
-                    <h3 class="form-section__title">Photo</h3>
+                <!-- ===== SECTION 3: OTHER QUALIFICATIONS ===== -->
+                <section class="form-section" id="section-other">
+                    <div class="form-section__header">
+                        <h3 class="form-section__title">3. Other Qualifications</h3>
+                        <button class="btn btn--primary btn--small add-btn" id="addOtherBtn"><i class="fas fa-plus"></i> Add More</button>
+                    </div>
+                    <div class="entry-list" id="otherList"></div>
+                </section>
+
+                <!-- ===== SECTION 4: SKILLS ===== -->
+                <section class="form-section" id="section-skills">
+                    <h3 class="form-section__title">4. Skills</h3>
                     <div class="form-group">
-                        <div class="file-upload-group">
-                            <label class="file-upload-label">
-                                <i class="fas fa-upload"></i> Choose Photo
-                                <input type="file" id="photoUpload" accept="image/*" />
-                            </label>
-                            <div class="photo-preview" id="photoPreview"><i class="fas fa-user"></i></div>
+                        <label>Type a skill and press Enter</label>
+                        <div class="skill-input-group">
+                            <input type="text" id="skillInput" placeholder="e.g., JavaScript, React, Python" />
+                            <div class="skill-tags" id="skillTags"></div>
                         </div>
                     </div>
                 </section>
 
-                <!-- ===== GENERATE BUTTON ===== -->
-                <button class="btn btn--primary btn--large" id="generateBtn" style="width:100%;justify-content:center; margin-top:16px;">
-                    <i class="fas fa-file-pdf"></i> Generate Resume
-                </button>
-                <div id="spinnerContainer" style="display:none; text-align:center; margin-top:16px;">
-                    <i class="fas fa-spinner fa-spin fa-2x" style="color:var(--primary);"></i>
-                    <p>Generating your resume, please wait...</p>
-                </div>
+                <!-- ===== SECTION 5: FINAL STEPS ===== -->
+                <section class="form-section" id="section-final">
+                    <h3 class="form-section__title">5. Final Steps</h3>
+                    <div class="form-group">
+                        <label>Upload Documents</label>
+                        <div class="file-upload-group">
+                            <label class="file-upload-label">
+                                <i class="fas fa-upload"></i> Passport Size Photo (100KB)
+                                <input type="file" id="photoUpload" accept="image/*" />
+                            </label>
+                            <div class="photo-preview" id="photoPreview"><i class="fas fa-user"></i></div>
+                            <span id="fileSizeError" style="color:#ef4444; font-size:0.8rem; display:none;">File too large. Max 100KB.</span>
+                        </div>
+                    </div>
+                    <div class="form-group declaration-group">
+                        <label class="declaration-label">
+                            <input type="checkbox" id="declaration" checked />
+                            I hereby declare that the above particulars of facts and information stated are true, correct and complete to the best of my belief and knowledge.
+                        </label>
+                    </div>
+                    <button class="btn btn--primary btn--large" id="generateBtn" style="width:100%;justify-content:center; margin-top:16px;">
+                        <i class="fas fa-file-pdf"></i> Generate My Resume
+                    </button>
+                    <div id="spinnerContainer" style="display:none; text-align:center; margin-top:16px;">
+                        <i class="fas fa-spinner fa-spin fa-2x" style="color:var(--primary);"></i>
+                        <p>Generating your resume, please wait...</p>
+                    </div>
+                </section>
             </div>
         </div>
 
-        <!-- RIGHT PANEL -->
         <div class="builder__preview">
             <div>
                 <i class="fas fa-file-alt" style="font-size:4rem; margin-bottom:1rem; opacity:0.3;"></i>
                 <h3>Resume Preview</h3>
-                <p>Fill in the form and click "Generate Resume" to create your PDF.</p>
-                <p style="font-size:0.85rem;">All required fields must be filled (*).</p>
+                <p>Fill in the form and click "Generate My Resume" to create your PDF.</p>
+                <p style="font-size:0.85rem; color:#ef4444;">All fields marked with * are required.</p>
             </div>
         </div>
     </div>
 
-    <!-- Hidden container for PDF generation -->
-    <div id="pdfContainer" style="position:absolute; left:-9999px; top:0; width:210mm; padding:15px; background:#fff; box-sizing:border-box;"></div>
+    <div id="pdfContainer" style="position:absolute; left:-9999px; top:0; width:210mm; padding:0; background:#1f4a3a; box-sizing:border-box;"></div>
 </body>
 </html>
