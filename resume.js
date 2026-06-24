@@ -1,160 +1,188 @@
 // ============================================================
-// STATE – In-memory only, no persistence
+// STATE – In-memory only
 // ============================================================
 let resumeData = {
-    applicantName: '',
-    designation: '',
-    village: '',
-    mouza: '',
-    po: '',
-    ps: '',
-    revenue: '',
-    subDivision: '',
-    district: '',
-    state: '',
-    mobileNumber: '',
-    emailAddress: '',
-    objective: '',
-    education: [],      // { qualification, board, year, percentage }
-    otherQualifications: '',
-    workExperience: '',
-    skills: '',
-    fatherName: '',
-    dob: '',
-    languageKnown: '',
-    gender: '',
-    nationality: '',
-    maritalStatus: '',
-    place: ''
+    fullName: '',
+    email: '',
+    phone: '',
+    address: '',
+    profile: '',
+    experience: [],   // { jobTitle, company, location, startDate, endDate, responsibilities }
+    education: [],    // { degree, institution, location, startDate, endDate }
+    photo: null
 };
 
-// ============================================================
-// DOM REFS
-// ============================================================
 const form = document.getElementById('resumeForm');
 const generateBtn = document.getElementById('generateBtn');
 const spinner = document.getElementById('spinnerContainer');
 
 // ============================================================
-// POPULATE FORM (empty on load)
+// POPULATE FORM (empty)
 // ============================================================
 function populateForm() {
-    const fields = [
-        'applicantName', 'designation', 'village', 'mouza', 'po', 'ps',
-        'revenue', 'subDivision', 'district', 'state',
-        'mobileNumber', 'emailAddress', 'objective',
-        'otherQualifications', 'workExperience', 'skills',
-        'fatherName', 'dob', 'languageKnown', 'gender',
-        'nationality', 'maritalStatus', 'place'
-    ];
-    fields.forEach(id => {
+    ['fullName', 'email', 'phone', 'address', 'profile'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = resumeData[id] || '';
     });
-    renderEducationEntries();
+    renderExperience();
+    renderEducation();
 }
 
 // ============================================================
-// RENDER EDUCATION ENTRIES (with all fields)
+// RENDER EXPERIENCE
 // ============================================================
-function renderEducationEntries() {
-    const container = document.getElementById('educationList');
+function renderExperience() {
+    const container = document.getElementById('experienceList');
     if (!container) return;
-
-    container.innerHTML = resumeData.education.map((entry, idx) => `
-        <div class="entry-item" data-index="${idx}">
-            <button class="entry-remove" data-index="${idx}"><i class="fas fa-times"></i></button>
-            <div class="form-group"><label>Qualification</label><input type="text" value="${entry.qualification || ''}" data-field="qualification" data-index="${idx}" class="entry-field" /></div>
-            <div class="form-group"><label>University/Board</label><input type="text" value="${entry.board || ''}" data-field="board" data-index="${idx}" class="entry-field" /></div>
-            <div class="form-group"><label>Year</label><input type="text" value="${entry.year || ''}" data-field="year" data-index="${idx}" class="entry-field" /></div>
-            <div class="form-group"><label>Per %</label><input type="text" value="${entry.percentage || ''}" data-field="percentage" data-index="${idx}" class="entry-field" /></div>
+    container.innerHTML = resumeData.experience.map((entry, idx) => `
+        <div class="entry-item" data-idx="${idx}">
+            <button class="entry-remove" data-idx="${idx}"><i class="fas fa-times"></i></button>
+            <div class="form-group"><label>Job Title</label><input type="text" value="${entry.jobTitle || ''}" data-field="jobTitle" data-idx="${idx}" class="exp-field" /></div>
+            <div class="form-group"><label>Company</label><input type="text" value="${entry.company || ''}" data-field="company" data-idx="${idx}" class="exp-field" /></div>
+            <div class="form-group"><label>Location</label><input type="text" value="${entry.location || ''}" data-field="location" data-idx="${idx}" class="exp-field" /></div>
+            <div class="form-group"><label>Start Date</label><input type="text" value="${entry.startDate || ''}" data-field="startDate" data-idx="${idx}" class="exp-field" placeholder="e.g. Jan 2017" /></div>
+            <div class="form-group"><label>End Date</label><input type="text" value="${entry.endDate || ''}" data-field="endDate" data-idx="${idx}" class="exp-field" placeholder="e.g. Sept 2019" /></div>
+            <div class="form-group"><label>Responsibilities</label><textarea rows="2" data-field="responsibilities" data-idx="${idx}" class="exp-field">${entry.responsibilities || ''}</textarea></div>
         </div>
     `).join('');
 
-    // Attach input events to update data
-    container.querySelectorAll('.entry-field').forEach(inp => {
-        inp.removeEventListener('input', handleFieldInput);
-        inp.addEventListener('input', handleFieldInput);
+    container.querySelectorAll('.exp-field').forEach(inp => {
+        inp.addEventListener('input', function() {
+            const idx = parseInt(this.dataset.idx);
+            const field = this.dataset.field;
+            if (!isNaN(idx) && field) {
+                resumeData.experience[idx][field] = this.value;
+            }
+        });
     });
 
-    // Remove buttons
     container.querySelectorAll('.entry-remove').forEach(btn => {
-        btn.removeEventListener('click', handleRemove);
-        btn.addEventListener('click', handleRemove);
+        btn.addEventListener('click', function() {
+            const idx = parseInt(this.dataset.idx);
+            if (!isNaN(idx)) {
+                resumeData.experience.splice(idx, 1);
+                renderExperience();
+            }
+        });
     });
 }
 
-// ===== Helper for education field input =====
-function handleFieldInput(e) {
-    const idx = parseInt(this.dataset.index);
-    const field = this.dataset.field;
-    if (!isNaN(idx) && field) {
-        resumeData.education[idx][field] = this.value;
-    }
-}
+// ============================================================
+// RENDER EDUCATION
+// ============================================================
+function renderEducation() {
+    const container = document.getElementById('educationList');
+    if (!container) return;
+    container.innerHTML = resumeData.education.map((entry, idx) => `
+        <div class="entry-item" data-idx="${idx}">
+            <button class="entry-remove" data-idx="${idx}"><i class="fas fa-times"></i></button>
+            <div class="form-group"><label>Degree</label><input type="text" value="${entry.degree || ''}" data-field="degree" data-idx="${idx}" class="edu-field" /></div>
+            <div class="form-group"><label>Institution</label><input type="text" value="${entry.institution || ''}" data-field="institution" data-idx="${idx}" class="edu-field" /></div>
+            <div class="form-group"><label>Location</label><input type="text" value="${entry.location || ''}" data-field="location" data-idx="${idx}" class="edu-field" /></div>
+            <div class="form-group"><label>Start Date</label><input type="text" value="${entry.startDate || ''}" data-field="startDate" data-idx="${idx}" class="edu-field" placeholder="e.g. Sept 2014" /></div>
+            <div class="form-group"><label>End Date</label><input type="text" value="${entry.endDate || ''}" data-field="endDate" data-idx="${idx}" class="edu-field" placeholder="e.g. June 2017" /></div>
+        </div>
+    `).join('');
 
-// ===== Helper for education remove =====
-function handleRemove(e) {
-    const idx = parseInt(this.dataset.index);
-    if (!isNaN(idx)) {
-        resumeData.education.splice(idx, 1);
-        renderEducationEntries();
-    }
+    container.querySelectorAll('.edu-field').forEach(inp => {
+        inp.addEventListener('input', function() {
+            const idx = parseInt(this.dataset.idx);
+            const field = this.dataset.field;
+            if (!isNaN(idx) && field) {
+                resumeData.education[idx][field] = this.value;
+            }
+        });
+    });
+
+    container.querySelectorAll('.entry-remove').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const idx = parseInt(this.dataset.idx);
+            if (!isNaN(idx)) {
+                resumeData.education.splice(idx, 1);
+                renderEducation();
+            }
+        });
+    });
 }
 
 // ============================================================
-// ADD EDUCATION ROW (plus icon works)
+// ADD BUTTONS
 // ============================================================
-document.getElementById('addEducationBtn')?.addEventListener('click', function() {
-    resumeData.education.push({ qualification: '', board: '', year: '', percentage: '' });
-    renderEducationEntries();
+document.getElementById('addExpBtn')?.addEventListener('click', () => {
+    resumeData.experience.push({ jobTitle: '', company: '', location: '', startDate: '', endDate: '', responsibilities: '' });
+    renderExperience();
+});
+
+document.getElementById('addEduBtn')?.addEventListener('click', () => {
+    resumeData.education.push({ degree: '', institution: '', location: '', startDate: '', endDate: '' });
+    renderEducation();
 });
 
 // ============================================================
-// REAL-TIME DATA COLLECTION (no preview)
+// REAL-TIME DATA COLLECTION
 // ============================================================
-form.querySelectorAll('input:not(.entry-field), textarea, select').forEach(el => {
-    if (el.id && el.id !== 'declaration') {
-        const updateData = () => {
-            const key = el.id;
-            if (key in resumeData) {
-                resumeData[key] = el.value;
+form.querySelectorAll('input:not(.exp-field):not(.edu-field), textarea:not(.exp-field):not(.edu-field)').forEach(el => {
+    if (el.id && el.id !== 'photoUpload') {
+        const update = () => {
+            if (el.id in resumeData) {
+                resumeData[el.id] = el.value;
             }
         };
-        el.addEventListener('input', updateData);
-        el.addEventListener('change', updateData);
+        el.addEventListener('input', update);
+        el.addEventListener('change', update);
     }
 });
 
 // ============================================================
-// GENERATE RESUME – spinner and PDF download
+// PHOTO UPLOAD
+// ============================================================
+document.getElementById('photoUpload')?.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            resumeData.photo = ev.target.result;
+            document.getElementById('photoPreview').innerHTML = `<img src="${ev.target.result}" alt="Photo" />`;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// ============================================================
+// VALIDATION
+// ============================================================
+function validateForm() {
+    const required = ['fullName', 'email', 'phone', 'address', 'profile'];
+    const missing = required.filter(id => !document.getElementById(id).value.trim());
+    if (missing.length) {
+        alert('Please fill in all required fields: ' + missing.join(', '));
+        return false;
+    }
+    return true;
+}
+
+// ============================================================
+// GENERATE RESUME
 // ============================================================
 generateBtn.addEventListener('click', function() {
-    const declaration = document.getElementById('declaration');
-    if (declaration && !declaration.checked) {
-        alert('Please accept the declaration before generating your resume.');
-        return;
-    }
+    if (!validateForm()) return;
 
-    // Show spinner, disable button
     spinner.style.display = 'block';
     generateBtn.disabled = true;
     generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
 
-    // Random delay 3-7 seconds
-    const delay = 3000 + Math.random() * 4000;
+    const delay = 2000 + Math.random() * 3000;
     setTimeout(() => {
         generatePDF();
         spinner.style.display = 'none';
         generateBtn.disabled = false;
         generateBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Generate Resume';
-        // Clear all data after generation
         clearAllData();
     }, delay);
 });
 
 // ============================================================
-// GENERATE PDF – full width A4 with all fields
+// GENERATE PDF – with border, 15px margin, border-radius 5px
 // ============================================================
 function generatePDF() {
     const container = document.getElementById('pdfContainer');
@@ -171,36 +199,35 @@ function generatePDF() {
         windowHeight: container.scrollHeight
     }).then(canvas => {
         const imgData = canvas.toDataURL('image/png');
-        const pdf = new window.jspdf.jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4'
-        });
+        const pdf = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
         const pdfWidth = 210;
-        const margin = 0; // padding is handled inside container
+        const pdfHeight = 297;
+        const margin = 0;
         const imgWidth = pdfWidth - 2 * margin;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        const pageHeight = 297 - 2 * margin;
-        let heightLeft = imgHeight;
-        let position = margin;
 
-        pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        // If content fits on one page
+        if (imgHeight <= pdfHeight - 2 * margin) {
+            pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+        } else {
+            // Multi-page
+            let heightLeft = imgHeight;
+            let position = margin;
+            const pageHeight = pdfHeight - 2 * margin;
 
-        while (heightLeft > 0) {
-            position = margin - (imgHeight - heightLeft);
-            pdf.addPage();
             pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
+
+            while (heightLeft > 0) {
+                position = margin - (imgHeight - heightLeft);
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
         }
 
-        // Filename based on applicant name
-        let fileName = 'resume.pdf';
-        const name = resumeData.applicantName.trim();
-        if (name) {
-            fileName = name.replace(/\s+/g, '_') + '.pdf';
-        }
+        const fileName = resumeData.fullName.trim() ? resumeData.fullName.replace(/\s+/g, '_') + '.pdf' : 'resume.pdf';
         pdf.save(fileName);
     }).catch(err => {
         console.error('PDF generation failed:', err);
@@ -209,177 +236,94 @@ function generatePDF() {
 }
 
 // ============================================================
-// BUILD RESUME HTML (exact match to reference, with all fields)
+// BUILD RESUME HTML – Matches reference image
 // ============================================================
 function buildResumeHTML() {
     const d = resumeData;
 
-    // Address lines
-    const addressParts = [];
-    if (d.village) addressParts.push(`Village: ${d.village}`);
-    if (d.mouza) addressParts.push(`Mouza: ${d.mouza}`);
-    if (d.po) addressParts.push(`P.O.: ${d.po}`);
-    if (d.ps) addressParts.push(`P.S.: ${d.ps}`);
-    if (d.revenue) addressParts.push(`Revenue: ${d.revenue}`);
-    if (d.subDivision) addressParts.push(`Sub Division: ${d.subDivision}`);
-    if (d.district) addressParts.push(`District: ${d.district}`);
-    if (d.state) addressParts.push(`State: ${d.state}`);
-    const addressHtml = addressParts.length ? `<div class="resume-address">${addressParts.join('<br>')}</div>` : '';
+    // Photo (top right)
+    const photoHtml = d.photo ? `<img src="${d.photo}" style="width:90px; height:90px; border-radius:50%; object-fit:cover; float:right; margin-left:20px; border:2px solid #333;" />` : '';
 
-    // Contact
-    const contactParts = [];
-    if (d.mobileNumber) contactParts.push(`Mob No. : ${d.mobileNumber}`);
-    if (d.emailAddress) contactParts.push(`Email Id : ${d.emailAddress}`);
-    const contactHtml = contactParts.length ? `<div class="resume-contact">${contactParts.join(' &nbsp;|&nbsp; ')}</div>` : '';
+    // Experience entries
+    let expHtml = '';
+    if (d.experience.length) {
+        expHtml = d.experience.map(exp => `
+            <div style="margin-bottom:14px;">
+                <div style="font-weight:600; font-size:1rem;">${exp.jobTitle || ''}</div>
+                <div style="font-weight:500; color:#444;">${exp.company || ''}${exp.location ? ', ' + exp.location : ''}</div>
+                <div style="font-size:0.85rem; color:#666; margin-bottom:4px;">${exp.startDate || ''}${exp.startDate && exp.endDate ? ' – ' : ''}${exp.endDate || ''}</div>
+                ${exp.responsibilities ? `<ul style="margin:4px 0 0 20px; padding:0; list-style:disc;">${exp.responsibilities.split('\n').filter(line => line.trim()).map(line => `<li style="font-size:0.92rem;">${line}</li>`).join('')}</ul>` : ''}
+            </div>
+        `).join('');
+    }
 
-    // Objective
-    const objectiveHtml = d.objective ? `
-        <div class="resume-section">
-            <div class="resume-section-title">CAREER OBJECTIVE</div>
-            <p>${d.objective}</p>
-        </div>
-    ` : '';
-
-    // Academic Qualifications
+    // Education entries
     let eduHtml = '';
     if (d.education.length) {
-        const rows = d.education.map((e, i) => `
-            <tr>
-                <td class="sno">${i+1}</td>
-                <td>${e.qualification || ''}</td>
-                <td>${e.board || ''}</td>
-                <td>${e.year || ''}</td>
-                <td>${e.percentage || ''}</td>
-            </tr>
+        eduHtml = d.education.map(edu => `
+            <div style="margin-bottom:10px;">
+                <div style="font-weight:600; font-size:1rem;">${edu.degree || ''}</div>
+                <div style="font-weight:500; color:#444;">${edu.institution || ''}${edu.location ? ', ' + edu.location : ''}</div>
+                <div style="font-size:0.85rem; color:#666;">${edu.startDate || ''}${edu.startDate && edu.endDate ? ' – ' : ''}${edu.endDate || ''}</div>
+            </div>
         `).join('');
-        eduHtml = `
-            <div class="resume-section">
-                <div class="resume-section-title">ACADEMIC QUALIFICATION</div>
-                <table class="resume-table">
-                    <thead>
-                        <tr><th>S.No.</th><th>Qualification</th><th>University / Board</th><th>Year</th><th>Per %</th></tr>
-                    </thead>
-                    <tbody>${rows}</tbody>
-                </table>
-            </div>
-        `;
     }
 
-    // Other Qualifications
-    let otherHtml = '';
-    if (d.otherQualifications) {
-        const items = d.otherQualifications.split('\n').filter(line => line.trim());
-        if (items.length) {
-            otherHtml = `
-                <div class="resume-section">
-                    <div class="resume-section-title">OTHER QUALIFICATION</div>
-                    <ul>
-                        ${items.map(item => `<li>${item}</li>`).join('')}
-                    </ul>
-                </div>
-            `;
-        }
-    }
-
-    // Work Experience
-    let workHtml = '';
-    if (d.workExperience) {
-        const items = d.workExperience.split('\n').filter(line => line.trim());
-        if (items.length) {
-            workHtml = `
-                <div class="resume-section">
-                    <div class="resume-section-title">WORK EXPERIENCE</div>
-                    <ul>
-                        ${items.map(item => `<li>${item}</li>`).join('')}
-                    </ul>
-                </div>
-            `;
-        }
-    }
-
-    // Skills
-    let skillsHtml = '';
-    if (d.skills) {
-        const items = d.skills.split('\n').filter(line => line.trim());
-        if (items.length) {
-            skillsHtml = `
-                <div class="resume-section">
-                    <div class="resume-section-title">SKILLS</div>
-                    <ul>
-                        ${items.map(item => `<li>${item}</li>`).join('')}
-                    </ul>
-                </div>
-            `;
-        }
-    }
-
-    // Personal Information
-    const personalFields = [
-        { label: "Father's Name", value: d.fatherName },
-        { label: 'Date of Birth', value: d.dob },
-        { label: 'Language Known', value: d.languageKnown },
-        { label: 'Gender', value: d.gender },
-        { label: 'Nationality', value: d.nationality },
-        { label: 'Marital Status', value: d.maritalStatus }
-    ].filter(f => f.value);
-
-    let personalHtml = '';
-    if (personalFields.length) {
-        personalHtml = `
-            <div class="resume-section">
-                <div class="resume-section-title">PERSONAL INFORMATION</div>
-                <div class="personal-info-grid">
-                    ${personalFields.map(f => `
-                        <div class="personal-info-item">
-                            <span class="label">${f.label} :</span>
-                            <span class="value">${f.value}</span>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        `;
-    }
-
-    // Declaration
-    const today = new Date();
-    const dateStr = today.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    const declarationHtml = `
-        <div class="resume-section">
-            <div class="resume-section-title">DECLARATION</div>
-            <p>I hereby declared that the above information given by me is true to best of my Knowledge.</p>
-            <div class="declaration-footer">
-                <span>Date : ${dateStr}</span>
-                <span>Place : ${d.place || ''}</span>
-                <span class="signature">(${d.applicantName || ''})</span>
-            </div>
-        </div>
-    `;
-
-    // ---- Assemble full resume ----
     return `
-        <div class="resume-pdf" style="font-family:Arial, sans-serif; color:#000; line-height:1.5; padding:0; margin:0; width:100%;">
-            <div class="resume-header" style="margin-bottom:20px;">
-                <div class="resume-name" style="font-size:2.2rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:2px;">${d.applicantName || ''}</div>
-                <div class="resume-title" style="font-size:1.1rem; font-weight:500; color:#333; margin:0 0 6px 0;">${d.designation || ''}</div>
-                ${addressHtml}
-                ${contactHtml}
+        <div style="width:100%; padding:15px; box-sizing:border-box; background:#fff; font-family:Arial, sans-serif; color:#000;">
+            <div style="border:2px solid #000; border-radius:5px; padding:25px 30px; width:100%; box-sizing:border-box; background:#fff; min-height:257mm;">
+
+                <!-- Header with photo -->
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; border-bottom:2px solid #eee; padding-bottom:12px;">
+                    <div style="flex:1;">
+                        <h1 style="font-size:2.2rem; font-weight:700; margin:0; text-transform:uppercase; letter-spacing:1px;">${d.fullName || ''}</h1>
+                    </div>
+                    ${d.photo ? `<div>${photoHtml}</div>` : ''}
+                </div>
+
+                <!-- Personal Information -->
+                <div style="margin-bottom:16px;">
+                    <h2 style="font-size:1.1rem; font-weight:700; text-transform:uppercase; margin:0 0 6px 0; color:#000;">Personal Information</h2>
+                    <div style="font-size:0.95rem; line-height:1.6;">
+                        ${d.email ? `<div><strong>Email address:</strong> ${d.email}</div>` : ''}
+                        ${d.phone ? `<div><strong>Phone number:</strong> ${d.phone}</div>` : ''}
+                        ${d.address ? `<div><strong>Address:</strong> ${d.address}</div>` : ''}
+                    </div>
+                </div>
+
+                <!-- Profile -->
+                ${d.profile ? `
+                    <div style="margin-bottom:16px;">
+                        <h2 style="font-size:1.1rem; font-weight:700; text-transform:uppercase; margin:0 0 6px 0; color:#000;">Profile</h2>
+                        <p style="font-size:0.95rem; line-height:1.5; margin:0;">${d.profile}</p>
+                    </div>
+                ` : ''}
+
+                <!-- Professional Experience -->
+                ${expHtml ? `
+                    <div style="margin-bottom:16px;">
+                        <h2 style="font-size:1.1rem; font-weight:700; text-transform:uppercase; margin:0 0 10px 0; color:#000;">Professional Experience</h2>
+                        ${expHtml}
+                    </div>
+                ` : ''}
+
+                <!-- Education -->
+                ${eduHtml ? `
+                    <div style="margin-bottom:0;">
+                        <h2 style="font-size:1.1rem; font-weight:700; text-transform:uppercase; margin:0 0 10px 0; color:#000;">Education</h2>
+                        ${eduHtml}
+                    </div>
+                ` : ''}
+
             </div>
-            ${objectiveHtml}
-            ${eduHtml}
-            ${otherHtml}
-            ${workHtml}
-            ${skillsHtml}
-            ${personalHtml}
-            ${declarationHtml}
         </div>
     `;
 }
 
 // ============================================================
-// CLEAR ALL DATA (reset after generation)
+// CLEAR ALL DATA
 // ============================================================
 function clearAllData() {
-    // Reset resumeData
     Object.keys(resumeData).forEach(key => {
         if (Array.isArray(resumeData[key])) {
             resumeData[key] = [];
@@ -387,17 +331,13 @@ function clearAllData() {
             resumeData[key] = '';
         }
     });
-    // Clear form fields (not education entries, they'll be cleared via render)
-    form.querySelectorAll('input:not(.entry-field), textarea, select').forEach(el => {
-        if (el.id && el.id !== 'declaration') {
-            el.value = '';
-        }
+    document.querySelectorAll('input:not(.exp-field):not(.edu-field), textarea:not(.exp-field):not(.edu-field)').forEach(el => {
+        if (el.id && el.id !== 'photoUpload') el.value = '';
     });
-    // Reset declaration checkbox
-    const decl = document.getElementById('declaration');
-    if (decl) decl.checked = true;
-    // Clear education list
-    renderEducationEntries();
+    document.getElementById('photoPreview').innerHTML = '<i class="fas fa-user"></i>';
+    document.getElementById('photoUpload').value = '';
+    renderExperience();
+    renderEducation();
 }
 
 // ============================================================
