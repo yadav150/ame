@@ -287,3 +287,31 @@
     color: var(--primary);
     font-weight: 600;
 }
+/* ===== Accent color applied via JS ===== */
+.builder__preview-content {
+    --preview-primary: var(--primary, #4f46e5);
+}
+/* Use --preview-primary for all accent elements inside preview */
+.builder__preview-content .preview-section h4 {
+    border-bottom-color: var(--preview-primary) !important;
+}
+.builder__preview-content .preview-avatar {
+    border-color: var(--preview-primary) !important;
+}
+.builder__preview-content .preview-skills span {
+    background-color: var(--preview-primary) !important;
+}
+.builder__preview-content .preview-contact a {
+    color: var(--preview-primary) !important;
+}
+/* Creative template specific */
+.builder__preview-content.template-creative .preview-header {
+    background: var(--preview-primary) !important;
+}
+.builder__preview-content.template-creative .preview-section h4 {
+    color: var(--preview-primary) !important;
+}
+/* Classic template */
+.builder__preview-content.template-classic .preview-section h4 {
+    border-bottom-color: var(--preview-primary) !important;
+}
