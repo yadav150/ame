@@ -1,16 +1,24 @@
 // ============================================================
-// STATE – In-memory only, no localStorage
+// STATE – In-memory only, no persistence
 // ============================================================
 let resumeData = {
     applicantName: '',
     designation: '',
-    address: '',
+    village: '',
+    mouza: '',
+    po: '',
+    ps: '',
+    revenue: '',
+    subDivision: '',
+    district: '',
+    state: '',
     mobileNumber: '',
     emailAddress: '',
     objective: '',
-    education: [],      // { qualification, board, year, percentage }
+    education: [],
     otherQualifications: '',
     workExperience: '',
+    skills: '',
     fatherName: '',
     dob: '',
     languageKnown: '',
@@ -20,35 +28,33 @@ let resumeData = {
     place: ''
 };
 
-let darkMode = false;
-let accentColor = '#4f46e5';
-
 // ============================================================
 // DOM REFS
 // ============================================================
-const preview = document.getElementById('resumePreview');
 const form = document.getElementById('resumeForm');
+const generateBtn = document.getElementById('generateBtn');
+const spinner = document.getElementById('spinnerContainer');
 
 // ============================================================
-// INIT – No loading from localStorage
-// ============================================================
-function init() {
-    populateForm();
-    renderPreview();
-}
-
-// ============================================================
-// POPULATE FORM FROM DATA (empty on load)
+// POPULATE FORM (empty on load)
 // ============================================================
 function populateForm() {
     document.getElementById('applicantName').value = resumeData.applicantName || '';
     document.getElementById('designation').value = resumeData.designation || '';
-    document.getElementById('address').value = resumeData.address || '';
+    document.getElementById('village').value = resumeData.village || '';
+    document.getElementById('mouza').value = resumeData.mouza || '';
+    document.getElementById('po').value = resumeData.po || '';
+    document.getElementById('ps').value = resumeData.ps || '';
+    document.getElementById('revenue').value = resumeData.revenue || '';
+    document.getElementById('subDivision').value = resumeData.subDivision || '';
+    document.getElementById('district').value = resumeData.district || '';
+    document.getElementById('state').value = resumeData.state || '';
     document.getElementById('mobileNumber').value = resumeData.mobileNumber || '';
     document.getElementById('emailAddress').value = resumeData.emailAddress || '';
     document.getElementById('objective').value = resumeData.objective || '';
     document.getElementById('otherQualifications').value = resumeData.otherQualifications || '';
     document.getElementById('workExperience').value = resumeData.workExperience || '';
+    document.getElementById('skills').value = resumeData.skills || '';
     document.getElementById('fatherName').value = resumeData.fatherName || '';
     document.getElementById('dob').value = resumeData.dob || '';
     document.getElementById('languageKnown').value = resumeData.languageKnown || '';
@@ -57,17 +63,17 @@ function populateForm() {
     document.getElementById('maritalStatus').value = resumeData.maritalStatus || '';
     document.getElementById('place').value = resumeData.place || '';
 
-    renderEntries('educationList', resumeData.education);
+    renderEducationEntries();
 }
 
 // ============================================================
 // RENDER EDUCATION ENTRIES
 // ============================================================
-function renderEntries(containerId, entries) {
-    const container = document.getElementById(containerId);
+function renderEducationEntries() {
+    const container = document.getElementById('educationList');
     if (!container) return;
 
-    container.innerHTML = entries.map((entry, idx) => `
+    container.innerHTML = resumeData.education.map((entry, idx) => `
         <div class="entry-item" data-index="${idx}">
             <button class="entry-remove" data-index="${idx}"><i class="fas fa-times"></i></button>
             <div class="form-group"><label>Qualification</label><input type="text" value="${entry.qualification || ''}" data-field="qualification" data-index="${idx}" class="entry-field" /></div>
@@ -77,21 +83,21 @@ function renderEntries(containerId, entries) {
         </div>
     `).join('');
 
+    // Attach events to entry fields
     container.querySelectorAll('.entry-field').forEach(inp => {
         inp.addEventListener('input', function() {
             const idx = parseInt(this.dataset.index);
             const field = this.dataset.field;
             resumeData.education[idx][field] = this.value;
-            renderPreview();
         });
     });
 
+    // Remove buttons
     container.querySelectorAll('.entry-remove').forEach(btn => {
         btn.addEventListener('click', function() {
             const idx = parseInt(this.dataset.index);
             resumeData.education.splice(idx, 1);
-            populateForm();
-            renderPreview();
+            renderEducationEntries();
         });
     });
 }
@@ -101,12 +107,11 @@ function renderEntries(containerId, entries) {
 // ============================================================
 document.querySelector('.add-btn[data-section="education"]')?.addEventListener('click', function() {
     resumeData.education.push({ qualification: '', board: '', year: '', percentage: '' });
-    populateForm();
-    renderPreview();
+    renderEducationEntries();
 });
 
 // ============================================================
-// REAL-TIME FORM INPUTS (update resumeData)
+// REAL-TIME DATA COLLECTION (without preview)
 // ============================================================
 form.querySelectorAll('input:not(.entry-field), textarea, select').forEach(el => {
     if (el.id && el.id !== 'declaration') {
@@ -114,61 +119,121 @@ form.querySelectorAll('input:not(.entry-field), textarea, select').forEach(el =>
             const key = this.id;
             if (key in resumeData) {
                 resumeData[key] = this.value;
-                renderPreview();
             }
         });
         el.addEventListener('change', function() {
             const key = this.id;
             if (key in resumeData) {
                 resumeData[key] = this.value;
-                renderPreview();
             }
         });
     }
 });
 
 // ============================================================
-// THEME TOGGLE
+// GENERATE RESUME – with spinner and PDF download
 // ============================================================
-document.getElementById('themeToggle')?.addEventListener('click', () => {
-    darkMode = !darkMode;
-    document.getElementById('themeToggle').innerHTML = darkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-    renderPreview();
+generateBtn.addEventListener('click', function() {
+    const declaration = document.getElementById('declaration');
+    if (declaration && !declaration.checked) {
+        alert('Please accept the declaration before generating your resume.');
+        return;
+    }
+
+    // Show spinner, disable button
+    spinner.style.display = 'block';
+    generateBtn.disabled = true;
+    generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+    // Simulate delay (3-7 seconds)
+    const delay = 3000 + Math.random() * 4000; // 3-7 sec
+    setTimeout(() => {
+        generatePDF();
+        // Reset button and hide spinner after download starts
+        spinner.style.display = 'none';
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Generate Resume';
+        // Clear all data after generation
+        clearAllData();
+    }, delay);
 });
 
 // ============================================================
-// ACCENT COLOR PICKER
+// GENERATE PDF
 // ============================================================
-document.getElementById('accentColorPicker')?.addEventListener('input', function(e) {
-    accentColor = e.target.value;
-    applyAccentColor(accentColor);
-});
+function generatePDF() {
+    const container = document.getElementById('pdfContainer');
+    // Build the resume HTML inside the hidden container
+    container.innerHTML = buildResumeHTML();
 
-function applyAccentColor(color) {
-    preview.style.setProperty('--preview-primary', color);
+    // Use html2canvas to capture the container with full A4 width
+    html2canvas(container, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        width: container.scrollWidth,
+        height: container.scrollHeight,
+        windowWidth: container.scrollWidth,
+        windowHeight: container.scrollHeight
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new window.jspdf.jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4'
+        });
+
+        const pdfWidth = 210;
+        const margin = 0; // we already have 15mm padding inside container
+        const imgWidth = pdfWidth - 2 * margin;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const pageHeight = 297 - 2 * margin;
+        let heightLeft = imgHeight;
+        let position = margin;
+
+        pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft > 0) {
+            position = margin - (imgHeight - heightLeft);
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+
+        // Generate filename from applicant name
+        let fileName = 'resume.pdf';
+        const name = resumeData.applicantName.trim();
+        if (name) {
+            fileName = name.replace(/\s+/g, '_') + '.pdf';
+        }
+        pdf.save(fileName);
+    }).catch(err => {
+        console.error('PDF generation failed:', err);
+        alert('Could not generate PDF. Please try again.');
+    });
 }
 
 // ============================================================
-// FONT & SIZE
+// BUILD RESUME HTML (exact match to reference, with all fields)
 // ============================================================
-document.getElementById('fontSelector')?.addEventListener('change', (e) => {
-    preview.style.fontFamily = e.target.value;
-});
-document.getElementById('fontSizeSelector')?.addEventListener('change', (e) => {
-    preview.style.fontSize = e.target.value;
-});
-
-// ============================================================
-// RENDER PREVIEW – EXACT MATCH TO REFERENCE IMAGE
-// ============================================================
-function renderPreview() {
+function buildResumeHTML() {
     const d = resumeData;
 
-    // Build address lines
-    const addressLines = d.address ? d.address.split('\n').filter(line => line.trim()) : [];
-    const addressHtml = addressLines.length ? `<div class="resume-address">${addressLines.join('<br>')}</div>` : '';
+    // Address lines (village, mouza, po, ps, revenue, sub division, dist, state)
+    const addressParts = [];
+    if (d.village) addressParts.push(`Village: ${d.village}`);
+    if (d.mouza) addressParts.push(`Mouza: ${d.mouza}`);
+    if (d.po) addressParts.push(`P.O.: ${d.po}`);
+    if (d.ps) addressParts.push(`P.S.: ${d.ps}`);
+    if (d.revenue) addressParts.push(`Revenue: ${d.revenue}`);
+    if (d.subDivision) addressParts.push(`Sub Division: ${d.subDivision}`);
+    if (d.district) addressParts.push(`District: ${d.district}`);
+    if (d.state) addressParts.push(`State: ${d.state}`);
+    const addressHtml = addressParts.length ? `<div class="resume-address">${addressParts.join('<br>')}</div>` : '';
 
-    // Contact info
+    // Contact
     const contactParts = [];
     if (d.mobileNumber) contactParts.push(`Mob No. : ${d.mobileNumber}`);
     if (d.emailAddress) contactParts.push(`Email Id : ${d.emailAddress}`);
@@ -239,6 +304,22 @@ function renderPreview() {
         }
     }
 
+    // Skills
+    let skillsHtml = '';
+    if (d.skills) {
+        const items = d.skills.split('\n').filter(line => line.trim());
+        if (items.length) {
+            skillsHtml = `
+                <div class="resume-section">
+                    <div class="resume-section-title">SKILLS</div>
+                    <ul>
+                        ${items.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+    }
+
     // Personal Information (key-value pairs)
     const personalFields = [
         { label: "Father's Name", value: d.fatherName },
@@ -282,11 +363,11 @@ function renderPreview() {
     `;
 
     // ---- Assemble full resume ----
-    const html = `
-        <div class="resume-preview">
-            <div class="resume-header">
-                <div class="resume-name">${d.applicantName || ''}</div>
-                <div class="resume-title">${d.designation || ''}</div>
+    return `
+        <div class="resume-pdf" style="font-family:Arial, sans-serif; color:#000; line-height:1.5; padding:0; margin:0; width:100%;">
+            <div class="resume-header" style="margin-bottom:20px;">
+                <div class="resume-name" style="font-size:2.2rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:2px;">${d.applicantName || ''}</div>
+                <div class="resume-title" style="font-size:1.1rem; font-weight:500; color:#333; margin:0 0 6px 0;">${d.designation || ''}</div>
                 ${addressHtml}
                 ${contactHtml}
             </div>
@@ -294,99 +375,38 @@ function renderPreview() {
             ${eduHtml}
             ${otherHtml}
             ${workHtml}
+            ${skillsHtml}
             ${personalHtml}
             ${declarationHtml}
         </div>
     `;
-
-    preview.innerHTML = html;
-
-    // Apply UI classes
-    preview.className = 'builder__preview-content';
-    if (darkMode) preview.classList.add('dark');
-    applyAccentColor(accentColor);
 }
 
 // ============================================================
-// PDF EXPORT
+// CLEAR ALL DATA (reset after generation)
 // ============================================================
-document.getElementById('downloadPdfBtn')?.addEventListener('click', function() {
-    const previewEl = document.getElementById('resumePreview');
-    const originalOverflow = document.body.style.overflow;
-    const originalHeight = previewEl.style.height;
-
-    previewEl.style.height = 'auto';
-    document.body.style.overflow = 'hidden';
-
-    html2canvas(previewEl, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        allowTaint: true,
-        width: previewEl.scrollWidth,
-        height: previewEl.scrollHeight,
-        windowWidth: previewEl.scrollWidth,
-        windowHeight: previewEl.scrollHeight
-    }).then(canvas => {
-        previewEl.style.height = originalHeight;
-        document.body.style.overflow = originalOverflow;
-
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new window.jspdf.jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4'
-        });
-
-        const pdfWidth = 210;
-        const margin = 12;
-        const imgWidth = pdfWidth - 2 * margin;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        const pageHeight = 297 - 2 * margin;
-        let heightLeft = imgHeight;
-        let position = margin;
-
-        pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-
-        while (heightLeft > 0) {
-            position = margin - (imgHeight - heightLeft);
-            pdf.addPage();
-            pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+function clearAllData() {
+    // Reset resumeData to empty
+    Object.keys(resumeData).forEach(key => {
+        if (Array.isArray(resumeData[key])) {
+            resumeData[key] = [];
+        } else {
+            resumeData[key] = '';
         }
-
-        pdf.save('resume.pdf');
-    }).catch(err => {
-        console.error('PDF generation failed:', err);
-        alert('Could not generate PDF. Please try again.');
-        previewEl.style.height = originalHeight;
-        document.body.style.overflow = originalOverflow;
     });
-});
-
-// ============================================================
-// GENERATE RESUME – GLOBAL FUNCTION (inline onclick)
-// ============================================================
-function generateResume() {
-    console.log('Generate Resume clicked!');
-
-    const declaration = document.getElementById('declaration');
-    if (declaration && !declaration.checked) {
-        alert('Please accept the declaration before generating your resume.');
-        return;
-    }
-
-    const pdfBtn = document.getElementById('downloadPdfBtn');
-    if (pdfBtn) {
-        pdfBtn.click();
-    } else {
-        alert('PDF button not found. Please try again.');
-    }
+    // Clear form fields
+    form.querySelectorAll('input:not(.entry-field), textarea, select').forEach(el => {
+        if (el.id && el.id !== 'declaration') {
+            el.value = '';
+        }
+    });
+    // Clear education entries
+    renderEducationEntries();
+    // Reset declaration checkbox
+    document.getElementById('declaration').checked = true;
 }
 
 // ============================================================
 // INIT
 // ============================================================
-init();
+populateForm();
