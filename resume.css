@@ -324,3 +324,79 @@
 .builder__preview-content.template-classic .preview-section h4 {
     border-bottom-color: var(--preview-primary) !important;
 }
+/* ===== Layout Toggle ===== */
+#layoutToggle {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+#layoutToggle:hover {
+    background: var(--border);
+}
+
+/* Two-column layout */
+.builder__preview-content.layout-two-column .resume-preview {
+    display: flex;
+    gap: 30px;
+}
+.builder__preview-content.layout-two-column .preview-sidebar {
+    flex: 0 0 30%;
+    min-width: 200px;
+}
+.builder__preview-content.layout-two-column .preview-main {
+    flex: 1;
+}
+.builder__preview-content.layout-two-column .preview-header {
+    text-align: left;
+    margin-bottom: 20px;
+}
+.builder__preview-content.layout-two-column .preview-contact {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    font-size: 0.85rem;
+    margin: 8px 0 16px;
+}
+.builder__preview-content.layout-two-column .preview-contact a {
+    word-break: break-all;
+}
+.builder__preview-content.layout-two-column .preview-section {
+    margin-bottom: 16px;
+}
+/* For creative template, adjust sidebar background */
+.builder__preview-content.layout-two-column.template-creative .preview-sidebar {
+    background: rgba(124, 58, 237, 0.05);
+    padding: 16px;
+    border-radius: 12px;
+}
+.builder__preview-content.layout-two-column.template-creative .preview-header {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+.builder__preview-content.layout-two-column.template-creative .preview-header .preview-name {
+    color: var(--preview-primary, #7c3aed);
+}
+.builder__preview-content.layout-two-column.template-creative .preview-header .preview-title,
+.builder__preview-content.layout-two-column.template-creative .preview-header .preview-contact {
+    color: var(--text-light);
+}
+
+/* Responsive: on small screens, stack */
+@media (max-width: 768px) {
+    .builder__preview-content.layout-two-column .resume-preview {
+        flex-direction: column;
+    }
+    .builder__preview-content.layout-two-column .preview-sidebar {
+        flex: none;
+        width: 100%;
+    }
+}
