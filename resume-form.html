@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Build Your Resume | Resume Builder by Ame 💖💖</title>
+    <!-- Professional fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -16,7 +17,7 @@
 </head>
 <body class="resume-form-page">
 
-    <!-- ==================== NAVIGATION (branding emojis kept) ==================== -->
+    <!-- ==================== NAVIGATION ==================== -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
@@ -103,6 +104,27 @@
                         <label for="website">GitHub / Portfolio</label>
                         <input type="url" id="website" placeholder="https://github.com/...">
                     </div>
+                    <div class="input-group">
+                        <label for="twitter">Twitter / X</label>
+                        <input type="url" id="twitter" placeholder="https://twitter.com/...">
+                    </div>
+                    <div class="input-group">
+                        <label for="instagram">Instagram</label>
+                        <input type="url" id="instagram" placeholder="https://instagram.com/...">
+                    </div>
+                    <div class="input-group">
+                        <label for="facebook">Facebook</label>
+                        <input type="url" id="facebook" placeholder="https://facebook.com/...">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Professional Summary -->
+            <section class="form-section" id="summary-section">
+                <h2 class="section-heading">Professional Summary</h2>
+                <div class="input-group full-width">
+                    <label for="profSummary">Write a short summary (3-5 lines)</label>
+                    <textarea id="profSummary" rows="4" placeholder="A dedicated software engineer with 5+ years of experience..."></textarea>
                 </div>
             </section>
 
@@ -166,14 +188,12 @@
             <section class="form-section" id="bgcolor-section">
                 <h2 class="section-heading">Resume Background</h2>
                 <div class="color-picker-container">
-                    <label class="color-label">Choose background color for your resume:</label>
+                    <label class="color-label">Choose background color for the main area:</label>
                     <div class="color-presets" id="color-presets">
                         <button class="color-preset" style="background:#ffffff" data-color="#ffffff" title="White"></button>
                         <button class="color-preset" style="background:#f8fafc" data-color="#f8fafc" title="Light Gray"></button>
                         <button class="color-preset" style="background:#f0f4ff" data-color="#f0f4ff" title="Light Blue"></button>
                         <button class="color-preset" style="background:#fef9ef" data-color="#fef9ef" title="Light Beige"></button>
-                        <button class="color-preset" style="background:#f5f5f5" data-color="#f5f5f5" title="Silver"></button>
-                        <button class="color-preset" style="background:#f2f2f2" data-color="#f2f2f2" title="Platinum"></button>
                     </div>
                     <div class="custom-color-row">
                         <label for="custom-bgcolor">Custom:</label>
@@ -202,7 +222,7 @@
                 <h2 class="preview-title">Live Preview</h2>
                 <div class="resume-preview-wrapper" id="resume-preview-wrapper">
                     <div class="resume-template" id="resume-template">
-                        <!-- Dynamically filled by JavaScript -->
+                        <!-- Dynamically filled -->
                     </div>
                 </div>
             </div>
@@ -231,7 +251,7 @@
         </div>
     </footer>
 
-    <!-- Auth Modals (same as before) -->
+    <!-- Auth Modals (unchanged) -->
     <div class="modal-overlay hidden" id="login-modal-overlay">
         <div class="modal" id="login-modal">
             <button class="modal-close" onclick="closeLoginModal()" aria-label="Close">✕</button>
@@ -240,25 +260,16 @@
                 <p>Log in to access your saved resumes.</p>
             </div>
             <form class="modal-form" id="login-form" onsubmit="handleLoginSubmit(event)">
-                <div class="input-group">
-                    <label for="login-email">Email Address</label>
-                    <input type="email" id="login-email" placeholder="you@example.com" required>
-                </div>
-                <div class="input-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" placeholder="••••••••" required minlength="6">
-                </div>
+                <div class="input-group"><label for="login-email">Email Address</label><input type="email" id="login-email" placeholder="you@example.com" required></div>
+                <div class="input-group"><label for="login-password">Password</label><input type="password" id="login-password" placeholder="••••••••" required minlength="6"></div>
                 <button type="submit" class="btn btn-primary btn-full" id="login-submit-btn">Log In</button>
                 <p class="modal-switch">Don't have an account? <a href="#" onclick="switchToSignup(event)">Sign Up</a></p>
                 <p class="modal-switch"><a href="#" onclick="handleForgotPassword(event)">Forgot Password?</a></p>
             </form>
             <div class="modal-divider"><span>or</span></div>
-            <button class="btn btn-outline btn-full" onclick="handleGoogleSignIn()">
-                Sign in with Google
-            </button>
+            <button class="btn btn-outline btn-full" onclick="handleGoogleSignIn()">Sign in with Google</button>
         </div>
     </div>
-
     <div class="modal-overlay hidden" id="signup-modal-overlay">
         <div class="modal" id="signup-modal">
             <button class="modal-close" onclick="closeSignupModal()" aria-label="Close">✕</button>
@@ -267,22 +278,10 @@
                 <p>Sign up to save and manage your resumes.</p>
             </div>
             <form class="modal-form" id="signup-form" onsubmit="handleSignupSubmit(event)">
-                <div class="input-group">
-                    <label for="signup-name">Full Name</label>
-                    <input type="text" id="signup-name" placeholder="Your full name" required>
-                </div>
-                <div class="input-group">
-                    <label for="signup-email">Email Address</label>
-                    <input type="email" id="signup-email" placeholder="you@example.com" required>
-                </div>
-                <div class="input-group">
-                    <label for="signup-password">Password</label>
-                    <input type="password" id="signup-password" placeholder="Min 6 characters" required minlength="6">
-                </div>
-                <div class="input-group">
-                    <label for="signup-confirm">Confirm Password</label>
-                    <input type="password" id="signup-confirm" placeholder="Re-enter password" required minlength="6">
-                </div>
+                <div class="input-group"><label for="signup-name">Full Name</label><input type="text" id="signup-name" placeholder="Your full name" required></div>
+                <div class="input-group"><label for="signup-email">Email Address</label><input type="email" id="signup-email" placeholder="you@example.com" required></div>
+                <div class="input-group"><label for="signup-password">Password</label><input type="password" id="signup-password" placeholder="Min 6 characters" required minlength="6"></div>
+                <div class="input-group"><label for="signup-confirm">Confirm Password</label><input type="password" id="signup-confirm" placeholder="Re-enter password" required minlength="6"></div>
                 <button type="submit" class="btn btn-primary btn-full" id="signup-submit-btn">Create Account</button>
                 <p class="modal-switch">Already have an account? <a href="#" onclick="switchToLogin(event)">Log In</a></p>
             </form>
