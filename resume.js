@@ -15,7 +15,7 @@ let resumeData = {
     mobileNumber: '',
     emailAddress: '',
     objective: '',
-    education: [],
+    education: [],      // { qualification, board, year, percentage }
     otherQualifications: '',
     workExperience: '',
     skills: '',
@@ -39,35 +39,23 @@ const spinner = document.getElementById('spinnerContainer');
 // POPULATE FORM (empty on load)
 // ============================================================
 function populateForm() {
-    document.getElementById('applicantName').value = resumeData.applicantName || '';
-    document.getElementById('designation').value = resumeData.designation || '';
-    document.getElementById('village').value = resumeData.village || '';
-    document.getElementById('mouza').value = resumeData.mouza || '';
-    document.getElementById('po').value = resumeData.po || '';
-    document.getElementById('ps').value = resumeData.ps || '';
-    document.getElementById('revenue').value = resumeData.revenue || '';
-    document.getElementById('subDivision').value = resumeData.subDivision || '';
-    document.getElementById('district').value = resumeData.district || '';
-    document.getElementById('state').value = resumeData.state || '';
-    document.getElementById('mobileNumber').value = resumeData.mobileNumber || '';
-    document.getElementById('emailAddress').value = resumeData.emailAddress || '';
-    document.getElementById('objective').value = resumeData.objective || '';
-    document.getElementById('otherQualifications').value = resumeData.otherQualifications || '';
-    document.getElementById('workExperience').value = resumeData.workExperience || '';
-    document.getElementById('skills').value = resumeData.skills || '';
-    document.getElementById('fatherName').value = resumeData.fatherName || '';
-    document.getElementById('dob').value = resumeData.dob || '';
-    document.getElementById('languageKnown').value = resumeData.languageKnown || '';
-    document.getElementById('gender').value = resumeData.gender || '';
-    document.getElementById('nationality').value = resumeData.nationality || '';
-    document.getElementById('maritalStatus').value = resumeData.maritalStatus || '';
-    document.getElementById('place').value = resumeData.place || '';
-
+    const fields = [
+        'applicantName', 'designation', 'village', 'mouza', 'po', 'ps',
+        'revenue', 'subDivision', 'district', 'state',
+        'mobileNumber', 'emailAddress', 'objective',
+        'otherQualifications', 'workExperience', 'skills',
+        'fatherName', 'dob', 'languageKnown', 'gender',
+        'nationality', 'maritalStatus', 'place'
+    ];
+    fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = resumeData[id] || '';
+    });
     renderEducationEntries();
 }
 
 // ============================================================
-// RENDER EDUCATION ENTRIES
+// RENDER EDUCATION ENTRIES (with all fields)
 // ============================================================
 function renderEducationEntries() {
     const container = document.getElementById('educationList');
@@ -83,55 +71,63 @@ function renderEducationEntries() {
         </div>
     `).join('');
 
-    // Attach events to entry fields
+    // Attach input events to update data
     container.querySelectorAll('.entry-field').forEach(inp => {
-        inp.addEventListener('input', function() {
-            const idx = parseInt(this.dataset.index);
-            const field = this.dataset.field;
-            resumeData.education[idx][field] = this.value;
-        });
+        inp.removeEventListener('input', handleFieldInput);
+        inp.addEventListener('input', handleFieldInput);
     });
 
     // Remove buttons
     container.querySelectorAll('.entry-remove').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const idx = parseInt(this.dataset.index);
-            resumeData.education.splice(idx, 1);
-            renderEducationEntries();
-        });
+        btn.removeEventListener('click', handleRemove);
+        btn.addEventListener('click', handleRemove);
     });
 }
 
+// ===== Helper for education field input =====
+function handleFieldInput(e) {
+    const idx = parseInt(this.dataset.index);
+    const field = this.dataset.field;
+    if (!isNaN(idx) && field) {
+        resumeData.education[idx][field] = this.value;
+    }
+}
+
+// ===== Helper for education remove =====
+function handleRemove(e) {
+    const idx = parseInt(this.dataset.index);
+    if (!isNaN(idx)) {
+        resumeData.education.splice(idx, 1);
+        renderEducationEntries();
+    }
+}
+
 // ============================================================
-// ADD EDUCATION ROW
+// ADD EDUCATION ROW (plus icon works)
 // ============================================================
-document.querySelector('.add-btn[data-section="education"]')?.addEventListener('click', function() {
+document.getElementById('addEducationBtn')?.addEventListener('click', function() {
     resumeData.education.push({ qualification: '', board: '', year: '', percentage: '' });
     renderEducationEntries();
 });
 
 // ============================================================
-// REAL-TIME DATA COLLECTION (without preview)
+// REAL-TIME DATA COLLECTION (no preview)
 // ============================================================
 form.querySelectorAll('input:not(.entry-field), textarea, select').forEach(el => {
     if (el.id && el.id !== 'declaration') {
-        el.addEventListener('input', function() {
-            const key = this.id;
+        const updateData = () => {
+            const key = el.id;
             if (key in resumeData) {
-                resumeData[key] = this.value;
+                resumeData[key] = el.value;
             }
-        });
-        el.addEventListener('change', function() {
-            const key = this.id;
-            if (key in resumeData) {
-                resumeData[key] = this.value;
-            }
-        });
+        };
+        el.addEventListener('input', updateData);
+        el.addEventListener('change', updateData);
     }
 });
 
 // ============================================================
-// GENERATE RESUME – with spinner and PDF download
+// GENERATE RESUME – spinner and PDF download
 // ============================================================
 generateBtn.addEventListener('click', function() {
     const declaration = document.getElementById('declaration');
@@ -145,11 +141,10 @@ generateBtn.addEventListener('click', function() {
     generateBtn.disabled = true;
     generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
 
-    // Simulate delay (3-7 seconds)
-    const delay = 3000 + Math.random() * 4000; // 3-7 sec
+    // Random delay 3-7 seconds
+    const delay = 3000 + Math.random() * 4000;
     setTimeout(() => {
         generatePDF();
-        // Reset button and hide spinner after download starts
         spinner.style.display = 'none';
         generateBtn.disabled = false;
         generateBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Generate Resume';
@@ -159,14 +154,12 @@ generateBtn.addEventListener('click', function() {
 });
 
 // ============================================================
-// GENERATE PDF
+// GENERATE PDF – full width A4 with all fields
 // ============================================================
 function generatePDF() {
     const container = document.getElementById('pdfContainer');
-    // Build the resume HTML inside the hidden container
     container.innerHTML = buildResumeHTML();
 
-    // Use html2canvas to capture the container with full A4 width
     html2canvas(container, {
         scale: 2,
         useCORS: true,
@@ -185,7 +178,7 @@ function generatePDF() {
         });
 
         const pdfWidth = 210;
-        const margin = 0; // we already have 15mm padding inside container
+        const margin = 0; // padding is handled inside container
         const imgWidth = pdfWidth - 2 * margin;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         const pageHeight = 297 - 2 * margin;
@@ -202,7 +195,7 @@ function generatePDF() {
             heightLeft -= pageHeight;
         }
 
-        // Generate filename from applicant name
+        // Filename based on applicant name
         let fileName = 'resume.pdf';
         const name = resumeData.applicantName.trim();
         if (name) {
@@ -221,7 +214,7 @@ function generatePDF() {
 function buildResumeHTML() {
     const d = resumeData;
 
-    // Address lines (village, mouza, po, ps, revenue, sub division, dist, state)
+    // Address lines
     const addressParts = [];
     if (d.village) addressParts.push(`Village: ${d.village}`);
     if (d.mouza) addressParts.push(`Mouza: ${d.mouza}`);
@@ -320,7 +313,7 @@ function buildResumeHTML() {
         }
     }
 
-    // Personal Information (key-value pairs)
+    // Personal Information
     const personalFields = [
         { label: "Father's Name", value: d.fatherName },
         { label: 'Date of Birth', value: d.dob },
@@ -386,7 +379,7 @@ function buildResumeHTML() {
 // CLEAR ALL DATA (reset after generation)
 // ============================================================
 function clearAllData() {
-    // Reset resumeData to empty
+    // Reset resumeData
     Object.keys(resumeData).forEach(key => {
         if (Array.isArray(resumeData[key])) {
             resumeData[key] = [];
@@ -394,16 +387,17 @@ function clearAllData() {
             resumeData[key] = '';
         }
     });
-    // Clear form fields
+    // Clear form fields (not education entries, they'll be cleared via render)
     form.querySelectorAll('input:not(.entry-field), textarea, select').forEach(el => {
         if (el.id && el.id !== 'declaration') {
             el.value = '';
         }
     });
-    // Clear education entries
-    renderEducationEntries();
     // Reset declaration checkbox
-    document.getElementById('declaration').checked = true;
+    const decl = document.getElementById('declaration');
+    if (decl) decl.checked = true;
+    // Clear education list
+    renderEducationEntries();
 }
 
 // ============================================================
