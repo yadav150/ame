@@ -16,8 +16,8 @@ let resumeData = {
     experience: '',
     objective: '',
     place: '',
-    education: [],      // { examName, board, passingYear, percentage, division }
-    otherQualifications: [], // { qualificationName, institute, passingYear, scoreGrade, duration }
+    education: [],
+    otherQualifications: [],
     photo: null
 };
 
@@ -127,7 +127,7 @@ function populateForm() {
 }
 
 // ============================================================
-// RENDER ENTRIES (Education / Other Qualifications)
+// RENDER ENTRIES
 // ============================================================
 function renderEntries(containerId, entries, type) {
     const container = document.getElementById(containerId);
@@ -193,7 +193,7 @@ function renderEntries(containerId, entries, type) {
 }
 
 // ============================================================
-// ADD ENTRY (Education / Other Qualifications)
+// ADD ENTRY
 // ============================================================
 document.querySelectorAll('.add-btn').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -228,7 +228,7 @@ document.getElementById('photoUpload')?.addEventListener('change', function(e) {
 });
 
 // ============================================================
-// REAL-TIME FORM INPUTS (text/select/date)
+// REAL-TIME FORM INPUTS
 // ============================================================
 form.querySelectorAll('input:not(.entry-field):not([type="file"]), select, textarea').forEach(el => {
     if (el.id && el.id !== 'photoUpload' && el.id !== 'declaration') {
@@ -344,7 +344,7 @@ document.getElementById('clearFormBtn')?.addEventListener('click', () => {
 });
 
 // ============================================================
-// RESET RESUME (clear all data)
+// RESET RESUME
 // ============================================================
 document.getElementById('resetResumeBtn')?.addEventListener('click', () => {
     if (confirm('Reset everything? This will clear all data.')) {
@@ -406,21 +406,18 @@ document.getElementById('loadSampleBtn')?.addEventListener('click', function() {
 });
 
 // ============================================================
-// RENDER PREVIEW (Exact Resume Format)
+// RENDER PREVIEW
 // ============================================================
 function renderPreview() {
     const d = resumeData;
 
-    // Photo
     const photoHtml = d.photo ? `<img src="${d.photo}" alt="Profile" class="preview-avatar" />` : `<div class="preview-avatar" style="display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#94a3b8;font-size:2.5rem;"><i class="fas fa-user"></i></div>`;
 
-    // Contact (mobile & email - right side)
     const contactHtml = [
         d.mobileNumber ? `Mobile: ${d.mobileNumber}` : '',
         d.emailAddress ? `Email: ${d.emailAddress}` : ''
     ].filter(Boolean).join(' &nbsp;|&nbsp; ');
 
-    // ---- OBJECTIVE ----
     const objectiveHtml = d.objective ? `
         <div class="resume-section">
             <h3 class="resume-section-title">OBJECTIVE</h3>
@@ -428,7 +425,6 @@ function renderPreview() {
         </div>
     ` : '';
 
-    // ---- EDUCATION TABLE ----
     let eduHtml = '';
     if (visibilityState.education && d.education.length) {
         eduHtml = `
@@ -460,7 +456,6 @@ function renderPreview() {
         `;
     }
 
-    // ---- OTHER QUALIFICATIONS TABLE ----
     let otherQualHtml = '';
     if (visibilityState.otherQualifications && d.otherQualifications.length) {
         otherQualHtml = `
@@ -492,7 +487,6 @@ function renderPreview() {
         `;
     }
 
-    // ---- PERSONAL INFORMATION TABLE ----
     const personalInfoRows = [
         ['Name', d.applicantName || ''],
         ['Date of Birth', d.dob || ''],
@@ -525,7 +519,6 @@ function renderPreview() {
         `;
     }
 
-    // ---- DECLARATION ----
     const today = new Date();
     const dateStr = today.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const declarationHtml = `
@@ -540,7 +533,6 @@ function renderPreview() {
         </div>
     `;
 
-    // ---- ASSEMBLE FINAL HTML ----
     const html = `
         <div class="resume-preview">
             <div class="resume-header">
@@ -564,7 +556,6 @@ function renderPreview() {
 
     preview.innerHTML = html;
 
-    // Apply UI classes
     preview.className = 'builder__preview-content';
     preview.classList.add('template-' + currentTemplate);
     if (darkMode) preview.classList.add('dark');
@@ -632,19 +623,17 @@ document.getElementById('downloadPdfBtn')?.addEventListener('click', function() 
 });
 
 // ============================================================
-// GENERATE RESUME BUTTON – GLOBAL FUNCTION (for inline onclick)
+// GENERATE RESUME – GLOBAL FUNCTION
 // ============================================================
 function generateResume() {
     console.log('Generate Resume clicked!');
 
-    // Check declaration
     const declaration = document.getElementById('declaration');
     if (declaration && !declaration.checked) {
         alert('Please accept the declaration before generating your resume.');
         return;
     }
 
-    // Trigger the PDF download
     const pdfBtn = document.getElementById('downloadPdfBtn');
     if (pdfBtn) {
         pdfBtn.click();
