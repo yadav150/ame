@@ -10,6 +10,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <!-- ===== NEW: PDF libraries ===== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <script src="resume.js" defer></script>
 </head>
 <body>
@@ -59,7 +64,7 @@
                     </div>
                 </section>
 
-                <!-- Education (repeated) -->
+                <!-- Education -->
                 <section class="form-section" id="educationSection">
                     <h3 class="form-section__title">Education <button class="btn btn--primary btn--small add-btn" data-section="education"><i class="fas fa-plus"></i> Add</button></h3>
                     <div class="entry-list" id="educationList"></div>
@@ -88,7 +93,7 @@
                     <div class="entry-list" id="projectList"></div>
                 </section>
 
-                <!-- Certifications, Achievements, Languages, Interests (simple text areas) -->
+                <!-- Certifications, Achievements, Languages, Interests -->
                 <section class="form-section">
                     <h3 class="form-section__title">Certifications</h3>
                     <div class="form-group"><textarea id="certifications" rows="3" placeholder="List your certifications..."></textarea></div>
@@ -126,6 +131,10 @@
             <div class="builder__preview-toolbar">
                 <span><i class="fas fa-eye"></i> Live Preview</span>
                 <div class="preview-controls">
+                    <!-- NEW: Download PDF button -->
+                    <button class="preview-control" id="downloadPdfBtn" title="Download PDF">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
                     <button class="preview-control" id="themeToggle"><i class="fas fa-moon"></i></button>
                     <select id="fontSelector"><option value="'Inter', sans-serif">Inter</option><option value="'Georgia', serif">Georgia</option><option value="'Arial', sans-serif">Arial</option></select>
                     <select id="fontSizeSelector"><option value="14">14px</option><option value="16" selected>16px</option><option value="18">18px</option><option value="20">20px</option></select>
