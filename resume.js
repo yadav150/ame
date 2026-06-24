@@ -10,6 +10,18 @@ let resumeData = {
     customTitle: '', customContent: ''
 };
 
+// ===== Visibility State (NEW) =====
+let visibilityState = {
+    education: true,
+    experience: true,
+    project: true,
+    certifications: true,
+    achievements: true,
+    languages: true,
+    interests: true,
+    custom: true
+};
+
 // ===== DOM refs =====
 const preview = document.getElementById('resumePreview');
 const form = document.getElementById('resumeForm');
@@ -21,10 +33,31 @@ function loadData() {
         try {
             const parsed = JSON.parse(saved);
             Object.assign(resumeData, parsed);
-            populateForm();
-            renderPreview();
         } catch (e) {}
     }
+
+    // Load visibility state (NEW)
+    const savedVisibility = localStorage.getItem('resumeBuilderVisibility');
+    if (savedVisibility) {
+        try {
+            Object.assign(visibilityState, JSON.parse(savedVisibility));
+        } catch (e) {}
+    }
+    // Sync checkboxes
+    document.querySelectorAll('.section-toggle').forEach(cb => {
+        const section = cb.dataset.section;
+        if (section in visibilityState) {
+            cb.checked = visibilityState[section];
+            const label = cb.closest('.toggle-label');
+            if (label) {
+                const span = label.querySelector('span');
+                if (span) span.textContent = cb.checked ? 'Show' : 'Hide';
+            }
+        }
+    });
+
+    populateForm();
+    renderPreview();
 }
 
 // ===== Save to localStorage =====
@@ -83,7 +116,6 @@ function renderEntries(containerId, entries, type) {
     // --- Attach drag events ---
     const items = container.querySelectorAll('.entry-item');
     items.forEach(item => {
-        // Drag start: store the source index and type
         item.addEventListener('dragstart', (e) => {
             e.dataTransfer.setData('text/plain', JSON.stringify({
                 type: item.dataset.type,
@@ -97,7 +129,6 @@ function renderEntries(containerId, entries, type) {
             container.querySelectorAll('.entry-item').forEach(el => el.classList.remove('drag-over'));
         });
 
-        // Dragover: prevent default to allow drop, highlight target
         item.addEventListener('dragover', (e) => {
             e.preventDefault();
             container.querySelectorAll('.entry-item').forEach(el => el.classList.remove('drag-over'));
@@ -108,7 +139,6 @@ function renderEntries(containerId, entries, type) {
             item.classList.remove('drag-over');
         });
 
-        // Drop: perform reorder
         item.addEventListener('drop', (e) => {
             e.preventDefault();
             item.classList.remove('drag-over');
@@ -118,7 +148,6 @@ function renderEntries(containerId, entries, type) {
             const targetType = item.dataset.type;
             const targetIndex = parseInt(item.dataset.index);
 
-            // Only reorder if same type and different index
             if (sourceType === targetType && sourceIndex !== targetIndex) {
                 let arr;
                 if (sourceType === 'education') arr = resumeData.education;
@@ -128,13 +157,13 @@ function renderEntries(containerId, entries, type) {
 
                 reorderArray(arr, sourceIndex, targetIndex);
                 saveData();
-                populateForm();   // re-render the list with new order
-                renderPreview();  // update the preview
+                populateForm();
+                renderPreview();
             }
         });
     });
 
-    // --- Input field events (unchanged) ---
+    // --- Input field events ---
     container.querySelectorAll('.entry-field').forEach(inp => {
         inp.addEventListener('input', (e) => {
             const idx = parseInt(inp.dataset.index);
@@ -247,8 +276,16 @@ form.querySelectorAll('input, textarea').forEach(el => {
 let darkMode = false;
 document.getElementById('themeToggle')?.addEventListener('click', () => {
     darkMode = !darkMode;
-    preview.classList.toggle('dark', darkMode);
     document.getElementById('themeToggle').innerHTML = darkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    renderPreview(); // re-render to apply dark class
+});
+
+// ===== Template Switcher =====
+let currentTemplate = 'modern';
+document.getElementById('templateSelector')?.addEventListener('change', function(e) {
+    currentTemplate = e.target.value;
+    localStorage.setItem('resumeBuilderTemplate', currentTemplate);
+    renderPreview();
 });
 
 // ===== Font & size =====
@@ -257,6 +294,21 @@ document.getElementById('fontSelector')?.addEventListener('change', (e) => {
 });
 document.getElementById('fontSizeSelector')?.addEventListener('change', (e) => {
     preview.style.fontSize = e.target.value;
+});
+
+// ===== Section Visibility Toggles (NEW) =====
+document.querySelectorAll('.section-toggle').forEach(cb => {
+    cb.addEventListener('change', function() {
+        const section = this.dataset.section;
+        visibilityState[section] = this.checked;
+        const label = this.closest('.toggle-label');
+        if (label) {
+            const span = label.querySelector('span');
+            if (span) span.textContent = this.checked ? 'Show' : 'Hide';
+        }
+        localStorage.setItem('resumeBuilderVisibility', JSON.stringify(visibilityState));
+        renderPreview();
+    });
 });
 
 // ===== Clear / Reset =====
@@ -283,11 +335,13 @@ document.getElementById('clearFormBtn')?.addEventListener('click', () => {
 document.getElementById('resetResumeBtn')?.addEventListener('click', () => {
     if (confirm('Reset everything? This will clear all data.')) {
         localStorage.removeItem('resumeBuilderData');
+        localStorage.removeItem('resumeBuilderTemplate');
+        localStorage.removeItem('resumeBuilderVisibility');
         location.reload();
     }
 });
 
-// ===== RENDER PREVIEW =====
+// ===== RENDER PREVIEW (UPDATED with visibility checks) =====
 function renderPreview() {
     const d = resumeData;
     const photoHtml = d.photo ? `<img src="${d.photo}" alt="Profile" class="preview-avatar" />` : `<div class="preview-avatar" style="display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#94a3b8;font-size:2.5rem;"><i class="fas fa-user"></i></div>`;
@@ -319,14 +373,7 @@ function renderPreview() {
 
     const skillsHtml = d.skills.length ? `<div class="preview-skills">${d.skills.map(s => `<span>${s}</span>`).join('')}</div>` : '';
 
-    const customHtml = d.customTitle && d.customContent ? `
-        <div class="preview-section">
-            <h4>${d.customTitle}</h4>
-            <div>${d.customContent}</div>
-        </div>
-    ` : '';
-
-    preview.innerHTML = `
+    let html = `
         <div class="resume-preview">
             <div class="preview-header">
                 ${photoHtml}
@@ -334,23 +381,47 @@ function renderPreview() {
                 <div class="preview-title">${d.profTitle || 'Professional Title'}</div>
                 <div class="preview-contact">${contactHtml || 'contact@example.com'}</div>
             </div>
-
             ${d.summary ? `<div class="preview-section"><h4>Summary</h4><p>${d.summary}</p></div>` : ''}
-
-            ${d.education.length ? `<div class="preview-section"><h4>Education</h4>${eduHtml}</div>` : ''}
-            ${d.experience.length ? `<div class="preview-section"><h4>Work Experience</h4>${expHtml}</div>` : ''}
-            ${d.skills.length ? `<div class="preview-section"><h4>Skills</h4>${skillsHtml}</div>` : ''}
-            ${d.projects.length ? `<div class="preview-section"><h4>Projects</h4>${projHtml}</div>` : ''}
-            ${d.certifications ? `<div class="preview-section"><h4>Certifications</h4><div>${d.certifications}</div></div>` : ''}
-            ${d.achievements ? `<div class="preview-section"><h4>Achievements</h4><div>${d.achievements}</div></div>` : ''}
-            ${d.languages ? `<div class="preview-section"><h4>Languages</h4><div>${d.languages}</div></div>` : ''}
-            ${d.interests ? `<div class="preview-section"><h4>Interests</h4><div>${d.interests}</div></div>` : ''}
-            ${customHtml}
-        </div>
     `;
+
+    if (visibilityState.education && d.education.length) {
+        html += `<div class="preview-section"><h4>Education</h4>${eduHtml}</div>`;
+    }
+    if (visibilityState.experience && d.experience.length) {
+        html += `<div class="preview-section"><h4>Work Experience</h4>${expHtml}</div>`;
+    }
+    if (d.skills.length) {
+        html += `<div class="preview-section"><h4>Skills</h4>${skillsHtml}</div>`;
+    }
+    if (visibilityState.project && d.projects.length) {
+        html += `<div class="preview-section"><h4>Projects</h4>${projHtml}</div>`;
+    }
+    if (visibilityState.certifications && d.certifications) {
+        html += `<div class="preview-section"><h4>Certifications</h4><div>${d.certifications}</div></div>`;
+    }
+    if (visibilityState.achievements && d.achievements) {
+        html += `<div class="preview-section"><h4>Achievements</h4><div>${d.achievements}</div></div>`;
+    }
+    if (visibilityState.languages && d.languages) {
+        html += `<div class="preview-section"><h4>Languages</h4><div>${d.languages}</div></div>`;
+    }
+    if (visibilityState.interests && d.interests) {
+        html += `<div class="preview-section"><h4>Interests</h4><div>${d.interests}</div></div>`;
+    }
+    if (visibilityState.custom && d.customTitle && d.customContent) {
+        html += `<div class="preview-section"><h4>${d.customTitle}</h4><div>${d.customContent}</div></div>`;
+    }
+
+    html += `</div>`;
+    preview.innerHTML = html;
+
+    // Apply template class and dark mode
+    preview.className = 'builder__preview-content';
+    preview.classList.add('template-' + currentTemplate);
+    if (darkMode) preview.classList.add('dark');
 }
 
-// ===== PDF Export (from Step 2) =====
+// ===== PDF Export =====
 document.getElementById('downloadPdfBtn')?.addEventListener('click', function() {
     const previewEl = document.getElementById('resumePreview');
     const originalOverflow = document.body.style.overflow;
@@ -410,13 +481,3 @@ document.getElementById('downloadPdfBtn')?.addEventListener('click', function() 
 // ===== Init =====
 loadData();
 renderPreview();
-// ===== Template Switcher (Sub-step 2) =====
-document.getElementById('templateSelector')?.addEventListener('change', function(e) {
-    const template = e.target.value;
-    // Remove all template classes
-    preview.classList.remove('template-modern', 'template-classic', 'template-creative', 'template-minimal');
-    // Add the selected one
-    preview.classList.add('template-' + template);
-    // Save to localStorage
-    localStorage.setItem('resumeBuilderTemplate', template);
-});
