@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Your Resume | Resume Builder by Ame 💖💖</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDKs (same as index) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <!-- html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body class="resume-form-page">
+
+    <!-- ==================== NAVIGATION ==================== -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">📄</span>
+                Resume Builder by Ame <span class="heart">💖💖</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="resume-form.html" class="nav-link active">Build Resume</a>
+                <div class="auth-buttons" id="auth-buttons">
+                    <button class="btn btn-outline btn-sm" id="login-btn-nav" onclick="openLoginModal()">🔑 Login</button>
+                    <button class="btn btn-primary btn-sm" id="signup-btn-nav" onclick="openSignupModal()">✨ Sign Up</button>
+                    <div class="user-menu hidden" id="user-menu">
+                        <span class="user-email" id="user-email-display"></span>
+                        <button class="btn btn-outline btn-sm" id="logout-btn-nav" onclick="handleLogout()">🚪 Logout</button>
+                    </div>
+                </div>
+            </div>
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ==================== MAIN RESUME BUILDER ==================== -->
+    <main class="builder-container">
+        <!-- Left Panel: Form -->
+        <div class="form-panel" id="form-panel">
+            <h1 class="form-title">✍️ Build Your Resume</h1>
+            <p class="form-subtitle">Fill in your details – preview updates instantly.</p>
+
+            <!-- Personal Information -->
+            <section class="form-section" id="personal-section">
+                <h2 class="section-heading">👤 Personal Information</h2>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="fullName">Full Name *</label>
+                        <input type="text" id="fullName" placeholder="e.g., Yadav Subba" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="profTitle">Professional Title</label>
+                        <input type="text" id="profTitle" placeholder="e.g., Software Engineer">
+                    </div>
+                    <div class="input-group photo-upload-group">
+                        <label>Profile Photo</label>
+                        <div class="photo-upload-wrapper">
+                            <input type="file" id="photoUpload" accept="image/*" class="photo-input">
+                            <label for="photoUpload" class="photo-upload-btn">📷 Choose Photo</label>
+                            <img id="photoPreview" class="photo-preview hidden" alt="Preview">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" placeholder="+91 9876543210">
+                    </div>
+                    <div class="input-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" placeholder="your.email@example.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" placeholder="Street, Colony">
+                    </div>
+                    <div class="input-group">
+                        <label for="village">Village / Town</label>
+                        <input type="text" id="village" placeholder="e.g., Gangtok">
+                    </div>
+                    <div class="input-group">
+                        <label for="district">District</label>
+                        <input type="text" id="district" placeholder="e.g., East Sikkim">
+                    </div>
+                    <div class="input-group">
+                        <label for="state">State</label>
+                        <input type="text" id="state" placeholder="e.g., Sikkim">
+                    </div>
+                    <div class="input-group">
+                        <label for="pincode">PIN Code</label>
+                        <input type="text" id="pincode" placeholder="737101">
+                    </div>
+                    <div class="input-group">
+                        <label for="linkedin">LinkedIn</label>
+                        <input type="url" id="linkedin" placeholder="https://linkedin.com/in/...">
+                    </div>
+                    <div class="input-group">
+                        <label for="website">GitHub / Portfolio</label>
+                        <input type="url" id="website" placeholder="https://github.com/...">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Education -->
+            <section class="form-section" id="education-section">
+                <h2 class="section-heading">🎓 Education</h2>
+                <div id="education-container">
+                    <div class="education-entry dynamic-entry">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>Qualification</label>
+                                <input type="text" class="edu-qualification" placeholder="e.g., Bachelor of Technology">
+                            </div>
+                            <div class="input-group">
+                                <label>Institution / University</label>
+                                <input type="text" class="edu-institution" placeholder="University name">
+                            </div>
+                            <div class="input-group">
+                                <label>Board</label>
+                                <input type="text" class="edu-board" placeholder="e.g., AICTE / CBSE">
+                            </div>
+                            <div class="input-group">
+                                <label>Year of Completion</label>
+                                <input type="text" class="edu-year" placeholder="2023">
+                            </div>
+                            <div class="input-group">
+                                <label>Percentage / CGPA</label>
+                                <input type="text" class="edu-percentage" placeholder="8.5 CGPA or 85%">
+                            </div>
+                            <div class="input-group full-width">
+                                <label>Description</label>
+                                <textarea class="edu-desc" rows="2" placeholder="Relevant coursework, achievements..."></textarea>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-remove-entry" title="Remove">🗑️</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline add-more-btn" id="add-education">+ Add More Education</button>
+            </section>
+
+            <!-- Work Experience -->
+            <section class="form-section" id="experience-section">
+                <h2 class="section-heading">💼 Work Experience</h2>
+                <div id="experience-container">
+                    <div class="experience-entry dynamic-entry">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>Job Title</label>
+                                <input type="text" class="exp-title" placeholder="e.g., Frontend Developer">
+                            </div>
+                            <div class="input-group">
+                                <label>Company Name</label>
+                                <input type="text" class="exp-company" placeholder="e.g., Tech Corp">
+                            </div>
+                            <div class="input-group">
+                                <label>Employment Type</label>
+                                <input type="text" class="exp-type" placeholder="Full-time / Internship">
+                            </div>
+                            <div class="input-group">
+                                <label>Start Date</label>
+                                <input type="text" class="exp-start" placeholder="Jan 2022">
+                            </div>
+                            <div class="input-group">
+                                <label>End Date</label>
+                                <input type="text" class="exp-end" placeholder="Present or Dec 2023">
+                            </div>
+                            <div class="input-group full-width">
+                                <label>Responsibilities</label>
+                                <textarea class="exp-desc" rows="3" placeholder="Describe your key responsibilities and achievements..."></textarea>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-remove-entry" title="Remove">🗑️</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline add-more-btn" id="add-experience">+ Add More Experience</button>
+            </section>
+
+            <!-- Projects -->
+            <section class="form-section" id="projects-section">
+                <h2 class="section-heading">🚀 Projects</h2>
+                <div id="projects-container">
+                    <div class="project-entry dynamic-entry">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>Project Name</label>
+                                <input type="text" class="proj-name" placeholder="e.g., Resume Builder">
+                            </div>
+                            <div class="input-group">
+                                <label>Technologies Used</label>
+                                <input type="text" class="proj-tech" placeholder="HTML, CSS, JavaScript">
+                            </div>
+                            <div class="input-group">
+                                <label>Project Link</label>
+                                <input type="url" class="proj-link" placeholder="https://github.com/...">
+                            </div>
+                            <div class="input-group full-width">
+                                <label>Description</label>
+                                <textarea class="proj-desc" rows="3" placeholder="Brief project description..."></textarea>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-remove-entry" title="Remove">🗑️</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline add-more-btn" id="add-project">+ Add More Project</button>
+            </section>
+
+            <!-- Certifications -->
+            <section class="form-section" id="certifications-section">
+                <h2 class="section-heading">📜 Certifications</h2>
+                <div id="certifications-container">
+                    <div class="certification-entry dynamic-entry">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>Certificate Name</label>
+                                <input type="text" class="cert-name" placeholder="e.g., AWS Cloud Practitioner">
+                            </div>
+                            <div class="input-group">
+                                <label>Organization</label>
+                                <input type="text" class="cert-org" placeholder="Amazon Web Services">
+                            </div>
+                            <div class="input-group">
+                                <label>Date</label>
+                                <input type="text" class="cert-date" placeholder="Mar 2023">
+                            </div>
+                            <div class="input-group">
+                                <label>Credential Link</label>
+                                <input type="url" class="cert-link" placeholder="https://...">
+                            </div>
+                        </div>
+                        <button type="button" class="btn-remove-entry" title="Remove">🗑️</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline add-more-btn" id="add-certification">+ Add More Certification</button>
+            </section>
+
+            <!-- Achievements -->
+            <section class="form-section" id="achievements-section">
+                <h2 class="section-heading">🏆 Achievements</h2>
+                <div id="achievements-container">
+                    <div class="achievement-entry dynamic-entry">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>Achievement Title</label>
+                                <input type="text" class="achieve-title" placeholder="e.g., Best Employee Award">
+                            </div>
+                            <div class="input-group">
+                                <label>Year</label>
+                                <input type="text" class="achieve-year" placeholder="2022">
+                            </div>
+                            <div class="input-group full-width">
+                                <label>Description</label>
+                                <textarea class="achieve-desc" rows="2" placeholder="Brief description..."></textarea>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-remove-entry" title="Remove">🗑️</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline add-more-btn" id="add-achievement">+ Add More Achievement</button>
+            </section>
+
+            <!-- Skills -->
+            <section class="form-section" id="skills-section">
+                <h2 class="section-heading">⚡ Skills</h2>
+                <div id="skills-container">
+                    <div class="skills-input-row">
+                        <input type="text" class="skill-input" placeholder="e.g., JavaScript">
+                        <button type="button" class="btn-remove-skill" title="Remove">✕</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline add-more-btn" id="add-skill">+ Add Skill</button>
+            </section>
+
+            <!-- Languages -->
+            <section class="form-section" id="languages-section">
+                <h2 class="section-heading">🗣️ Languages</h2>
+                <div id="languages-container">
+                    <div class="language-entry dynamic-entry">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>Language</label>
+                                <input type="text" class="lang-name" placeholder="English">
+                            </div>
+                            <div class="input-group">
+                                <label>Proficiency</label>
+                                <select class="lang-proficiency">
+                                    <option value="Native">Native</option>
+                                    <option value="Fluent">Fluent</option>
+                                    <option value="Intermediate">Intermediate</option>
+                                    <option value="Basic">Basic</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-remove-entry" title="Remove">🗑️</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline add-more-btn" id="add-language">+ Add Language</button>
+            </section>
+
+            <!-- Hobbies / Interests -->
+            <section class="form-section" id="interests-section">
+                <h2 class="section-heading">🎯 Hobbies / Interests (Optional)</h2>
+                <div id="interests-container">
+                    <div class="interests-input-row">
+                        <input type="text" class="interest-input" placeholder="e.g., Photography">
+                        <button type="button" class="btn-remove-interest" title="Remove">✕</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline add-more-btn" id="add-interest">+ Add Interest</button>
+            </section>
+
+            <!-- Declaration Place -->
+            <section class="form-section" id="declaration-section">
+                <h2 class="section-heading">📝 Declaration Place</h2>
+                <div class="input-group">
+                    <label for="declarationPlace">Place *</label>
+                    <input type="text" id="declarationPlace" placeholder="e.g., Gangtok" required>
+                </div>
+            </section>
+
+            <button class="btn btn-primary btn-lg btn-full pulse-animation" id="build-resume-btn">
+                📄 Build Resume
+            </button>
+        </div>
+
+        <!-- Right Panel: Live Preview -->
+        <div class="preview-panel" id="preview-panel">
+            <div class="preview-sticky">
+                <h2 class="preview-title">👁️ Live Preview</h2>
+                <div class="resume-preview-wrapper" id="resume-preview-wrapper">
+                    <div class="resume-template" id="resume-template">
+                        <!-- Dynamically filled by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay & Spinner -->
+    <div class="loading-overlay hidden" id="loading-overlay">
+        <div class="spinner"></div>
+        <p>Generating your resume...</p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <span class="footer-logo">📄 Resume Builder by Ame 💖💖</span>
+                <p>Professional resumes made simple.</p>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="resume-form.html">Build Resume</a>
+                <a href="#features">Features</a>
+            </div>
+            <div class="footer-bottom">
+                <p>Made with 💖 by Ame &copy; <span id="current-year-form"></span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth Modals (same as index) -->
+    <!-- Login Modal -->
+    <div class="modal-overlay hidden" id="login-modal-overlay">
+        <div class="modal" id="login-modal">
+            <button class="modal-close" onclick="closeLoginModal()" aria-label="Close">✕</button>
+            <div class="modal-header">
+                <span class="modal-icon">🔑</span>
+                <h2>Welcome Back!</h2>
+                <p>Log in to access your saved resumes.</p>
+            </div>
+            <form class="modal-form" id="login-form" onsubmit="handleLoginSubmit(event)">
+                <div class="input-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" placeholder="you@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="login-submit-btn">🔑 Log In</button>
+                <p class="modal-switch">Don't have an account? <a href="#" onclick="switchToSignup(event)">Sign Up</a></p>
+                <p class="modal-switch"><a href="#" onclick="handleForgotPassword(event)">Forgot Password?</a></p>
+            </form>
+            <div class="modal-divider"><span>or</span></div>
+            <button class="btn btn-outline btn-full" onclick="handleGoogleSignIn()">
+                <span class="google-icon">G</span> Sign in with Google
+            </button>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal-overlay hidden" id="signup-modal-overlay">
+        <div class="modal" id="signup-modal">
+            <button class="modal-close" onclick="closeSignupModal()" aria-label="Close">✕</button>
+            <div class="modal-header">
+                <span class="modal-icon">✨</span>
+                <h2>Create Account</h2>
+                <p>Sign up to save and manage your resumes.</p>
+            </div>
+            <form class="modal-form" id="signup-form" onsubmit="handleSignupSubmit(event)">
+                <div class="input-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" placeholder="Your full name" required>
+                </div>
+                <div class="input-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" placeholder="you@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Min 6 characters" required minlength="6">
+                </div>
+                <div class="input-group">
+                    <label for="signup-confirm">Confirm Password</label>
+                    <input type="password" id="signup-confirm" placeholder="Re-enter password" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="signup-submit-btn">✨ Create Account</button>
+                <p class="modal-switch">Already have an account? <a href="#" onclick="switchToLogin(event)">Log In</a></p>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
