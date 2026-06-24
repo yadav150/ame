@@ -552,89 +552,168 @@
 .builder__preview-content.layout-two-column .preview-sidebar .preview-table tbody td {
     padding: 5px 8px;
 }
-/* ===== Required field indicator ===== */
-.required {
-    color: #ef4444;
-    font-weight: 700;
+/* ===== Resume Preview Styles ===== */
+.resume-preview {
+    font-family: 'Inter', sans-serif;
+    color: #1e293b;
+    line-height: 1.6;
+    padding: 10px;
 }
-
-/* ===== File upload styling ===== */
-.file-upload-group {
+.resume-preview .resume-header {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 16px;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid var(--preview-primary, var(--primary));
+    padding-bottom: 12px;
+    margin-bottom: 16px;
 }
-.file-upload-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--bg-alt);
-    border: 1px dashed var(--border);
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: var(--transition);
+.resume-preview .header-left {
+    flex: 1;
+}
+.resume-preview .header-right {
+    flex-shrink: 0;
+    margin-left: 20px;
+}
+.resume-preview .resume-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--preview-primary, var(--primary));
+    letter-spacing: 2px;
+    margin: 0 0 2px 0;
+}
+.resume-preview .applicant-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0 0 2px 0;
+    text-transform: uppercase;
+}
+.resume-preview .contact-info {
     font-size: 0.9rem;
     color: var(--text-light);
 }
-.file-upload-label:hover {
-    border-color: var(--primary);
-    color: var(--primary);
+.resume-preview .preview-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--preview-primary, var(--primary));
 }
-.file-upload-label input[type="file"] {
-    display: none;
+.resume-preview .resume-section {
+    margin-bottom: 14px;
 }
-
-/* ===== Declaration checkbox ===== */
-.declaration-group {
-    margin: 16px 0;
+.resume-preview .resume-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--preview-primary, var(--primary));
+    border-bottom: 2px solid var(--preview-primary, var(--primary));
+    padding-bottom: 2px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
-.declaration-label {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
+.resume-preview .resume-section p {
+    margin: 6px 0;
     font-size: 0.9rem;
-    color: var(--text);
-    cursor: pointer;
-    line-height: 1.5;
-}
-.declaration-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    margin-top: 2px;
-    flex-shrink: 0;
-    accent-color: var(--primary);
-    cursor: pointer;
 }
 
-/* ===== Generate button ===== */
-#generateResumeBtn {
-    margin-top: 8px;
-    font-size: 1.1rem;
-    padding: 14px 20px;
-}
-
-/* ===== Select dropdown styling ===== */
-.form-group select {
+/* ===== Resume Tables ===== */
+.resume-table {
     width: 100%;
-    padding: 10px 14px;
+    border-collapse: collapse;
+    border-radius: 5px;
+    overflow: hidden;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
     border: 1px solid var(--border);
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    transition: var(--transition);
+}
+.resume-table thead th {
+    background: var(--preview-primary, var(--primary));
+    color: #fff;
+    padding: 6px 10px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+.resume-table tbody td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+.resume-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.resume-table tbody tr:nth-child(even) td {
     background: var(--bg-alt);
-    color: var(--text);
-    appearance: auto;
-    cursor: pointer;
 }
-.form-group select:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
-}
-.form-group select option {
-    background: var(--bg);
+.resume-table tbody td.label {
+    font-weight: 600;
+    width: 30%;
     color: var(--text);
+}
+
+/* ===== Personal Information Table ===== */
+.personal-table tbody td:first-child {
+    font-weight: 600;
+    width: 35%;
+}
+.personal-table tbody td:last-child {
+    width: 65%;
+}
+
+/* ===== Declaration ===== */
+.declaration-section p {
+    font-size: 0.9rem;
+    margin: 4px 0 12px 0;
+}
+.declaration-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+}
+.declaration-footer .signature {
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* ===== Dark Mode ===== */
+.builder__preview-content.dark .resume-preview {
+    color: #e2e8f0;
+}
+.builder__preview-content.dark .resume-table tbody td {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+.builder__preview-content.dark .resume-table tbody tr:nth-child(even) td {
+    background: #0f172a;
+}
+.builder__preview-content.dark .resume-table thead th {
+    background: var(--preview-primary, #4f46e5);
+}
+.builder__preview-content.dark .resume-preview .contact-info {
+    color: #94a3b8;
+}
+.builder__preview-content.dark .declaration-footer {
+    border-color: #334155;
+}
+
+/* ===== Two-Column Layout Override ===== */
+.builder__preview-content.layout-two-column .resume-preview .resume-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.builder__preview-content.layout-two-column .resume-preview .header-right {
+    margin-left: 0;
+    margin-top: 10px;
+}
+.builder__preview-content.layout-two-column .resume-preview .declaration-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
 }
