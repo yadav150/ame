@@ -55,12 +55,21 @@ function populateForm() {
     renderSkillTags();
 }
 
-// ===== Render entry lists =====
+// ===== Helper: reorder array =====
+function reorderArray(arr, fromIndex, toIndex) {
+    const [removed] = arr.splice(fromIndex, 1);
+    arr.splice(toIndex, 0, removed);
+    return arr;
+}
+
+// ===== Render entry lists with drag & drop =====
 function renderEntries(containerId, entries, type) {
     const container = document.getElementById(containerId);
     if (!container) return;
+
     container.innerHTML = entries.map((entry, idx) => `
-        <div class="entry-item" data-index="${idx}" data-type="${type}">
+        <div class="entry-item" draggable="true" data-type="${type}" data-index="${idx}">
+            <div class="entry-drag-handle"><i class="fas fa-grip-vertical"></i></div>
             <button class="entry-remove" data-type="${type}" data-index="${idx}"><i class="fas fa-times"></i></button>
             ${Object.keys(entry).map(key => `
                 <div class="form-group">
@@ -71,7 +80,61 @@ function renderEntries(containerId, entries, type) {
         </div>
     `).join('');
 
-    // Attach events to entry fields
+    // --- Attach drag events ---
+    const items = container.querySelectorAll('.entry-item');
+    items.forEach(item => {
+        // Drag start: store the source index and type
+        item.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', JSON.stringify({
+                type: item.dataset.type,
+                index: parseInt(item.dataset.index)
+            }));
+            item.classList.add('dragging');
+        });
+
+        item.addEventListener('dragend', () => {
+            item.classList.remove('dragging');
+            container.querySelectorAll('.entry-item').forEach(el => el.classList.remove('drag-over'));
+        });
+
+        // Dragover: prevent default to allow drop, highlight target
+        item.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            container.querySelectorAll('.entry-item').forEach(el => el.classList.remove('drag-over'));
+            item.classList.add('drag-over');
+        });
+
+        item.addEventListener('dragleave', () => {
+            item.classList.remove('drag-over');
+        });
+
+        // Drop: perform reorder
+        item.addEventListener('drop', (e) => {
+            e.preventDefault();
+            item.classList.remove('drag-over');
+            const sourceData = JSON.parse(e.dataTransfer.getData('text/plain'));
+            const sourceType = sourceData.type;
+            const sourceIndex = sourceData.index;
+            const targetType = item.dataset.type;
+            const targetIndex = parseInt(item.dataset.index);
+
+            // Only reorder if same type and different index
+            if (sourceType === targetType && sourceIndex !== targetIndex) {
+                let arr;
+                if (sourceType === 'education') arr = resumeData.education;
+                else if (sourceType === 'experience') arr = resumeData.experience;
+                else if (sourceType === 'project') arr = resumeData.projects;
+                else return;
+
+                reorderArray(arr, sourceIndex, targetIndex);
+                saveData();
+                populateForm();   // re-render the list with new order
+                renderPreview();  // update the preview
+            }
+        });
+    });
+
+    // --- Input field events (unchanged) ---
     container.querySelectorAll('.entry-field').forEach(inp => {
         inp.addEventListener('input', (e) => {
             const idx = parseInt(inp.dataset.index);
@@ -85,6 +148,7 @@ function renderEntries(containerId, entries, type) {
         });
     });
 
+    // --- Remove button events ---
     container.querySelectorAll('.entry-remove').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const idx = parseInt(btn.dataset.index);
@@ -286,23 +350,17 @@ function renderPreview() {
     `;
 }
 
-// ===== Init =====
-loadData();
-renderPreview();// ================================================================
-// NEW: PDF Export using html2canvas + jsPDF
-// ================================================================
+// ===== PDF Export (from Step 2) =====
 document.getElementById('downloadPdfBtn')?.addEventListener('click', function() {
     const previewEl = document.getElementById('resumePreview');
     const originalOverflow = document.body.style.overflow;
     const originalHeight = previewEl.style.height;
 
-    // Temporarily expand preview to capture full content
     previewEl.style.height = 'auto';
     document.body.style.overflow = 'hidden';
 
-    // Use html2canvas with high quality
     html2canvas(previewEl, {
-        scale: 2,                     // high resolution
+        scale: 2,
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
@@ -312,7 +370,6 @@ document.getElementById('downloadPdfBtn')?.addEventListener('click', function() 
         windowWidth: previewEl.scrollWidth,
         windowHeight: previewEl.scrollHeight
     }).then(canvas => {
-        // Restore styles
         previewEl.style.height = originalHeight;
         document.body.style.overflow = originalOverflow;
 
@@ -323,25 +380,17 @@ document.getElementById('downloadPdfBtn')?.addEventListener('click', function() 
             format: 'a4'
         });
 
-        // A4 dimensions: 210mm x 297mm
         const pdfWidth = 210;
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-        // Add image with proper margins (10mm each side)
         const margin = 10;
         const imgWidth = pdfWidth - 2 * margin;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-        // If content is taller than one page, we need multiple pages
         const pageHeight = 297 - 2 * margin;
         let heightLeft = imgHeight;
         let position = margin;
 
-        // First page
         pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
 
-        // Additional pages if needed
         while (heightLeft > 0) {
             position = margin - (imgHeight - heightLeft);
             pdf.addPage();
@@ -357,3 +406,7 @@ document.getElementById('downloadPdfBtn')?.addEventListener('click', function() 
         document.body.style.overflow = originalOverflow;
     });
 });
+
+// ===== Init =====
+loadData();
+renderPreview();
