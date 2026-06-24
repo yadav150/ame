@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
 
-    <!-- ===== NEW: PDF libraries ===== -->
+    <!-- PDF libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -32,7 +32,7 @@
             <div class="builder__form-inner">
                 <h2 class="builder__form-title"><i class="fas fa-pen-fancy"></i> Edit Your Resume</h2>
 
-                <!-- Personal Info -->
+                <!-- Personal Info (always visible) -->
                 <section class="form-section">
                     <h3 class="form-section__title">Personal Information</h3>
                     <div class="form-group">
@@ -56,7 +56,7 @@
                     <div class="form-group"><label>Portfolio</label><input type="url" id="portfolio" placeholder="yourportfolio.com" /></div>
                 </section>
 
-                <!-- Summary -->
+                <!-- Summary (always visible) -->
                 <section class="form-section">
                     <h3 class="form-section__title">Professional Summary</h3>
                     <div class="form-group">
@@ -64,19 +64,33 @@
                     </div>
                 </section>
 
-                <!-- Education -->
+                <!-- Education (with toggle) -->
                 <section class="form-section" id="educationSection">
-                    <h3 class="form-section__title">Education <button class="btn btn--primary btn--small add-btn" data-section="education"><i class="fas fa-plus"></i> Add</button></h3>
+                    <div class="form-section__header">
+                        <h3 class="form-section__title">Education</h3>
+                        <label class="toggle-label">
+                            <input type="checkbox" class="section-toggle" data-section="education" checked />
+                            <span>Show</span>
+                        </label>
+                        <button class="btn btn--primary btn--small add-btn" data-section="education"><i class="fas fa-plus"></i> Add</button>
+                    </div>
                     <div class="entry-list" id="educationList"></div>
                 </section>
 
-                <!-- Work Experience -->
+                <!-- Work Experience (with toggle) -->
                 <section class="form-section" id="experienceSection">
-                    <h3 class="form-section__title">Work Experience <button class="btn btn--primary btn--small add-btn" data-section="experience"><i class="fas fa-plus"></i> Add</button></h3>
+                    <div class="form-section__header">
+                        <h3 class="form-section__title">Work Experience</h3>
+                        <label class="toggle-label">
+                            <input type="checkbox" class="section-toggle" data-section="experience" checked />
+                            <span>Show</span>
+                        </label>
+                        <button class="btn btn--primary btn--small add-btn" data-section="experience"><i class="fas fa-plus"></i> Add</button>
+                    </div>
                     <div class="entry-list" id="experienceList"></div>
                 </section>
 
-                <!-- Skills -->
+                <!-- Skills (always visible – no toggle) -->
                 <section class="form-section">
                     <h3 class="form-section__title">Skills</h3>
                     <div class="form-group">
@@ -87,33 +101,76 @@
                     </div>
                 </section>
 
-                <!-- Projects -->
+                <!-- Projects (with toggle) -->
                 <section class="form-section" id="projectsSection">
-                    <h3 class="form-section__title">Projects <button class="btn btn--primary btn--small add-btn" data-section="project"><i class="fas fa-plus"></i> Add</button></h3>
+                    <div class="form-section__header">
+                        <h3 class="form-section__title">Projects</h3>
+                        <label class="toggle-label">
+                            <input type="checkbox" class="section-toggle" data-section="project" checked />
+                            <span>Show</span>
+                        </label>
+                        <button class="btn btn--primary btn--small add-btn" data-section="project"><i class="fas fa-plus"></i> Add</button>
+                    </div>
                     <div class="entry-list" id="projectList"></div>
                 </section>
 
-                <!-- Certifications, Achievements, Languages, Interests -->
+                <!-- Certifications (with toggle) -->
                 <section class="form-section">
-                    <h3 class="form-section__title">Certifications</h3>
+                    <div class="form-section__header">
+                        <h3 class="form-section__title">Certifications</h3>
+                        <label class="toggle-label">
+                            <input type="checkbox" class="section-toggle" data-section="certifications" checked />
+                            <span>Show</span>
+                        </label>
+                    </div>
                     <div class="form-group"><textarea id="certifications" rows="3" placeholder="List your certifications..."></textarea></div>
                 </section>
+
+                <!-- Achievements (with toggle) -->
                 <section class="form-section">
-                    <h3 class="form-section__title">Achievements</h3>
+                    <div class="form-section__header">
+                        <h3 class="form-section__title">Achievements</h3>
+                        <label class="toggle-label">
+                            <input type="checkbox" class="section-toggle" data-section="achievements" checked />
+                            <span>Show</span>
+                        </label>
+                    </div>
                     <div class="form-group"><textarea id="achievements" rows="3" placeholder="List your achievements..."></textarea></div>
                 </section>
+
+                <!-- Languages (with toggle) -->
                 <section class="form-section">
-                    <h3 class="form-section__title">Languages</h3>
+                    <div class="form-section__header">
+                        <h3 class="form-section__title">Languages</h3>
+                        <label class="toggle-label">
+                            <input type="checkbox" class="section-toggle" data-section="languages" checked />
+                            <span>Show</span>
+                        </label>
+                    </div>
                     <div class="form-group"><textarea id="languages" rows="2" placeholder="e.g. English (Native), Spanish (Fluent)"></textarea></div>
                 </section>
+
+                <!-- Interests (with toggle) -->
                 <section class="form-section">
-                    <h3 class="form-section__title">Interests / Hobbies</h3>
+                    <div class="form-section__header">
+                        <h3 class="form-section__title">Interests / Hobbies</h3>
+                        <label class="toggle-label">
+                            <input type="checkbox" class="section-toggle" data-section="interests" checked />
+                            <span>Show</span>
+                        </label>
+                    </div>
                     <div class="form-group"><textarea id="interests" rows="2" placeholder="e.g. Photography, Travel"></textarea></div>
                 </section>
 
-                <!-- Custom Section -->
+                <!-- Custom Section (with toggle) -->
                 <section class="form-section">
-                    <h3 class="form-section__title">Custom Section</h3>
+                    <div class="form-section__header">
+                        <h3 class="form-section__title">Custom Section</h3>
+                        <label class="toggle-label">
+                            <input type="checkbox" class="section-toggle" data-section="custom" checked />
+                            <span>Show</span>
+                        </label>
+                    </div>
                     <div class="form-group"><label>Section Title</label><input type="text" id="customTitle" placeholder="e.g. Volunteer Work" /></div>
                     <div class="form-group"><label>Content</label><textarea id="customContent" rows="4" placeholder="Enter your custom content..."></textarea></div>
                 </section>
@@ -132,18 +189,26 @@
                 <span><i class="fas fa-eye"></i> Live Preview</span>
                 <div class="preview-controls">
                     <select id="templateSelector">
-    <option value="modern">Modern</option>
-    <option value="classic">Classic</option>
-    <option value="creative">Creative</option>
-    <option value="minimal">Minimal</option>
-</select>
-                    <!-- NEW: Download PDF button -->
+                        <option value="modern">Modern</option>
+                        <option value="classic">Classic</option>
+                        <option value="creative">Creative</option>
+                        <option value="minimal">Minimal</option>
+                    </select>
                     <button class="preview-control" id="downloadPdfBtn" title="Download PDF">
                         <i class="fas fa-file-pdf"></i> PDF
                     </button>
                     <button class="preview-control" id="themeToggle"><i class="fas fa-moon"></i></button>
-                    <select id="fontSelector"><option value="'Inter', sans-serif">Inter</option><option value="'Georgia', serif">Georgia</option><option value="'Arial', sans-serif">Arial</option></select>
-                    <select id="fontSizeSelector"><option value="14">14px</option><option value="16" selected>16px</option><option value="18">18px</option><option value="20">20px</option></select>
+                    <select id="fontSelector">
+                        <option value="'Inter', sans-serif">Inter</option>
+                        <option value="'Georgia', serif">Georgia</option>
+                        <option value="'Arial', sans-serif">Arial</option>
+                    </select>
+                    <select id="fontSizeSelector">
+                        <option value="14">14px</option>
+                        <option value="16" selected>16px</option>
+                        <option value="18">18px</option>
+                        <option value="20">20px</option>
+                    </select>
                 </div>
             </div>
             <div class="builder__preview-content" id="resumePreview">
