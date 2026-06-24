@@ -410,3 +410,13 @@ document.getElementById('downloadPdfBtn')?.addEventListener('click', function() 
 // ===== Init =====
 loadData();
 renderPreview();
+// ===== Template Switcher (Sub-step 2) =====
+document.getElementById('templateSelector')?.addEventListener('change', function(e) {
+    const template = e.target.value;
+    // Remove all template classes
+    preview.classList.remove('template-modern', 'template-classic', 'template-creative', 'template-minimal');
+    // Add the selected one
+    preview.classList.add('template-' + template);
+    // Save to localStorage
+    localStorage.setItem('resumeBuilderTemplate', template);
+});
