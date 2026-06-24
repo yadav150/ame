@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resume Builder By Ame</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container navbar__container">
+            <a href="index.html" class="navbar__logo"><i class="fas fa-file-alt"></i><span>Resume<span class="navbar__logo-highlight">Builder</span></span></a>
+            <button class="navbar__toggle" id="navToggle"><i class="fas fa-bars"></i></button>
+            <ul class="navbar__links" id="navLinks">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="templates.html">Templates</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="resume.html" class="btn btn--primary btn--small">Get Started</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+        <div class="container hero__container">
+            <div class="hero__content">
+                <span class="hero__badge">✨ AI-Powered Resume Builder</span>
+                <h1 class="hero__title">Create Professional <br /><span class="hero__title-highlight">ATS-Friendly</span> Resumes<br />in Minutes</h1>
+                <p class="hero__subtitle">Build a resume that stands out to recruiters and passes applicant tracking systems with our modern, easy-to-use platform.</p>
+                <div class="hero__actions">
+                    <a href="resume.html" class="btn btn--primary btn--large"><i class="fas fa-plus-circle"></i> Create Resume</a>
+                    <a href="templates.html" class="btn btn--outline btn--large"><i class="fas fa-th-large"></i> View Templates</a>
+                </div>
+                <div class="hero__stats">
+                    <div class="hero__stat"><span class="hero__stat-number">50K+</span><span class="hero__stat-label">Resumes Built</span></div>
+                    <div class="hero__stat"><span class="hero__stat-number">98%</span><span class="hero__stat-label">Satisfaction Rate</span></div>
+                    <div class="hero__stat"><span class="hero__stat-number">4.9★</span><span class="hero__stat-label">User Rating</span></div>
+                </div>
+            </div>
+            <div class="hero__visual">
+                <div class="hero__mockup">
+                    <div class="hero__mockup-inner">
+                        <div class="hero__mockup-header"><span class="hero__mockup-dot"></span><span class="hero__mockup-dot"></span><span class="hero__mockup-dot"></span></div>
+                        <div class="hero__mockup-body">
+                            <div class="hero__mockup-avatar"></div>
+                            <div class="hero__mockup-name">Sarah Johnson</div>
+                            <div class="hero__mockup-title">Senior Product Designer</div>
+                            <div class="hero__mockup-line"></div>
+                            <div class="hero__mockup-line" style="width:70%"></div>
+                            <div class="hero__mockup-line" style="width:85%"></div>
+                            <div class="hero__mockup-line" style="width:60%"></div>
+                            <div class="hero__mockup-line" style="width:90%"></div>
+                            <div class="hero__mockup-tag"><span>⭐ 4.9</span><span>ATS Score 96%</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero__floating-badge hero__floating-badge--1"><i class="fas fa-check-circle"></i> ATS Optimized</div>
+                <div class="hero__floating-badge hero__floating-badge--2"><i class="fas fa-download"></i> PDF Export</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section__header"><span class="section__tag">Features</span><h2 class="section__title">Everything You Need to Build a Standout Resume</h2><p class="section__subtitle">Powerful tools at your fingertips to create a resume that lands interviews.</p></div>
+            <div class="features__grid">
+                <div class="feature-card"><div class="feature-card__icon"><i class="fas fa-file-pdf"></i></div><h3 class="feature-card__title">ATS Friendly Templates</h3><p class="feature-card__desc">Designed to pass automated screening systems and get you noticed.</p></div>
+                <div class="feature-card"><div class="feature-card__icon"><i class="fas fa-file-export"></i></div><h3 class="feature-card__title">High Quality PDF Export</h3><p class="feature-card__desc">Download polished, print-ready PDFs with perfect formatting.</p></div>
+                <div class="feature-card"><div class="feature-card__icon"><i class="fas fa-eye"></i></div><h3 class="feature-card__title">Live Preview</h3><p class="feature-card__desc">See changes instantly as you type — no more guesswork.</p></div>
+                <div class="feature-card"><div class="feature-card__icon"><i class="fas fa-mobile-alt"></i></div><h3 class="feature-card__title">Mobile Friendly</h3><p class="feature-card__desc">Build and edit your resume from any device, anywhere.</p></div>
+                <div class="feature-card"><div class="feature-card__icon"><i class="fas fa-palette"></i></div><h3 class="feature-card__title">Multiple Themes</h3><p class="feature-card__desc">Choose from a variety of professional color schemes and styles.</p></div>
+                <div class="feature-card"><div class="feature-card__icon"><i class="fas fa-sliders-h"></i></div><h3 class="feature-card__title">Easy Customization</h3><p class="feature-card__desc">Tweak every detail to match your personal brand perfectly.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Templates Showcase -->
+    <section class="templates-showcase" id="templates">
+        <div class="container">
+            <div class="section__header"><span class="section__tag">Templates</span><h2 class="section__title">Choose From Our Premium Templates</h2><p class="section__subtitle">Professionally designed templates that make a lasting impression.</p></div>
+            <div class="templates-showcase__grid">
+                <div class="template-card"><div class="template-card__preview"><div class="template-card__mockup template-card__mockup--modern"><div class="template-card__mockup-header"><span class="template-card__mockup-name">Alex Rivera</span><span class="template-card__mockup-role">Marketing Director</span></div><div class="template-card__mockup-body"><div class="template-card__mockup-line"></div><div class="template-card__mockup-line" style="width:75%"></div><div class="template-card__mockup-line" style="width:90%"></div><div class="template-card__mockup-line" style="width:60%"></div></div><span class="template-card__badge">Modern</span></div></div><h4 class="template-card__name">Modern Pro</h4><p class="template-card__desc">Clean, contemporary design with a professional edge.</p></div>
+                <div class="template-card"><div class="template-card__preview"><div class="template-card__mockup template-card__mockup--classic"><div class="template-card__mockup-header"><span class="template-card__mockup-name">James Chen</span><span class="template-card__mockup-role">Software Engineer</span></div><div class="template-card__mockup-body"><div class="template-card__mockup-line"></div><div class="template-card__mockup-line" style="width:80%"></div><div class="template-card__mockup-line" style="width:70%"></div><div class="template-card__mockup-line" style="width:95%"></div></div><span class="template-card__badge">Classic</span></div></div><h4 class="template-card__name">Classic Elite</h4><p class="template-card__desc">Timeless, elegant design trusted by professionals worldwide.</p></div>
+                <div class="template-card"><div class="template-card__preview"><div class="template-card__mockup template-card__mockup--creative"><div class="template-card__mockup-header"><span class="template-card__mockup-name">Maya Patel</span><span class="template-card__mockup-role">Creative Director</span></div><div class="template-card__mockup-body"><div class="template-card__mockup-line"></div><div class="template-card__mockup-line" style="width:65%"></div><div class="template-card__mockup-line" style="width:85%"></div><div class="template-card__mockup-line" style="width:70%"></div></div><span class="template-card__badge">Creative</span></div></div><h4 class="template-card__name">Creative Studio</h4><p class="template-card__desc">Bold, artistic design for creative professionals.</p></div>
+                <div class="template-card"><div class="template-card__preview"><div class="template-card__mockup template-card__mockup--minimal"><div class="template-card__mockup-header"><span class="template-card__mockup-name">Emma Watson</span><span class="template-card__mockup-role">UX Researcher</span></div><div class="template-card__mockup-body"><div class="template-card__mockup-line"></div><div class="template-card__mockup-line" style="width:90%"></div><div class="template-card__mockup-line" style="width:55%"></div><div class="template-card__mockup-line" style="width:80%"></div></div><span class="template-card__badge">Minimal</span></div></div><h4 class="template-card__name">Minimal Pure</h4><p class="template-card__desc">Less is more — clean, focused, and highly readable.</p></div>
+            </div>
+            <div class="templates-showcase__cta"><a href="templates.html" class="btn btn--primary">View All Templates <i class="fas fa-arrow-right"></i></a></div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section__header"><span class="section__tag">How It Works</span><h2 class="section__title">Build Your Resume in 3 Simple Steps</h2><p class="section__subtitle">From start to finish, your perfect resume is just minutes away.</p></div>
+            <div class="how-it-works__steps">
+                <div class="step"><div class="step__number">1</div><div class="step__icon"><i class="fas fa-user-edit"></i></div><h3 class="step__title">Fill Details</h3><p class="step__desc">Enter your personal info, experience, education, and skills.</p></div>
+                <div class="step__arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="step"><div class="step__number">2</div><div class="step__icon"><i class="fas fa-layer-group"></i></div><h3 class="step__title">Choose Template</h3><p class="step__desc">Pick from our collection of ATS-friendly professional templates.</p></div>
+                <div class="step__arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="step"><div class="step__number">3</div><div class="step__icon"><i class="fas fa-file-pdf"></i></div><h3 class="step__title">Download PDF</h3><p class="step__desc">Export your polished resume as a print-ready PDF file.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="why-choose" id="why-choose">
+        <div class="container">
+            <div class="why-choose__grid">
+                <div class="why-choose__content">
+                    <span class="section__tag">Why Choose Us</span>
+                    <h2 class="section__title">Built for Job Seekers Who Mean Business</h2>
+                    <p class="section__subtitle">We combine design excellence with technical precision to give you the competitive edge.</p>
+                    <ul class="why-choose__list">
+                        <li><i class="fas fa-check-circle"></i> ATS-optimized templates that get past filters</li>
+                        <li><i class="fas fa-check-circle"></i> Real-time preview with instant updates</li>
+                        <li><i class="fas fa-check-circle"></i> Export to high-quality PDF with one click</li>
+                        <li><i class="fas fa-check-circle"></i> Auto-save so you never lose your work</li>
+                        <li><i class="fas fa-check-circle"></i> Completely free to use — no credit card required</li>
+                    </ul>
+                    <a href="resume.html" class="btn btn--primary">Start Building Now</a>
+                </div>
+                <div class="why-choose__visual">
+                    <div class="why-choose__stats-card">
+                        <div class="why-choose__stat"><span class="why-choose__stat-number">50K+</span><span class="why-choose__stat-label">Resumes Created</span></div>
+                        <div class="why-choose__stat"><span class="why-choose__stat-number">4.9★</span><span class="why-choose__stat-label">Average Rating</span></div>
+                        <div class="why-choose__stat"><span class="why-choose__stat-number">98%</span><span class="why-choose__stat-label">Success Rate</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section__header"><span class="section__tag">Testimonials</span><h2 class="section__title">What Our Users Say</h2><p class="section__subtitle">Real stories from people who landed their dream jobs.</p></div>
+            <div class="testimonials__grid">
+                <div class="testimonial-card"><div class="testimonial-card__stars">★★★★★</div><p class="testimonial-card__text">"I landed interviews at three top companies within a week of using this resume builder. The ATS-friendly templates made all the difference."</p><div class="testimonial-card__author"><div class="testimonial-card__avatar">JD</div><div><span class="testimonial-card__name">Jessica Davis</span><span class="testimonial-card__role">Product Manager</span></div></div></div>
+                <div class="testimonial-card"><div class="testimonial-card__stars">★★★★★</div><p class="testimonial-card__text">"The live preview feature is a game-changer. I could see exactly how my resume would look and make adjustments on the fly."</p><div class="testimonial-card__author"><div class="testimonial-card__avatar">MR</div><div><span class="testimonial-card__name">Michael Rodriguez</span><span class="testimonial-card__role">Software Engineer</span></div></div></div>
+                <div class="testimonial-card"><div class="testimonial-card__stars">★★★★★</div><p class="testimonial-card__text">"I love how easy it is to customize everything. The templates are beautiful and the PDF export is flawless."</p><div class="testimonial-card__author"><div class="testimonial-card__avatar">ST</div><div><span class="testimonial-card__name">Sarah Thompson</span><span class="testimonial-card__role">Marketing Specialist</span></div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section__header"><span class="section__tag">FAQ</span><h2 class="section__title">Frequently Asked Questions</h2><p class="section__subtitle">Everything you need to know about building your resume.</p></div>
+            <div class="faq__list">
+                <div class="faq__item"><button class="faq__question" aria-expanded="false"><span>Is this resume builder really free?</span><i class="fas fa-chevron-down"></i></button><div class="faq__answer"><p>Yes! Resume Builder By Ame is completely free to use. No credit card required, no hidden fees. Build, customize, and download your resume at no cost.</p></div></div>
+                <div class="faq__item"><button class="faq__question" aria-expanded="false"><span>Are the templates ATS-friendly?</span><i class="fas fa-chevron-down"></i></button><div class="faq__answer"><p>Absolutely. All our templates are designed to be parsed correctly by Applicant Tracking Systems. We use clean formatting, standard headings, and proper semantic structure to ensure your resume gets through.</p></div></div>
+                <div class="faq__item"><button class="faq__question" aria-expanded="false"><span>Can I download my resume as a PDF?</span><i class="fas fa-chevron-down"></i></button><div class="faq__answer"><p>Yes, you can export your resume as a high-quality, print-ready PDF file with proper margins, consistent spacing, and sharp typography.</p></div></div>
+                <div class="faq__item"><button class="faq__question" aria-expanded="false"><span>Is my data saved automatically?</span><i class="fas fa-chevron-down"></i></button><div class="faq__answer"><p>Yes! We use localStorage to auto-save your progress. You can close your browser and come back later — your work will be restored automatically.</p></div></div>
+                <div class="faq__item"><button class="faq__question" aria-expanded="false"><span>What formats can I export to?</span><i class="fas fa-chevron-down"></i></button><div class="faq__answer"><p>Currently, we support high-quality PDF export. The layout is also print-ready and works well with browser print functionality.</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / Contact -->
+    <section class="cta-section" id="contact">
+        <div class="container">
+            <div class="cta-section__inner">
+                <h2 class="cta-section__title">Ready to Build Your Dream Resume?</h2>
+                <p class="cta-section__subtitle">Join thousands of job seekers who have landed their dream jobs with our platform.</p>
+                <div class="cta-section__actions">
+                    <a href="resume.html" class="btn btn--primary btn--large"><i class="fas fa-plus-circle"></i> Start Building Now</a>
+                    <a href="templates.html" class="btn btn--outline btn--large"><i class="fas fa-th-large"></i> Browse Templates</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__grid">
+                <div class="footer__brand">
+                    <a href="index.html" class="footer__logo"><i class="fas fa-file-alt"></i><span>Resume<span class="footer__logo-highlight">Builder</span></span></a>
+                    <p class="footer__tagline">Build professional, ATS-friendly resumes that land interviews.</p>
+                    <div class="footer__social">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer__links"><h4>Product</h4><ul><li><a href="resume.html">Resume Builder</a></li><li><a href="templates.html">Templates</a></li><li><a href="#features">Features</a></li><li><a href="#">Pricing</a></li></ul></div>
+                <div class="footer__links"><h4>Company</h4><ul><li><a href="#">About</a></li><li><a href="#">Careers</a></li><li><a href="#">Blog</a></li><li><a href="#contact">Contact</a></li></ul></div>
+                <div class="footer__links"><h4>Support</h4><ul><li><a href="#faq">FAQ</a></li><li><a href="#">Help Center</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li></ul></div>
+            </div>
+            <div class="footer__bottom"><p>&copy; 2026 Resume Builder By Ame. All rights reserved.</p></div>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop"><i class="fas fa-chevron-up"></i></button>
+</body>
+</html>
