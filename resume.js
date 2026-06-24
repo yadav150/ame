@@ -318,7 +318,7 @@ function applyAccentColor(color) {
     preview.style.setProperty('--preview-primary', color);
 }
 
-// ===== Layout Toggle (NEW) =====
+// ===== Layout Toggle =====
 document.getElementById('layoutToggle')?.addEventListener('click', function() {
     currentLayout = (currentLayout === 'single') ? 'two-column' : 'single';
     localStorage.setItem('resumeBuilderLayout', currentLayout);
@@ -382,6 +382,60 @@ document.getElementById('resetResumeBtn')?.addEventListener('click', () => {
         localStorage.removeItem('resumeBuilderLayout');
         location.reload();
     }
+});
+
+// ===== Load Sample Data (NEW) =====
+document.getElementById('loadSampleBtn')?.addEventListener('click', function() {
+    if (!confirm('Load sample resume data? This will overwrite your current data.')) return;
+
+    resumeData = {
+        fullName: 'John Doe',
+        profTitle: 'Senior Software Engineer',
+        email: 'john.doe@example.com',
+        phone: '+1 (555) 123-4567',
+        address: 'San Francisco, CA',
+        linkedin: 'linkedin.com/in/johndoe',
+        github: 'github.com/johndoe',
+        portfolio: 'johndoe.dev',
+        summary: 'Passionate Senior Software Engineer with 8+ years of experience building scalable web applications. Expert in React, Node.js, and cloud architecture. Proven track record of leading teams and delivering high-impact products.',
+        education: [
+            { degree: 'M.S. Computer Science', institution: 'Stanford University', location: 'Stanford, CA', startDate: '2014', endDate: '2016', percentage: '3.9 GPA', description: 'Focus on distributed systems and machine learning.' },
+            { degree: 'B.S. Computer Science', institution: 'UC Berkeley', location: 'Berkeley, CA', startDate: '2010', endDate: '2014', percentage: '3.8 GPA', description: 'Dean\'s List all semesters.' }
+        ],
+        experience: [
+            { jobTitle: 'Senior Software Engineer', company: 'TechCorp Inc.', location: 'San Francisco, CA', startDate: '2020', endDate: 'Present', responsibilities: 'Led a team of 8 engineers building a microservices platform serving 5M+ users. Reduced latency by 40%.' },
+            { jobTitle: 'Software Engineer', company: 'StartUp Labs', location: 'San Jose, CA', startDate: '2016', endDate: '2020', responsibilities: 'Built full-stack applications using React, Node.js, and PostgreSQL. Implemented CI/CD pipeline.' }
+        ],
+        skills: ['JavaScript', 'React', 'Node.js', 'Python', 'TypeScript', 'AWS', 'Docker', 'PostgreSQL', 'Git', 'REST APIs'],
+        projects: [
+            { title: 'E-Commerce Platform', technologies: 'React, Node.js, MongoDB', link: 'https://github.com/johndoe/ecommerce', description: 'Full-stack e-commerce platform with payment integration and real-time inventory tracking.' },
+            { title: 'Task Management App', technologies: 'Vue.js, Firebase', link: 'https://github.com/johndoe/taskapp', description: 'Collaborative task management tool with team workspaces and notifications.' }
+        ],
+        certifications: 'AWS Certified Solutions Architect, Google Cloud Professional Developer, Scrum Master Certified',
+        achievements: 'Employee of the Year 2022, Published 5 technical articles, Open-source contributor to React ecosystem',
+        languages: 'English (Native), Spanish (Fluent), French (Conversational)',
+        interests: 'Photography, Hiking, Open-source projects, Technology blogging',
+        customTitle: 'Volunteer Work',
+        customContent: 'Mentored junior developers at Code for Good (2021-2023). Organized local tech meetups with 200+ attendees.',
+        photo: null
+    };
+
+    // Reset visibility to default (all visible)
+    Object.keys(visibilityState).forEach(key => visibilityState[key] = true);
+    localStorage.setItem('resumeBuilderVisibility', JSON.stringify(visibilityState));
+    document.querySelectorAll('.section-toggle').forEach(cb => {
+        cb.checked = true;
+        const label = cb.closest('.toggle-label');
+        if (label) {
+            const span = label.querySelector('span');
+            if (span) span.textContent = 'Show';
+        }
+    });
+
+    saveData();
+    populateForm();
+    renderPreview();
+    alert('Sample resume loaded successfully!');
 });
 
 // ===== RENDER PREVIEW (UPDATED with layout support) =====
