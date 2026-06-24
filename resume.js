@@ -127,7 +127,7 @@ function populateForm() {
 }
 
 // ============================================================
-// RENDER ENTRIES
+// RENDER ENTRIES (Education / Other Qualifications)
 // ============================================================
 function renderEntries(containerId, entries, type) {
     const container = document.getElementById(containerId);
@@ -193,7 +193,7 @@ function renderEntries(containerId, entries, type) {
 }
 
 // ============================================================
-// ADD ENTRY
+// ADD ENTRY (Education / Other Qualifications)
 // ============================================================
 document.querySelectorAll('.add-btn').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -228,7 +228,7 @@ document.getElementById('photoUpload')?.addEventListener('change', function(e) {
 });
 
 // ============================================================
-// REAL-TIME FORM INPUTS
+// REAL-TIME FORM INPUTS (text/select/date)
 // ============================================================
 form.querySelectorAll('input:not(.entry-field):not([type="file"]), select, textarea').forEach(el => {
     if (el.id && el.id !== 'photoUpload' && el.id !== 'declaration') {
@@ -344,7 +344,7 @@ document.getElementById('clearFormBtn')?.addEventListener('click', () => {
 });
 
 // ============================================================
-// RESET RESUME
+// RESET RESUME (clear all data)
 // ============================================================
 document.getElementById('resetResumeBtn')?.addEventListener('click', () => {
     if (confirm('Reset everything? This will clear all data.')) {
@@ -504,7 +504,7 @@ function renderPreview() {
         ['Known Languages', d.knownLanguages || ''],
         ['Experience', d.experience || ''],
         ['Address', d.address || '']
-    ].filter(row => row[1]); // Only show rows with data
+    ].filter(row => row[1]);
 
     let personalInfoHtml = '';
     if (personalInfoRows.length) {
@@ -632,16 +632,26 @@ document.getElementById('downloadPdfBtn')?.addEventListener('click', function() 
 });
 
 // ============================================================
-// GENERATE RESUME BUTTON
+// GENERATE RESUME BUTTON – GLOBAL FUNCTION (for inline onclick)
 // ============================================================
-document.getElementById('generateResumeBtn')?.addEventListener('click', function() {
+function generateResume() {
+    console.log('Generate Resume clicked!');
+
+    // Check declaration
     const declaration = document.getElementById('declaration');
     if (declaration && !declaration.checked) {
         alert('Please accept the declaration before generating your resume.');
         return;
     }
-    document.getElementById('downloadPdfBtn').click();
-});
+
+    // Trigger the PDF download
+    const pdfBtn = document.getElementById('downloadPdfBtn');
+    if (pdfBtn) {
+        pdfBtn.click();
+    } else {
+        alert('PDF button not found. Please try again.');
+    }
+}
 
 // ============================================================
 // INIT
