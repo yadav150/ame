@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Choose a Template – Resume By Ame</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -14,7 +16,12 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="templates.html" class="active">Templates</a></li>
                 <li><a href="form.html">Build Resume</a></li>
-                <li><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+                <li id="userDisplay" style="display:none;">
+                    <span id="userName"></span>
+                    <button id="logoutBtn" class="btn-logout">Logout</button>
+                </li>
             </ul>
         </div>
     </nav>
@@ -23,54 +30,24 @@
         <h2>Select Your Fantasy Resume Template</h2>
         <p class="subtitle">Click on any design to start filling your details.</p>
         <div class="template-grid">
-            <!-- Template 1: Elven Archmage -->
             <a href="form.html?template=elf" class="template-card">
-                <div class="template-preview elf-preview">
-                    <div class="mini-resume">
-                        <div class="mini-header elf-header">🌿 Elven Archmage</div>
-                        <div class="mini-details">Elegant · Nature · Mystical</div>
-                    </div>
-                </div>
+                <div class="template-preview elf-preview"><div class="mini-resume"><div class="mini-header elf-header">🌿 Elven Archmage</div><div class="mini-details">Elegant · Nature · Mystical</div></div></div>
                 <div class="template-name">Elowen Starweave</div>
             </a>
-            <!-- Template 2: Dwarven Blacksmith -->
             <a href="form.html?template=dwarf" class="template-card">
-                <div class="template-preview dwarf-preview">
-                    <div class="mini-resume">
-                        <div class="mini-header dwarf-header">🔨 Dwarven Smith</div>
-                        <div class="mini-details">Rugged · Stone · Forge</div>
-                    </div>
-                </div>
+                <div class="template-preview dwarf-preview"><div class="mini-resume"><div class="mini-header dwarf-header">🔨 Dwarven Smith</div><div class="mini-details">Rugged · Stone · Forge</div></div></div>
                 <div class="template-name">Thorin Ironmantle</div>
             </a>
-            <!-- Template 3: Fae Trickster -->
             <a href="form.html?template=fae" class="template-card">
-                <div class="template-preview fae-preview">
-                    <div class="mini-resume">
-                        <div class="mini-header fae-header">🧚 Fae Trickster</div>
-                        <div class="mini-details">Whimsical · Playful · Enchant</div>
-                    </div>
-                </div>
+                <div class="template-preview fae-preview"><div class="mini-resume"><div class="mini-header fae-header">🧚 Fae Trickster</div><div class="mini-details">Whimsical · Playful · Enchant</div></div></div>
                 <div class="template-name">Pixie Duskwhisper</div>
             </a>
-            <!-- Template 4: Dragon Knight -->
             <a href="form.html?template=dragon" class="template-card">
-                <div class="template-preview dragon-preview">
-                    <div class="mini-resume">
-                        <div class="mini-header dragon-header">🐉 Dragon Knight</div>
-                        <div class="mini-details">Bold · Fiery · Battle</div>
-                    </div>
-                </div>
+                <div class="template-preview dragon-preview"><div class="mini-resume"><div class="mini-header dragon-header">🐉 Dragon Knight</div><div class="mini-details">Bold · Fiery · Battle</div></div></div>
                 <div class="template-name">Aldric Flamebane</div>
             </a>
-            <!-- Template 5: Necromancer -->
             <a href="form.html?template=necro" class="template-card">
-                <div class="template-preview necro-preview">
-                    <div class="mini-resume">
-                        <div class="mini-header necro-header">💀 Necromancer</div>
-                        <div class="mini-details">Dark · Scholarly · Gothic</div>
-                    </div>
-                </div>
+                <div class="template-preview necro-preview"><div class="mini-resume"><div class="mini-header necro-header">💀 Necromancer</div><div class="mini-details">Dark · Scholarly · Gothic</div></div></div>
                 <div class="template-name">Morvath Duskrend</div>
             </a>
         </div>
@@ -80,6 +57,38 @@
         <p>Made with ❤️ by Ame</p>
     </footer>
 
-    <script src="js/templates.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLX-DBrAZZgi7OGRW3-oeno0PJsZ9hzEg",
+            authDomain: "its-me-ame.firebaseapp.com",
+            projectId: "its-me-ame",
+            storageBucket: "its-me-ame.firebasestorage.app",
+            messagingSenderId: "832380884001",
+            appId: "1:832380884001:web:0c9239588ceb8d8995bf60",
+            measurementId: "G-L12EEJG7L9"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        const authLink = document.getElementById('authLink');
+        const userDisplay = document.getElementById('userDisplay');
+        const userNameSpan = document.getElementById('userName');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                authLink.style.display = 'none';
+                userDisplay.style.display = 'flex';
+                userNameSpan.textContent = user.displayName || user.email;
+            } else {
+                authLink.style.display = 'block';
+                userDisplay.style.display = 'none';
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => window.location.href = 'index.html');
+        });
+    </script>
 </body>
 </html>
