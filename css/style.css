@@ -501,3 +501,57 @@ footer {
         gap: 0.8rem;
     }
 }
+/* Google Button */
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: white;
+    color: #444;
+    border: 2px solid #ddd;
+    border-radius: 30px;
+    padding: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 1rem;
+    width: 100%;
+}
+.google-btn:hover {
+    background: #f1f1f1;
+    border-color: #bbb;
+}
+.google-icon {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #4285F4;
+}
+/* Divider */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.2rem 0;
+    color: #888;
+}
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+}
+.divider span {
+    padding: 0 10px;
+    font-size: 0.85rem;
+}
+/* Error message */
+.auth-error {
+    background: #ffe0e0;
+    color: #c0392b;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    text-align: center;
+}
