@@ -19,6 +19,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const userNameSpan = document.getElementById('userName');
     const logoutBtn = document.getElementById('logoutBtn');
 
+    let inactivityTimer;
+
+    function resetInactivityTimer() {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => {
+            auth.signOut().then(() => {
+                alert('Logged out due to inactivity.');
+                window.location.href = 'index.html';
+            });
+        }, 60000); // 1 minute
+    }
+
+    // Activity events
+    ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(event => {
+        document.addEventListener(event, resetInactivityTimer);
+    });
+    resetInactivityTimer();
+
     auth.onAuthStateChanged((user) => {
         if (user) {
             authLink.style.display = 'none';
@@ -28,6 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (emailField && !emailField.value) {
                 emailField.value = user.email;
             }
+            // Restore saved form data if any
+            restoreFormData();
         } else {
             authLink.style.display = 'block';
             userDisplay.style.display = 'none';
@@ -40,7 +60,117 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ---------- Step Navigation ----------
+    // ---------- Save / Restore Form Data ----------
+    function saveFormData() {
+        const formData = {
+            applicantName: document.getElementById('applicantName').value,
+            fatherName: document.getElementById('fatherName').value,
+            motherName: document.getElementById('motherName').value,
+            mobile: document.getElementById('mobile').value,
+            email: document.getElementById('email').value,
+            dob: document.getElementById('dob').value,
+            gender: document.getElementById('gender').value,
+            languages: document.getElementById('languages').value,
+            address: document.getElementById('address').value,
+            category: document.getElementById('category').value,
+            marital: document.getElementById('maritalStatus').value,
+            experience: document.getElementById('experience').value,
+            place: document.getElementById('place').value,
+            date: document.getElementById('dateAuto').value,
+            education: [],
+            otherQual: []
+        };
+        document.querySelectorAll('.education-entry').forEach(entry => {
+            formData.education.push({
+                exam: entry.querySelector('.examName')?.value,
+                board: entry.querySelector('.board')?.value,
+                year: entry.querySelector('.passYear')?.value,
+                percent: entry.querySelector('.percentage')?.value,
+                division: entry.querySelector('.division')?.value
+            });
+        });
+        document.querySelectorAll('.other-entry').forEach(entry => {
+            formData.otherQual.push({
+                qual: entry.querySelector('.qualName')?.value,
+                inst: entry.querySelector('.institute')?.value,
+                year: entry.querySelector('.qualYear')?.value,
+                score: entry.querySelector('.score')?.value,
+                duration: entry.querySelector('.duration')?.value
+            });
+        });
+        localStorage.setItem('savedFormData', JSON.stringify(formData));
+    }
+
+    function restoreFormData() {
+        const saved = localStorage.getItem('savedFormData');
+        if (!saved) return;
+        const data = JSON.parse(saved);
+        document.getElementById('applicantName').value = data.applicantName || '';
+        document.getElementById('fatherName').value = data.fatherName || '';
+        document.getElementById('motherName').value = data.motherName || '';
+        document.getElementById('mobile').value = data.mobile || '';
+        document.getElementById('email').value = data.email || '';
+        document.getElementById('dob').value = data.dob || '';
+        document.getElementById('gender').value = data.gender || '';
+        document.getElementById('languages').value = data.languages || '';
+        document.getElementById('address').value = data.address || '';
+        document.getElementById('category').value = data.category || '';
+        document.getElementById('maritalStatus').value = data.marital || '';
+        document.getElementById('experience').value = data.experience || '';
+        document.getElementById('place').value = data.place || 'Guwahati';
+        document.getElementById('dateAuto').value = data.date || '';
+
+        // Restore education entries
+        const eduContainer = document.getElementById('educationContainer');
+        eduContainer.innerHTML = ''; // clear existing
+        data.education.forEach(edu => {
+            const newEntry = document.createElement('div');
+            newEntry.className = 'education-entry';
+            newEntry.innerHTML = `
+                <div class="form-row">
+                    <div class="form-group"><label>Exam Name <span class="req">*</span></label><input type="text" class="examName" required value="${edu.exam || ''}"></div>
+                    <div class="form-group"><label>Board/University <span class="req">*</span></label><input type="text" class="board" required value="${edu.board || ''}"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Passing Year <span class="req">*</span></label><input type="text" class="passYear" required value="${edu.year || ''}"></div>
+                    <div class="form-group"><label>Percentage <span class="req">*</span></label><input type="text" class="percentage" required value="${edu.percent || ''}"></div>
+                </div>
+                <div class="form-group"><label>Division <span class="req">*</span></label>
+                    <select class="division" required>
+                        <option value="">-- Division --</option>
+                        <option value="First" ${edu.division === 'First' ? 'selected' : ''}>First</option>
+                        <option value="Second" ${edu.division === 'Second' ? 'selected' : ''}>Second</option>
+                        <option value="Third" ${edu.division === 'Third' ? 'selected' : ''}>Third</option>
+                    </select>
+                </div>
+            `;
+            eduContainer.appendChild(newEntry);
+        });
+
+        // Restore other qualifications
+        const qualContainer = document.getElementById('otherQualContainer');
+        qualContainer.innerHTML = '';
+        data.otherQual.forEach(q => {
+            const newEntry = document.createElement('div');
+            newEntry.className = 'other-entry';
+            newEntry.innerHTML = `
+                <div class="form-row">
+                    <div class="form-group"><label>Qualification Name</label><input type="text" class="qualName" value="${q.qual || ''}"></div>
+                    <div class="form-group"><label>Institute/Organization</label><input type="text" class="institute" value="${q.inst || ''}"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Passing Year</label><input type="text" class="qualYear" value="${q.year || ''}"></div>
+                    <div class="form-group"><label>Score/Grade</label><input type="text" class="score" value="${q.score || ''}"></div>
+                </div>
+                <div class="form-group"><label>Duration</label><input type="text" class="duration" value="${q.duration || ''}"></div>
+            `;
+            qualContainer.appendChild(newEntry);
+        });
+
+        localStorage.removeItem('savedFormData');
+    }
+
+    // ---------- Step Navigation (same as before) ----------
     const steps = document.querySelectorAll('.form-step');
     const stepIndicators = document.querySelectorAll('.step');
     let currentStep = 1;
@@ -62,9 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function validateStep(stepNumber) {
-        // Step 3 (Other Qualifications) is optional – always pass
-        if (stepNumber === 3) return true;
-
+        if (stepNumber === 3) return true; // Optional
         const currentStepEl = document.getElementById(`step${stepNumber}`);
         const requiredFields = currentStepEl.querySelectorAll('[required]');
         let isValid = true;
@@ -159,10 +287,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---------- Generate PDF ----------
     document.getElementById('generateBtn').addEventListener('click', async () => {
         if (!validateStep(4)) return;
-
         const user = auth.currentUser;
         if (!user) {
-            alert('Please log in first to download your resume.');
+            // Save form data to localStorage before redirect
+            saveFormData();
+            alert('Please log in to download your resume. Your data will be restored after login.');
             window.location.href = 'login.html';
             return;
         }
@@ -188,39 +317,42 @@ document.addEventListener('DOMContentLoaded', () => {
             photo: null
         };
 
-        // Education entries
         document.querySelectorAll('.education-entry').forEach(entry => {
             const exam = entry.querySelector('.examName')?.value;
             const board = entry.querySelector('.board')?.value;
-            const year = entry.querySelector('.passYear')?.value;
-            const percent = entry.querySelector('.percentage')?.value;
-            const division = entry.querySelector('.division')?.value;
-            if (exam && board) data.education.push({ exam, board, year, percent, division });
+            if (exam && board) {
+                data.education.push({
+                    exam,
+                    board,
+                    year: entry.querySelector('.passYear')?.value,
+                    percent: entry.querySelector('.percentage')?.value,
+                    division: entry.querySelector('.division')?.value
+                });
+            }
         });
 
-        // Other qualifications
         document.querySelectorAll('.other-entry').forEach(entry => {
             const qual = entry.querySelector('.qualName')?.value;
             const inst = entry.querySelector('.institute')?.value;
-            const year = entry.querySelector('.qualYear')?.value;
-            const score = entry.querySelector('.score')?.value;
-            const duration = entry.querySelector('.duration')?.value;
-            if (qual && inst) data.otherQual.push({ qual, inst, year, score, duration });
+            if (qual && inst) {
+                data.otherQual.push({
+                    qual,
+                    inst,
+                    year: entry.querySelector('.qualYear')?.value,
+                    score: entry.querySelector('.score')?.value,
+                    duration: entry.querySelector('.duration')?.value
+                });
+            }
         });
 
-        // Photo
         const photoFile = document.getElementById('photoUpload').files[0];
         if (photoFile) {
             data.photo = await readFileAsDataURL(photoFile);
         }
 
-        // Get selected template
         const template = localStorage.getItem('selectedTemplate') || 'elf';
-
-        // Build HTML
         const html = buildResumeHTML(data, template);
 
-        // Convert to PDF
         const element = document.createElement('div');
         element.innerHTML = html;
         element.style.position = 'absolute';
@@ -249,6 +381,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             pdf.save(`${data.name.replace(/\s+/g, '_')}_Resume.pdf`);
             document.getElementById('successMessage').style.display = 'flex';
+            // Save to Firestore
+            saveResumeToFirestore(user.uid, data, template);
         }).catch(err => {
             console.error('PDF generation error:', err);
             alert('Something went wrong while generating PDF.');
@@ -268,6 +402,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     showStep(1);
 });
+
+// ---------- Firestore Save ----------
+function saveResumeToFirestore(uid, data, template) {
+    const db = firebase.firestore();
+    db.collection('resumes').add({
+        uid,
+        name: data.name,
+        template,
+        data: JSON.parse(JSON.stringify(data)), // Remove non-serializable
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        console.log('Resume saved to Firestore');
+    }).catch(err => {
+        console.error('Firestore save error:', err);
+    });
+}
 
 // ---------- Helper Functions ----------
 function readFileAsDataURL(file) {
@@ -303,11 +453,35 @@ function buildResumeHTML(data, template) {
         }
     };
     const t = themes[template] || themes.elf;
-    const dark = t.dark;
     const textColor = t.text;
     const bgColor = t.bg;
     const borderColor = t.border;
     const accentColor = t.accent;
+
+    // Section heading style: background = accent (matching border), text = white (or contrasting)
+    const headingBg = accentColor;
+    const headingText = '#ffffff'; // white for contrast
+
+    const sectionHeadingStyle = `
+        background: ${headingBg};
+        color: ${headingText};
+        width: 100%;
+        padding: 5px 8px;
+        margin: 10px 0;
+        border-radius: 5px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    `;
+
+    // Table border style
+    const tableStyle = `
+        border: 1px solid #555;
+        border-radius: 5px;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden;
+    `;
 
     let eduRows = data.education.map(e => `
         <tr><td>${e.exam}</td><td>${e.board}</td><td>${e.year}</td><td>${e.percent}</td><td>${e.division}</td></tr>
@@ -321,22 +495,25 @@ function buildResumeHTML(data, template) {
 <html><head><meta charset="UTF-8"><style>
     body { font-family: ${t.font}; background: ${bgColor}; color: ${textColor}; margin: 0; padding: 0; }
     .resume { width: 780px; margin: 0 auto; padding: 30px; border: 3px solid ${borderColor}; border-radius: 4px; }
-    .header { text-align: center; border-bottom: 2px solid ${accentColor}; padding-bottom: 15px; margin-bottom: 20px; }
-    .header h1 { margin: 0; font-size: 2rem; letter-spacing: 3px; color: ${accentColor}; }
+    .resume-header { text-align: center; margin-bottom: 15px; }
+    .resume-header h1 { margin: 0; font-size: 2rem; color: ${accentColor}; text-transform: uppercase; letter-spacing: 3px; }
+    .applicant-name { font-size: 1.5rem; font-weight: bold; color: ${textColor}; text-align: left; margin-bottom: 15px; }
     .photo { width: 100px; height: 120px; border: 2px solid ${borderColor}; float: right; margin-left: 20px; }
     .photo img { width: 100%; height: 100%; object-fit: cover; }
-    .section-title { color: ${accentColor}; border-bottom: 1px solid ${borderColor}; padding-bottom: 5px; margin-top: 15px; text-transform: uppercase; letter-spacing: 2px; font-size: 0.95rem; }
-    table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-    th, td { border: 1px solid ${borderColor}; padding: 6px 8px; text-align: left; font-size: 0.85rem; }
+    .section-heading { ${sectionHeadingStyle} }
+    table { width: 100%; ${tableStyle} }
+    th, td { border: 1px solid #555; padding: 6px 8px; text-align: left; font-size: 0.85rem; }
     th { background: ${t.headerBg}; }
     .info-table td:first-child { font-weight: bold; width: 30%; }
     .declaration { margin-top: 20px; font-size: 0.9rem; }
     .signature { margin-top: 30px; text-align: right; }
 </style></head><body>
 <div class="resume">
-    <div class="header"><h1>${data.name || 'Your Name'}</h1></div>
+    <div class="resume-header"><h1>Resume</h1></div>
+    <div class="applicant-name">${data.name || 'Your Name'}</div>
     <div style="overflow:hidden;">
         ${data.photo ? `<div class="photo"><img src="${data.photo}" alt="photo"/></div>` : ''}
+        <div class="section-heading">Personal Details</div>
         <table class="info-table">
             <tr><td>Father's Name</td><td>${data.father}</td></tr>
             <tr><td>Mother's Name</td><td>${data.mother}</td></tr>
@@ -351,9 +528,9 @@ function buildResumeHTML(data, template) {
             <tr><td>Experience</td><td>${data.experience}</td></tr>
         </table>
     </div>
-    <div class="section-title">Educational Qualifications</div>
+    <div class="section-heading">Educational Qualifications</div>
     <table><tr><th>Exam</th><th>Board/University</th><th>Year</th><th>Percentage</th><th>Division</th></tr>${eduRows}</table>
-    <div class="section-title">Other Qualifications</div>
+    <div class="section-heading">Other Qualifications</div>
     <table><tr><th>Qualification</th><th>Institute</th><th>Year</th><th>Score</th><th>Duration</th></tr>${qualRows}</table>
     <div class="declaration"><p>I declare that all information provided is true and correct.</p></div>
     <div class="signature">
