@@ -6,9 +6,8 @@
     <title>Sign Up – Resume By Ame</title>
     <link rel="stylesheet" href="css/style.css">
     <!-- Firebase SDK (compat) -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -18,7 +17,12 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="templates.html">Templates</a></li>
                 <li><a href="form.html">Build Resume</a></li>
-                <li><a href="login.html" class="btn-login active">Login / Sign Up</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li id="authLink"><a href="login.html" class="btn-login active">Login / Sign Up</a></li>
+                <li id="userDisplay" style="display:none;">
+                    <span id="userName"></span>
+                    <button id="logoutBtn" class="btn-logout">Logout</button>
+                </li>
             </ul>
         </div>
     </nav>
@@ -76,6 +80,27 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
+        // Auth-aware navbar
+        const authLink = document.getElementById('authLink');
+        const userDisplay = document.getElementById('userDisplay');
+        const userNameSpan = document.getElementById('userName');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                authLink.style.display = 'none';
+                userDisplay.style.display = 'flex';
+                userNameSpan.textContent = user.displayName || user.email;
+            } else {
+                authLink.style.display = 'block';
+                userDisplay.style.display = 'none';
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => window.location.href = 'index.html');
+        });
+
         // Email/Password Sign Up
         document.getElementById('signupForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -93,11 +118,10 @@
 
             auth.createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
-                    // Update profile with name
                     return userCredential.user.updateProfile({
                         displayName: name
                     }).then(() => {
-                        window.location.href = 'form.html';
+                        window.location.href = 'dashboard.html';  // Redirect to dashboard
                     });
                 })
                 .catch((error) => {
@@ -114,7 +138,7 @@
 
             auth.signInWithPopup(provider)
                 .then((result) => {
-                    window.location.href = 'form.html';
+                    window.location.href = 'dashboard.html';  // Redirect to dashboard
                 })
                 .catch((error) => {
                     errorDiv.textContent = error.message;
