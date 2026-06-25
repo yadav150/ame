@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard – Resume By Ame</title>
+    <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/dashboard.css">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -14,7 +14,8 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
-            <ul class="nav-links">
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="templates.html">Templates</a></li>
                 <li><a href="templates.html">Build Resume</a></li>
@@ -25,7 +26,6 @@
                     <button id="logoutBtn" class="btn-logout">Logout</button>
                 </li>
             </ul>
-            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
         </div>
     </nav>
 
@@ -82,11 +82,10 @@
         const resumeCards = document.getElementById('resumeCards');
         const noResumesMsg = document.getElementById('noResumesMsg');
         const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navLinks = document.getElementById('navLinks');
 
         // Hamburger menu
-        hamburgerBtn.addEventListener('click', () => {
-            document.querySelector('.nav-links').classList.toggle('show');
-        });
+        hamburgerBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
 
         function updateUI(user) {
             if (user) {
@@ -142,7 +141,7 @@
                             <div class="resume-card">
                                 <div class="card-top">
                                     <h4>${resume.name || 'Unnamed'}</h4>
-                                    <span class="template-badge">${resume.template}</span>
+                                    <span class="template-badge">Formal CV</span>
                                 </div>
                                 <p class="card-date">Created: ${date}</p>
                                 <div class="card-actions">
