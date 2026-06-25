@@ -16,9 +16,13 @@
                 <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="templates.html">Templates</a></li>
                 <li><a href="form.html">Build Resume</a></li>
-                <li><a href="dashboard.html">Dashboard</a></li>
+                <!-- Dashboard link only when logged in -->
+                <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
                 <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
-                <li id="userDisplay" style="display:none;"><span id="userName"></span> <button id="logoutBtn" class="btn-logout">Logout</button></li>
+                <li id="userDisplay" style="display:none;">
+                    <span id="userName"></span>
+                    <button id="logoutBtn" class="btn-logout">Logout</button>
+                </li>
             </ul>
         </div>
     </nav>
@@ -40,49 +44,24 @@
 
         <!-- Features -->
         <section class="features">
-            <div class="feature-card fade-up">
-                <div class="feature-icon">📝</div>
-                <h3>Step-by-Step Form</h3>
-                <p>Fill each section at your own pace. Required fields are validated before you proceed.</p>
-            </div>
-            <div class="feature-card fade-up">
-                <div class="feature-icon">🎨</div>
-                <h3>5 Unique Themes</h3>
-                <p>Elf, Dwarf, Fae, Dragon, Necromancer – each with a distinct visual style and layout.</p>
-            </div>
-            <div class="feature-card fade-up">
-                <div class="feature-icon">⬇️</div>
-                <h3>Download Ready</h3>
-                <p>Generate a beautiful PDF bio‑data. Login to download and keep your resumes safe.</p>
-            </div>
+            <div class="feature-card fade-up"><div class="feature-icon">📝</div><h3>Step-by-Step Form</h3><p>Fill each section at your own pace. Required fields are validated before you proceed.</p></div>
+            <div class="feature-card fade-up"><div class="feature-icon">🎨</div><h3>5 Unique Themes</h3><p>Elf, Dwarf, Fae, Dragon, Necromancer – each with a distinct visual style and layout.</p></div>
+            <div class="feature-card fade-up"><div class="feature-icon">⬇️</div><h3>Download Ready</h3><p>Generate a beautiful PDF bio‑data. Login to download and keep your resumes safe.</p></div>
         </section>
 
         <!-- Objectives -->
         <h2 class="section-title fade-in">Our Objective</h2>
         <section class="objectives-section">
-            <div class="objective-card fade-up">
-                <p>To provide a hassle‑free, online bio‑data maker that lets anyone create a professional, fantasy‑themed resume in minutes.</p>
-            </div>
-            <div class="objective-card fade-up">
-                <p>To offer unique, visually stunning templates that stand out in job applications and personal projects.</p>
-            </div>
+            <div class="objective-card fade-up"><p>To provide a hassle‑free, online bio‑data maker that lets anyone create a professional, fantasy‑themed resume in minutes.</p></div>
+            <div class="objective-card fade-up"><p>To offer unique, visually stunning templates that stand out in job applications and personal projects.</p></div>
         </section>
 
         <!-- FAQ -->
         <h2 class="section-title fade-in">Frequently Asked Questions</h2>
         <section class="faq-section">
-            <div class="faq-card fade-up">
-                <h3>Is the resume builder free?</h3>
-                <p>Yes, completely free! You can create and download resumes without any cost.</p>
-            </div>
-            <div class="faq-card fade-up">
-                <h3>Do I need to log in?</h3>
-                <p>You can fill the form without logging in, but login is required to download the PDF and save your resumes.</p>
-            </div>
-            <div class="faq-card fade-up">
-                <h3>Can I use my own photo?</h3>
-                <p>Yes, you can upload a passport‑size photo (max 100KB) to include in your resume.</p>
-            </div>
+            <div class="faq-card fade-up"><h3>Is the resume builder free?</h3><p>Yes, completely free! You can create and download resumes without any cost.</p></div>
+            <div class="faq-card fade-up"><h3>Do I need to log in?</h3><p>You can fill the form without logging in, but login is required to download the PDF and save your resumes.</p></div>
+            <div class="faq-card fade-up"><h3>Can I use my own photo?</h3><p>Yes, you can upload a passport‑size photo (max 100KB) to include in your resume.</p></div>
         </section>
     </main>
 
@@ -107,15 +86,18 @@
         const userDisplay = document.getElementById('userDisplay');
         const userNameSpan = document.getElementById('userName');
         const logoutBtn = document.getElementById('logoutBtn');
+        const dashboardLink = document.getElementById('dashboardLink');
 
         auth.onAuthStateChanged(user => {
             if (user) {
                 authLink.style.display = 'none';
                 userDisplay.style.display = 'flex';
                 userNameSpan.textContent = user.displayName || user.email;
+                dashboardLink.style.display = 'inline-block';  // show Dashboard
             } else {
                 authLink.style.display = 'block';
                 userDisplay.style.display = 'none';
+                dashboardLink.style.display = 'none';
             }
         });
         logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
