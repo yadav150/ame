@@ -379,3 +379,9 @@ footer { text-align: center; padding: 1.5rem; background: var(--surface); border
     border-bottom: 3px solid #b39dd8;
 }
 .celestial-header { color: #7e57c2; }
+
+.modern-preview {
+    background: #f4f6f9;
+    border-bottom: 3px solid #2c3e50;
+}
+.modern-header { color: #2c3e50; }
