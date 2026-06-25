@@ -385,7 +385,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 necro: '#b8a9d4',
                 angel: '#f0d78c',
                 mermaid: '#7ec8c8',
-                celestial: '#b39dd8'
+                celestial: '#b39dd8',
+                modern: '#2c3e50'
             };
             const borderColor = themeColors[template] || '#c9a84c';
 
@@ -407,11 +408,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             pdf.save(`${data.name.replace(/\s+/g, '_')}_Resume.pdf`);
             document.getElementById('successMessage').style.display = 'flex';
-            // Update success message text
             document.querySelector('#successMessage .success-card h3').textContent = '✅ Resume Downloaded & Saved!';
             document.querySelector('#successMessage .success-card p').textContent = 'Your resume has been saved to your dashboard.';
-
-            // Save to Firestore
             saveResumeToFirestore(user.uid, data, template);
         }).catch(err => {
             console.error('PDF generation error:', err);
@@ -442,9 +440,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     const template = urlParams.get('template');
-    if (template) {
-        localStorage.setItem('selectedTemplate', template);
+    if (!template) {
+        window.location.href = 'templates.html';
+        return;
     }
+    localStorage.setItem('selectedTemplate', template);
 
     showStep(1);
 });
@@ -460,13 +460,18 @@ function readFileAsDataURL(file) {
 }
 
 function buildResumeHTML(data, template) {
+    // If the modern template is selected, generate the two-column timeline layout
+    if (template === 'modern') {
+        return buildModernResume(data);
+    }
+
+    // Otherwise use the existing fantasy templates
     const themes = {
         elf: { bg: '#f5f1e3', border: '#c9a84c', text: '#2d5a27', accent: '#c9a84c', headerBg: '#fdfcf5', font: "'Georgia', serif" },
         dwarf: { bg: '#fdf5e6', border: '#d4782f', text: '#4a2c17', accent: '#d4782f', headerBg: '#fdf0e0', font: "'Georgia', serif" },
         fae: { bg: '#fef9ff', border: '#e891b9', text: '#8b5cf6', accent: '#e891b9', headerBg: '#fdf0fa', font: "'Georgia', serif" },
         dragon: { bg: '#1c0f0f', border: '#d4a017', text: '#e0d5c0', accent: '#d4a017', headerBg: '#2a1515', font: "'Georgia', serif", dark: true },
         necro: { bg: '#111016', border: '#b8a9d4', text: '#d5cde8', accent: '#b8a9d4', headerBg: '#1a1822', font: "'Georgia', serif", dark: true },
-        // New soft templates
         angel: { bg: '#fdfcff', border: '#f0d78c', text: '#4a3b2f', accent: '#f0d78c', headerBg: '#fff9ef', font: "'Georgia', serif" },
         mermaid: { bg: '#f0faff', border: '#7ec8c8', text: '#2e4a4a', accent: '#7ec8c8', headerBg: '#e8f7f7', font: "'Georgia', serif" },
         celestial: { bg: '#f9f4ff', border: '#b39dd8', text: '#3d2b4f', accent: '#b39dd8', headerBg: '#f3ecff', font: "'Georgia', serif" }
@@ -476,7 +481,6 @@ function buildResumeHTML(data, template) {
     const textColor = t.text;
     const borderColor = t.border;
 
-    // Section heading style - background matches border/accent, Arial font, padding 8px 10px
     const sectionHeadingStyle = `
         background: ${accentColor};
         color: #ffffff;
@@ -493,7 +497,6 @@ function buildResumeHTML(data, template) {
         line-height: 1.4;
     `;
 
-    // Table style: 1px solid dark grey border, 5px border-radius
     const tableStyle = `
         border: 1px solid #555;
         border-radius: 5px;
@@ -503,7 +506,6 @@ function buildResumeHTML(data, template) {
         width: 100%;
     `;
 
-    // Photo style: slightly larger, 5px border-radius, border color matches template
     const photoStyle = `
         width: 110px;
         height: 130px;
@@ -556,13 +558,8 @@ function buildResumeHTML(data, template) {
             background: ${t.bg};
             page-break-after: always;
         }
-        .resume-page:last-child {
-            page-break-after: auto;
-        }
-        .resume-header {
-            text-align: center;
-            margin-bottom: 15px;
-        }
+        .resume-page:last-child { page-break-after: auto; }
+        .resume-header { text-align: center; margin-bottom: 15px; }
         .resume-header h1 {
             margin: 0;
             font-size: 2rem;
@@ -579,19 +576,10 @@ function buildResumeHTML(data, template) {
             margin-bottom: 15px;
             font-family: ${t.font};
         }
-        .photo-container {
-            float: right;
-            margin-left: 20px;
-        }
-        .photo-container img {
-            ${photoStyle}
-        }
-        .section-heading {
-            ${sectionHeadingStyle}
-        }
-        table {
-            ${tableStyle}
-        }
+        .photo-container { float: right; margin-left: 20px; }
+        .photo-container img { ${photoStyle} }
+        .section-heading { ${sectionHeadingStyle} }
+        table { ${tableStyle} }
         th, td {
             border: 1px solid #555;
             padding: 6px 8px;
@@ -599,33 +587,16 @@ function buildResumeHTML(data, template) {
             font-size: 0.85rem;
             font-family: ${t.font};
         }
-        th {
-            background: ${t.headerBg};
-        }
-        .info-table td:first-child {
-            font-weight: bold;
-            width: 30%;
-        }
-        .declaration {
-            margin-top: 20px;
-            font-size: 0.9rem;
-        }
-        .signature {
-            margin-top: 30px;
-            text-align: right;
-        }
-        .clearfix::after {
-            content: "";
-            display: table;
-            clear: both;
-        }
+        th { background: ${t.headerBg}; }
+        .info-table td:first-child { font-weight: bold; width: 30%; }
+        .declaration { margin-top: 20px; font-size: 0.9rem; }
+        .signature { margin-top: 30px; text-align: right; }
+        .clearfix::after { content: ""; display: table; clear: both; }
     </style>
 </head>
 <body>
     <div class="resume-page">
-        <div class="resume-header">
-            <h1>Resume</h1>
-        </div>
+        <div class="resume-header"><h1>Resume</h1></div>
         <div class="applicant-name">${data.name || 'Your Name'}</div>
         <div class="clearfix">
             ${data.photo ? `<div class="photo-container"><img src="${data.photo}" alt="photo"/></div>` : ''}
@@ -654,13 +625,283 @@ function buildResumeHTML(data, template) {
             <tr><th>Qualification</th><th>Institute</th><th>Year</th><th>Score</th><th>Duration</th></tr>
             ${qualRows}
         </table>
-        <div class="declaration">
-            <p>I declare that all information provided is true and correct.</p>
-        </div>
+        <div class="declaration"><p>I declare that all information provided is true and correct.</p></div>
         <div class="signature">
             <p>Place: ${data.place || ''}</p>
             <p>Date: ${data.date || ''}</p>
             <p>Signature: ${data.name || ''}</p>
+        </div>
+    </div>
+</body>
+</html>`;
+}
+
+// New modern two-column timeline layout
+function buildModernResume(data) {
+    const sidebarBg = '#f8f9fa';
+    const mainBg = '#ffffff';
+    const darkBar = '#2c3e50';
+    const accent = '#2c3e50';
+    const textDark = '#2c3e50';
+    const textLight = '#555';
+    const timelineColor = '#bdc3c7';
+
+    // Build education timeline items
+    let eduTimeline = '';
+    data.education.forEach(e => {
+        eduTimeline += `
+            <div class="tl-item">
+                <div class="tl-marker"></div>
+                <div class="tl-content">
+                    <span class="tl-year">${e.year || 'N/A'}</span>
+                    <h4>${e.exam || ''}</h4>
+                    <p>${e.board || ''} — ${e.percent || ''}%, ${e.division || ''}</p>
+                </div>
+            </div>`;
+    });
+
+    let qualTimeline = '';
+    data.otherQual.forEach(q => {
+        qualTimeline += `
+            <div class="tl-item">
+                <div class="tl-marker"></div>
+                <div class="tl-content">
+                    <span class="tl-year">${q.year || 'N/A'}</span>
+                    <h4>${q.qual || ''}</h4>
+                    <p>${q.inst || ''} — ${q.score || ''}, ${q.duration || ''}</p>
+                </div>
+            </div>`;
+    });
+
+    // Languages as tags
+    let langs = data.languages ? data.languages.split(',').map(l => `<span class="skill-tag">${l.trim()}</span>`).join('') : '';
+
+    return `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: white;
+            color: ${textDark};
+            margin: 0;
+            padding: 0;
+        }
+        .resume-page {
+            width: 780px;
+            margin: 0 auto;
+            display: flex;
+            border: 1px solid #ddd;
+            background: white;
+            page-break-after: always;
+        }
+        .resume-page:last-child { page-break-after: auto; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 40%;
+            background: ${sidebarBg};
+            padding: 25px 18px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid ${darkBar};
+            margin-bottom: 15px;
+        }
+        .sidebar h2 {
+            font-size: 1.8rem;
+            color: ${darkBar};
+            margin-bottom: 5px;
+            font-family: 'Georgia', serif;
+        }
+        .sidebar .job-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: ${textLight};
+            margin-bottom: 20px;
+        }
+        .contact-info {
+            text-align: left;
+            margin-bottom: 25px;
+            font-size: 0.85rem;
+        }
+        .contact-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .contact-icon {
+            width: 20px;
+            margin-right: 8px;
+            font-weight: bold;
+            color: ${accent};
+        }
+
+        .sidebar-section {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .sidebar-bar {
+            background: ${darkBar};
+            color: white;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 3px;
+            margin-bottom: 10px;
+        }
+        .skill-tag {
+            display: inline-block;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 3px 10px;
+            margin: 4px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: ${textDark};
+        }
+
+        /* Main Content */
+        .main {
+            width: 60%;
+            background: ${mainBg};
+            padding: 25px 25px;
+        }
+        .main-bar {
+            background: ${darkBar};
+            color: white;
+            padding: 7px 14px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 3px;
+            margin-bottom: 15px;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 15px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 5px;
+            bottom: 0;
+            width: 2px;
+            background: ${timelineColor};
+        }
+        .tl-item {
+            position: relative;
+            margin-bottom: 18px;
+        }
+        .tl-marker {
+            position: absolute;
+            left: -30px;
+            top: 4px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: ${darkBar};
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px ${darkBar};
+        }
+        .tl-year {
+            font-size: 0.75rem;
+            color: ${textLight};
+            font-weight: bold;
+        }
+        .tl-content h4 {
+            font-size: 0.95rem;
+            margin: 3px 0 2px;
+            color: ${textDark};
+        }
+        .tl-content p {
+            font-size: 0.8rem;
+            color: ${textLight};
+            line-height: 1.4;
+        }
+
+        .declaration {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: ${textLight};
+        }
+        .signature {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-page">
+        <div class="sidebar">
+            ${data.photo ? `<img src="${data.photo}" class="profile-photo" alt="photo"/>` : '<div class="profile-photo" style="background:#ccc;"></div>'}
+            <h2>${data.name || 'Full Name'}</h2>
+            <div class="job-title">${data.experience || 'Professional Title'}</div>
+
+            <div class="contact-info">
+                <div class="contact-row"><span class="contact-icon">📞</span> ${data.mobile || ''}</div>
+                <div class="contact-row"><span class="contact-icon">✉️</span> ${data.email || ''}</div>
+                <div class="contact-row"><span class="contact-icon">📍</span> ${data.address || ''}</div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-bar">Skills</div>
+                <div>${langs || '<span class="skill-tag">N/A</span>'}</div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-bar">Languages Known</div>
+                <div>${langs || '<span class="skill-tag">N/A</span>'}</div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-bar">Personal Info</div>
+                <p style="font-size:0.8rem;">DOB: ${data.dob || ''}</p>
+                <p style="font-size:0.8rem;">Gender: ${data.gender || ''}</p>
+                <p style="font-size:0.8rem;">Category: ${data.category || ''}</p>
+                <p style="font-size:0.8rem;">Marital: ${data.marital || ''}</p>
+            </div>
+        </div>
+
+        <div class="main">
+            ${data.education.length > 0 ? `
+            <div>
+                <div class="main-bar">Education</div>
+                <div class="timeline">${eduTimeline}</div>
+            </div>` : ''}
+
+            ${data.otherQual.length > 0 ? `
+            <div>
+                <div class="main-bar">Other Qualifications</div>
+                <div class="timeline">${qualTimeline}</div>
+            </div>` : ''}
+
+            <div class="declaration">
+                <p>I declare that the above information is true and correct.</p>
+            </div>
+            <div class="signature">
+                <p>Place: ${data.place || ''}</p>
+                <p>Date: ${data.date || ''}</p>
+                <p>${data.name || ''}</p>
+            </div>
         </div>
     </div>
 </body>
