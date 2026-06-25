@@ -1,6 +1,5 @@
 // form.js
 document.addEventListener('DOMContentLoaded', () => {
-    // ---------- Firebase Init ----------
     const firebaseConfig = {
         apiKey: "AIzaSyBLX-DBrAZZgi7OGRW3-oeno0PJsZ9hzEg",
         authDomain: "its-me-ame.firebaseapp.com",
@@ -13,13 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // ---------- Auth State & Navbar ----------
+    // Auth & Navbar
     const authLink = document.getElementById('authLink');
     const userDisplay = document.getElementById('userDisplay');
     const userNameSpan = document.getElementById('userName');
     const logoutBtn = document.getElementById('logoutBtn');
     const dashboardLink = document.getElementById('dashboardLink');
-
     let inactivityTimer;
     function resetInactivityTimer() {
         clearTimeout(inactivityTimer);
@@ -27,19 +25,17 @@ document.addEventListener('DOMContentLoaded', () => {
             auth.signOut().then(() => window.location.href = 'index.html');
         }, 60000);
     }
-    ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(event => {
-        document.addEventListener(event, resetInactivityTimer);
-    });
+    ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(e => document.addEventListener(e, resetInactivityTimer));
     resetInactivityTimer();
 
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(user => {
         if (user) {
             authLink.style.display = 'none';
             userDisplay.style.display = 'flex';
             userNameSpan.textContent = user.displayName || user.email;
             if (dashboardLink) dashboardLink.style.display = 'inline-block';
             const emailField = document.getElementById('email');
-            if (emailField && !emailField.value) emailField.value = user.email;
+            if (emailField && !emailField.value) emailField.value = user.email || '';
             restoreFormData();
         } else {
             authLink.style.display = 'block';
@@ -47,154 +43,158 @@ document.addEventListener('DOMContentLoaded', () => {
             if (dashboardLink) dashboardLink.style.display = 'none';
         }
     });
-
     logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
-    const hamburgerBtn = document.getElementById('hamburgerBtn');
-    if (hamburgerBtn) hamburgerBtn.addEventListener('click', () => document.getElementById('navLinks').classList.toggle('show'));
+    document.getElementById('hamburgerBtn').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('show'));
 
-    // ---------- MULTI-SELECT SKILLS (max 5) ----------
-    const skillsDisplay = document.getElementById('skillsDisplay');
-    const skillsDropdown = document.getElementById('skillsDropdown');
-    const skillsCheckboxList = document.getElementById('skillsCheckboxList');
-    const skillsHidden = document.getElementById('skillsHidden');
-    const skillSearch = document.getElementById('skillSearch');
-    const skillCount = document.getElementById('skillCount');
-    const MAX_SKILLS = 5;
-    let selectedSkills = [];
-
-    const predefinedSkills = [
-        'Web Development', 'Graphic Design', 'Project Management', 'Digital Marketing',
-        'Content Writing', 'Data Analysis', 'Public Speaking', 'Team Leadership',
-        'Microsoft Office', 'Communication', 'Problem Solving', 'Time Management',
-        'Customer Service', 'Social Media', 'SEO', 'Programming', 'Database Management',
-        'Financial Analysis', 'Event Planning', 'Research', 'Teaching', 'Languages',
-        'Java', 'Python', 'JavaScript', 'HTML/CSS', 'React', 'Node.js', 'SQL',
-        'Cloud Computing', 'Machine Learning', 'UI/UX Design', 'Video Editing'
-    ];
-
-    function renderSkillsDropdown(filter = '') {
-        skillsCheckboxList.innerHTML = '';
-        const filtered = predefinedSkills.filter(s => s.toLowerCase().includes(filter.toLowerCase()));
-        filtered.forEach(skill => {
-            const label = document.createElement('label');
-            label.className = 'checkbox-item';
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.value = skill;
-            checkbox.checked = selectedSkills.includes(skill);
-            checkbox.addEventListener('change', () => {
-                if (checkbox.checked) {
-                    if (selectedSkills.length >= MAX_SKILLS) {
-                        checkbox.checked = false;
-                        alert(`You can select a maximum of ${MAX_SKILLS} skills.`);
-                        return;
-                    }
-                    selectedSkills.push(skill);
-                } else {
-                    selectedSkills = selectedSkills.filter(s => s !== skill);
-                }
-                updateSkillsDisplay();
-            });
-            label.appendChild(checkbox);
-            label.appendChild(document.createTextNode(' ' + skill));
-            skillsCheckboxList.appendChild(label);
-        });
-        skillCount.textContent = `${selectedSkills.length} / ${MAX_SKILLS} selected`;
-    }
-
-    function updateSkillsDisplay() {
-        if (selectedSkills.length === 0) {
-            skillsDisplay.innerHTML = '<span class="placeholder-text">Click to select skills...</span>';
+    // Photo preview
+    document.getElementById('photoUpload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('photoPreview');
+        if (file && file.size <= 102400) {
+            const reader = new FileReader();
+            reader.onload = (e) => { preview.src = e.target.result; preview.style.display = 'block'; };
+            reader.readAsDataURL(file);
+            this.classList.remove('error');
         } else {
-            skillsDisplay.innerHTML = selectedSkills.map(s => `<span class="selected-skill-tag">${s} <span class="remove-skill" data-skill="${s}">×</span></span>`).join('');
-            document.querySelectorAll('.remove-skill').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const skill = btn.dataset.skill;
-                    selectedSkills = selectedSkills.filter(s => s !== skill);
-                    updateSkillsDisplay();
-                    renderSkillsDropdown(skillSearch.value);
-                });
-            });
-        }
-        skillsHidden.value = selectedSkills.join(', ');
-        if (selectedSkills.length > 0) skillsHidden.classList.remove('error');
-        else skillsHidden.classList.add('error');
-        skillCount.textContent = `${selectedSkills.length} / ${MAX_SKILLS} selected`;
-    }
-
-    // Toggle dropdown
-    skillsDisplay.addEventListener('click', (e) => {
-        e.stopPropagation();
-        skillsDropdown.classList.toggle('open');
-        if (skillsDropdown.classList.contains('open')) {
-            renderSkillsDropdown(skillSearch.value);
+            preview.style.display = 'none';
+            this.classList.add('error');
         }
     });
-    document.addEventListener('click', () => skillsDropdown.classList.remove('open'));
-    skillsDropdown.addEventListener('click', (e) => e.stopPropagation());
 
-    // Search
-    skillSearch.addEventListener('input', () => renderSkillsDropdown(skillSearch.value));
+    // ---------- Multi‑select helper ----------
+    function createMultiSelect(wrapperId, displayId, dropdownId, searchId, listId, countId, hiddenId, options, maxSelect) {
+        const display = document.getElementById(displayId);
+        const dropdown = document.getElementById(dropdownId);
+        const search = document.getElementById(searchId);
+        const list = document.getElementById(listId);
+        const countSpan = document.getElementById(countId);
+        const hidden = document.getElementById(hiddenId);
+        let selected = [];
 
-    // Initial render
-    renderSkillsDropdown();
+        function render(filter = '') {
+            list.innerHTML = '';
+            const filtered = options.filter(o => o.toLowerCase().includes(filter.toLowerCase()));
+            filtered.forEach(opt => {
+                const label = document.createElement('label');
+                label.className = 'checkbox-item';
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.value = opt;
+                cb.checked = selected.includes(opt);
+                cb.addEventListener('change', () => {
+                    if (cb.checked) {
+                        if (selected.length >= maxSelect) { cb.checked = false; alert(`Max ${maxSelect} allowed`); return; }
+                        selected.push(opt);
+                    } else {
+                        selected = selected.filter(s => s !== opt);
+                    }
+                    updateDisplay();
+                    render(search.value);
+                });
+                label.appendChild(cb);
+                label.appendChild(document.createTextNode(' ' + opt));
+                list.appendChild(label);
+            });
+            countSpan.textContent = `${selected.length} / ${maxSelect} selected`;
+        }
+
+        function updateDisplay() {
+            if (selected.length === 0) {
+                display.innerHTML = '<span class="placeholder-text">Click to select...</span>';
+            } else {
+                display.innerHTML = selected.map(s => `<span class="selected-skill-tag">${s} <span class="remove-tag" data-value="${s}">×</span></span>`).join('');
+                document.querySelectorAll(`#${displayId} .remove-tag`).forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        selected = selected.filter(s => s !== btn.dataset.value);
+                        updateDisplay();
+                        render(search.value);
+                    });
+                });
+            }
+            hidden.value = selected.join(', ');
+            if (selected.length > 0) hidden.classList.remove('error'); else hidden.classList.add('error');
+        }
+
+        display.addEventListener('click', (e) => { e.stopPropagation(); dropdown.classList.toggle('open'); render(search.value); });
+        document.addEventListener('click', () => dropdown.classList.remove('open'));
+        dropdown.addEventListener('click', e => e.stopPropagation());
+        search.addEventListener('input', () => render(search.value));
+        render();
+        return { getSelected: () => selected, setSelected: (arr) => { selected = arr; updateDisplay(); render(); } };
+    }
+
+    // Skills (max 3)
+    const skillsMulti = createMultiSelect('skillsWrapper', 'skillsDisplay', 'skillsDropdown', 'skillSearch', 'skillsCheckboxList', 'skillCount', 'skillsHidden', [
+        'Web Development','Graphic Design','Project Management','Digital Marketing','Content Writing','Data Analysis',
+        'Public Speaking','Team Leadership','Microsoft Office','Communication','Problem Solving','Time Management',
+        'Customer Service','Social Media','SEO','Programming','Database Management','Financial Analysis',
+        'Event Planning','Research','Teaching','Languages','Java','Python','JavaScript','HTML/CSS','React','Node.js','SQL'
+    ], 3);
+
+    // Languages (max 5)
+    const languagesMulti = createMultiSelect('langWrapper', 'langDisplay', 'langDropdown', 'langSearch', 'langCheckboxList', 'langCount', 'languagesHidden', [
+        'English','Hindi','Bengali','Telugu','Marathi','Tamil','Urdu','Gujarati','Kannada','Odia','Punjabi','Assamese',
+        'Maithili','Sanskrit','French','German','Spanish','Japanese','Russian','Chinese','Arabic'
+    ], 5);
+
+    // Interests (max 3)
+    const interestsMulti = createMultiSelect('interestsWrapper', 'interestsDisplay', 'interestsDropdown', 'interestSearch', 'interestsCheckboxList', 'interestCount', 'interestsHidden', [
+        'Reading','Traveling','Photography','Cooking','Sports','Music','Gaming','Gardening','Yoga','Painting',
+        'Dancing','Volunteering','Blogging','Fitness','Movies'
+    ], 3);
 
     // ---------- Save / Restore Form Data ----------
-    function saveFormData() {
-        const data = {
-            applicantName: document.getElementById('applicantName').value,
-            fatherName: document.getElementById('fatherName').value,
-            motherName: document.getElementById('motherName').value,
-            mobile: document.getElementById('mobile').value,
-            email: document.getElementById('email').value,
-            dob: document.getElementById('dob').value,
-            gender: document.getElementById('gender').value,
-            languages: document.getElementById('languages').value,
-            category: document.getElementById('category').value,
-            marital: document.getElementById('maritalStatus').value,
-            experience: document.getElementById('experience').value,
-            village: document.getElementById('village').value,
-            postOffice: document.getElementById('postOffice').value,
-            mouza: document.getElementById('mouza').value,
-            district: document.getElementById('district').value,
-            state: document.getElementById('state').value,
-            pin: document.getElementById('pin').value,
-            education: [],
+    function gatherFormData() {
+        return {
+            fullName: document.getElementById('fullName').value.trim(),
+            professionalTitle: document.getElementById('professionalTitle').value,
             objective: document.getElementById('objective').value,
-            selectedSkills: [...selectedSkills],
-            experienceEntries: [],
-            otherQual: [],
-            place: document.getElementById('place').value,
-            date: document.getElementById('dateAuto').value
+            mobile: document.getElementById('mobile').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            address: document.getElementById('address').value.trim(),
+            city: document.getElementById('city').value.trim(),
+            state: document.getElementById('state').value.trim(),
+            country: document.getElementById('country').value.trim(),
+            postalCode: document.getElementById('postalCode').value.trim(),
+            linkedin: document.getElementById('linkedin').value.trim(),
+            github: document.getElementById('github').value.trim(),
+            portfolio: document.getElementById('portfolio').value.trim(),
+            gender: document.getElementById('gender').value,
+            maritalStatus: document.getElementById('maritalStatus').value,
+            nationality: document.getElementById('nationality').value.trim(),
+            dob: document.getElementById('dob').value,
+            skills: skillsMulti.getSelected(),
+            languages: languagesMulti.getSelected(),
+            interests: interestsMulti.getSelected(),
+            place: document.getElementById('place').value.trim() || 'Guwahati',
+            date: document.getElementById('dateAuto').value,
+            education: [],
+            experience: [],
+            projects: [],
+            certifications: [],
+            achievements: []
         };
-        document.querySelectorAll('.education-entry').forEach(entry => {
-            data.education.push({
-                exam: entry.querySelector('.examName')?.value,
-                board: entry.querySelector('.board')?.value,
-                year: entry.querySelector('.passYear')?.value,
-                percent: entry.querySelector('.percentage')?.value,
-                division: entry.querySelector('.division')?.value
-            });
-        });
-        document.querySelectorAll('.experience-entry').forEach(entry => {
-            data.experienceEntries.push({
-                jobTitle: entry.querySelector('.jobTitle')?.value,
-                company: entry.querySelector('.company')?.value,
-                duration: entry.querySelector('.duration')?.value,
-                responsibilities: entry.querySelector('.responsibilities')?.value,
-                achievements: entry.querySelector('.achievements')?.value
-            });
-        });
-        document.querySelectorAll('.other-entry').forEach(entry => {
-            data.otherQual.push({
-                qual: entry.querySelector('.qualName')?.value,
-                inst: entry.querySelector('.institute')?.value,
-                year: entry.querySelector('.qualYear')?.value,
-                score: entry.querySelector('.score')?.value,
-                duration: entry.querySelector('.oDuration')?.value
-            });
-        });
+    }
+
+    function saveFormData() {
+        const data = gatherFormData();
+        document.querySelectorAll('.education-entry').forEach(e => data.education.push({
+            exam: e.querySelector('.examName')?.value, board: e.querySelector('.board')?.value,
+            year: e.querySelector('.passYear')?.value, percent: e.querySelector('.percentage')?.value,
+            division: e.querySelector('.division')?.value
+        }));
+        document.querySelectorAll('.experience-entry').forEach(e => data.experience.push({
+            jobTitle: e.querySelector('.jobTitle')?.value, company: e.querySelector('.company')?.value,
+            duration: e.querySelector('.duration')?.value, responsibilities: e.querySelector('.responsibilities')?.value
+        }));
+        document.querySelectorAll('.project-entry').forEach(e => data.projects.push({
+            title: e.querySelector('.projectTitle')?.value, desc: e.querySelector('.projectDesc')?.value
+        }));
+        document.querySelectorAll('.certification-entry').forEach(e => data.certifications.push({
+            name: e.querySelector('.certName')?.value, org: e.querySelector('.certOrg')?.value
+        }));
+        document.querySelectorAll('.achievement-entry').forEach(e => data.achievements.push(e.querySelector('.achievementDesc')?.value));
         localStorage.setItem('savedFormData', JSON.stringify(data));
     }
 
@@ -202,80 +202,88 @@ document.addEventListener('DOMContentLoaded', () => {
         const saved = localStorage.getItem('savedFormData');
         if (!saved) return;
         const data = JSON.parse(saved);
-        document.getElementById('applicantName').value = data.applicantName || '';
-        document.getElementById('fatherName').value = data.fatherName || '';
-        document.getElementById('motherName').value = data.motherName || '';
+        document.getElementById('fullName').value = data.fullName || '';
+        document.getElementById('professionalTitle').value = data.professionalTitle || '';
+        document.getElementById('objective').value = data.objective || '';
         document.getElementById('mobile').value = data.mobile || '';
         document.getElementById('email').value = data.email || '';
-        document.getElementById('dob').value = data.dob || '';
-        document.getElementById('gender').value = data.gender || '';
-        document.getElementById('languages').value = data.languages || '';
-        document.getElementById('category').value = data.category || '';
-        document.getElementById('maritalStatus').value = data.marital || '';
-        document.getElementById('experience').value = data.experience || '';
-        document.getElementById('village').value = data.village || '';
-        document.getElementById('postOffice').value = data.postOffice || '';
-        document.getElementById('mouza').value = data.mouza || '';
-        document.getElementById('district').value = data.district || '';
+        document.getElementById('address').value = data.address || '';
+        document.getElementById('city').value = data.city || '';
         document.getElementById('state').value = data.state || '';
-        document.getElementById('pin').value = data.pin || '';
-        document.getElementById('objective').value = data.objective || '';
-        // Restore skills
-        selectedSkills = data.selectedSkills || [];
-        updateSkillsDisplay();
-        renderSkillsDropdown();
-        // Restore education entries
+        document.getElementById('country').value = data.country || '';
+        document.getElementById('postalCode').value = data.postalCode || '';
+        document.getElementById('linkedin').value = data.linkedin || '';
+        document.getElementById('github').value = data.github || '';
+        document.getElementById('portfolio').value = data.portfolio || '';
+        document.getElementById('gender').value = data.gender || '';
+        document.getElementById('maritalStatus').value = data.maritalStatus || '';
+        document.getElementById('nationality').value = data.nationality || '';
+        document.getElementById('dob').value = data.dob || '';
+        skillsMulti.setSelected(data.skills || []);
+        languagesMulti.setSelected(data.languages || []);
+        interestsMulti.setSelected(data.interests || []);
+        document.getElementById('place').value = data.place || '';
+        document.getElementById('dateAuto').value = data.date || '';
+
+        // Dynamic sections restore
         const eduContainer = document.getElementById('educationContainer');
         eduContainer.innerHTML = '';
-        data.education.forEach(edu => {
+        (data.education || []).forEach(edu => {
             const div = document.createElement('div');
             div.className = 'education-entry';
             div.innerHTML = `<div class="form-row">
-                <div class="form-group"><label>Exam Name <span class="req">*</span></label><input type="text" class="examName" required value="${edu.exam||''}"></div>
-                <div class="form-group"><label>Board/University <span class="req">*</span></label><input type="text" class="board" required value="${edu.board||''}"></div>
+                <div class="form-group"><label>Examination</label><input type="text" class="examName" value="${edu.exam||''}"></div>
+                <div class="form-group"><label>Board/University</label><input type="text" class="board" value="${edu.board||''}"></div>
             </div>
             <div class="form-row">
-                <div class="form-group"><label>Passing Year <span class="req">*</span></label><input type="text" class="passYear" required value="${edu.year||''}"></div>
-                <div class="form-group"><label>Percentage <span class="req">*</span></label><input type="text" class="percentage" required value="${edu.percent||''}"></div>
+                <div class="form-group"><label>Passing Year</label><input type="text" class="passYear" value="${edu.year||''}"></div>
+                <div class="form-group"><label>Percentage/CGPA</label><input type="text" class="percentage" value="${edu.percent||''}"></div>
             </div>
-            <div class="form-group"><label>Division <span class="req">*</span></label>
-                <select class="division" required>
-                    <option value="">-- Division --</option>
-                    <option value="First" ${edu.division==='First'?'selected':''}>First</option>
-                    <option value="Second" ${edu.division==='Second'?'selected':''}>Second</option>
-                    <option value="Third" ${edu.division==='Third'?'selected':''}>Third</option>
-                </select></div>`;
+            <div class="form-group"><label>Division</label><input type="text" class="division" value="${edu.division||''}"></div>`;
             eduContainer.appendChild(div);
         });
+
         const expContainer = document.getElementById('experienceContainer');
         expContainer.innerHTML = '';
-        data.experienceEntries.forEach(exp => {
+        (data.experience || []).forEach(exp => {
             const div = document.createElement('div');
             div.className = 'experience-entry';
             div.innerHTML = `<div class="form-row">
                 <div class="form-group"><label>Job Title</label><input type="text" class="jobTitle" value="${exp.jobTitle||''}"></div>
-                <div class="form-group"><label>Company Name</label><input type="text" class="company" value="${exp.company||''}"></div>
+                <div class="form-group"><label>Company</label><input type="text" class="company" value="${exp.company||''}"></div>
             </div>
             <div class="form-group"><label>Duration</label><input type="text" class="duration" value="${exp.duration||''}"></div>
-            <div class="form-group"><label>Responsibilities</label><textarea class="responsibilities" rows="3">${exp.responsibilities||''}</textarea></div>
-            <div class="form-group"><label>Achievements</label><input type="text" class="achievements" value="${exp.achievements||''}"></div>`;
+            <div class="form-group"><label>Responsibilities</label><textarea class="responsibilities" rows="2">${exp.responsibilities||''}</textarea></div>`;
             expContainer.appendChild(div);
         });
-        const qualContainer = document.getElementById('otherQualContainer');
-        qualContainer.innerHTML = '';
-        data.otherQual.forEach(q => {
+
+        const projContainer = document.getElementById('projectsContainer');
+        projContainer.innerHTML = '';
+        (data.projects || []).forEach(proj => {
             const div = document.createElement('div');
-            div.className = 'other-entry';
-            div.innerHTML = `<div class="form-row">
-                <div class="form-group"><label>Qualification Name</label><input type="text" class="qualName" value="${q.qual||''}"></div>
-                <div class="form-group"><label>Institute/Organization</label><input type="text" class="institute" value="${q.inst||''}"></div>
-            </div>
-            <div class="form-row">
-                <div class="form-group"><label>Passing Year</label><input type="text" class="qualYear" value="${q.year||''}"></div>
-                <div class="form-group"><label>Score/Grade</label><input type="text" class="score" value="${q.score||''}"></div>
-            </div>
-            <div class="form-group"><label>Duration</label><input type="text" class="oDuration" value="${q.duration||''}"></div>`;
-            qualContainer.appendChild(div);
+            div.className = 'project-entry';
+            div.innerHTML = `<div class="form-group"><label>Project Title</label><input type="text" class="projectTitle" value="${proj.title||''}"></div>
+            <div class="form-group"><label>Description</label><textarea class="projectDesc" rows="2">${proj.desc||''}</textarea></div>`;
+            projContainer.appendChild(div);
+        });
+
+        const certContainer = document.getElementById('certificationsContainer');
+        certContainer.innerHTML = '';
+        (data.certifications || []).forEach(cert => {
+            const div = document.createElement('div');
+            div.className = 'certification-entry';
+            div.innerHTML = `<div class="form-group"><label>Certification Name</label><input type="text" class="certName" value="${cert.name||''}"></div>
+            <div class="form-group"><label>Issuing Organization</label><input type="text" class="certOrg" value="${cert.org||''}"></div>`;
+            certContainer.appendChild(div);
+        });
+
+        const achContainer = document.getElementById('achievementsContainer');
+        achContainer.innerHTML = '';
+        (data.achievements || []).forEach(ach => {
+            const div = document.createElement('div');
+            div.className = 'achievement-entry';
+            div.innerHTML = `<div class="form-group"><label>Achievement</label><input type="text" class="achievementDesc" value="${ach||''}"></div>`;
+            achContainer.appendChild(div);
         });
         localStorage.removeItem('savedFormData');
     }
@@ -284,62 +292,61 @@ document.addEventListener('DOMContentLoaded', () => {
     const steps = document.querySelectorAll('.form-step');
     const indicators = document.querySelectorAll('.step');
     let currentStep = 1;
-
-    function showStep(stepNumber) {
+    function showStep(n) {
         steps.forEach(s => s.classList.remove('active'));
-        document.getElementById(`step${stepNumber}`).classList.add('active');
+        document.getElementById(`step${n}`).classList.add('active');
         indicators.forEach(ind => {
             const num = parseInt(ind.dataset.step);
             ind.classList.remove('active', 'completed');
-            if (num === stepNumber) ind.classList.add('active');
-            else if (num < stepNumber) ind.classList.add('completed');
+            if (num === n) ind.classList.add('active');
+            else if (num < n) ind.classList.add('completed');
         });
-        currentStep = stepNumber;
-        if (stepNumber === 5) {
-            document.getElementById('dateAuto').value = new Date().toLocaleDateString('en-IN', { year:'numeric', month:'long', day:'numeric' });
-        }
+        currentStep = n;
+        if (n === 6) document.getElementById('dateAuto').value = new Date().toLocaleDateString('en-IN', { year:'numeric', month:'long', day:'numeric' });
     }
 
-    function validateStep(stepNumber) {
-        const stepEl = document.getElementById(`step${stepNumber}`);
-        const requiredFields = stepEl.querySelectorAll('[required]');
+    function validateStep(n) {
+        const stepEl = document.getElementById(`step${n}`);
+        const required = stepEl.querySelectorAll('[required]');
         let valid = true;
-        let missing = [];
-        requiredFields.forEach(field => {
-            if (field.id === 'skillsHidden') {
-                if (!field.value.trim()) { missing.push('Skills'); valid = false; }
-                return;
+        required.forEach(field => {
+            const errorDiv = document.getElementById(field.id + 'Error');
+            if (field.type === 'file') {
+                if (!field.files || field.files.length === 0) {
+                    if (errorDiv) errorDiv.textContent = 'Photo is required';
+                    field.classList.add('error'); valid = false;
+                } else if (field.files[0].size > 102400) {
+                    if (errorDiv) errorDiv.textContent = 'File size must be less than 100KB';
+                    field.classList.add('error'); valid = false;
+                } else {
+                    field.classList.remove('error');
+                    if (errorDiv) errorDiv.textContent = '';
+                }
+            } else {
+                if (!field.value.trim()) {
+                    if (errorDiv) errorDiv.textContent = 'This field is required';
+                    field.classList.add('error'); valid = false;
+                } else {
+                    field.classList.remove('error');
+                    if (errorDiv) errorDiv.textContent = '';
+                }
             }
-            const label = field.closest('.form-group')?.querySelector('label')?.textContent?.replace(/\*/g,'').trim() || 'field';
-            if (field.type === 'checkbox' && !field.checked) { missing.push(label); field.classList.add('error'); valid = false; }
-            else if (field.type === 'file' && field.files.length === 0) { missing.push(label); field.classList.add('error'); valid = false; }
-            else if (field.tagName === 'SELECT' && field.value === '') { missing.push(label); field.classList.add('error'); valid = false; }
-            else if (!field.value.trim()) { missing.push(label); field.classList.add('error'); valid = false; }
-            else { field.classList.remove('error'); }
         });
-        const errorDiv = document.getElementById(`step${stepNumber}Error`);
-        if (!valid) {
-            errorDiv.textContent = 'Please fill in: ' + missing.join(', ');
-            errorDiv.style.display = 'block';
-            const firstError = stepEl.querySelector('.error');
-            if (firstError) firstError.focus();
-        } else {
-            if (errorDiv) errorDiv.style.display = 'none';
+
+        if (n === 5) {
+            const skillsErr = document.getElementById('skillsError');
+            if (skillsMulti.getSelected().length === 0) { skillsErr.textContent = 'Select at least 1 skill'; valid = false; } else skillsErr.textContent = '';
+            const langErr = document.getElementById('languagesError');
+            if (languagesMulti.getSelected().length === 0) { langErr.textContent = 'Select at least 1 language'; valid = false; } else langErr.textContent = '';
         }
         return valid;
     }
 
     document.querySelectorAll('.btn-next').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const next = parseInt(btn.dataset.next);
-            if (validateStep(currentStep)) showStep(next);
-        });
+        btn.addEventListener('click', () => { if (validateStep(currentStep)) showStep(parseInt(btn.dataset.next)); });
     });
     document.querySelectorAll('.btn-prev').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const prev = parseInt(btn.dataset.prev);
-            showStep(prev);
-        });
+        btn.addEventListener('click', () => showStep(parseInt(btn.dataset.prev)));
     });
 
     // Add More buttons
@@ -347,61 +354,51 @@ document.addEventListener('DOMContentLoaded', () => {
         const entry = document.createElement('div');
         entry.className = 'education-entry';
         entry.innerHTML = `<div class="form-row">
-            <div class="form-group"><label>Exam Name <span class="req">*</span></label><input type="text" class="examName" required></div>
-            <div class="form-group"><label>Board/University <span class="req">*</span></label><input type="text" class="board" required></div>
+            <div class="form-group"><label>Examination</label><input type="text" class="examName"></div>
+            <div class="form-group"><label>Board/University</label><input type="text" class="board"></div>
         </div>
         <div class="form-row">
-            <div class="form-group"><label>Passing Year <span class="req">*</span></label><input type="text" class="passYear" required></div>
-            <div class="form-group"><label>Percentage <span class="req">*</span></label><input type="text" class="percentage" required></div>
+            <div class="form-group"><label>Passing Year</label><input type="text" class="passYear"></div>
+            <div class="form-group"><label>Percentage/CGPA</label><input type="text" class="percentage"></div>
         </div>
-        <div class="form-group"><label>Division <span class="req">*</span></label>
-            <select class="division" required>
-                <option value="">-- Division --</option>
-                <option value="First">First</option>
-                <option value="Second">Second</option>
-                <option value="Third">Third</option>
-            </select></div>`;
+        <div class="form-group"><label>Division</label><input type="text" class="division"></div>`;
         document.getElementById('educationContainer').appendChild(entry);
     });
-
     document.getElementById('addExperience').addEventListener('click', () => {
         const entry = document.createElement('div');
         entry.className = 'experience-entry';
         entry.innerHTML = `<div class="form-row">
             <div class="form-group"><label>Job Title</label><input type="text" class="jobTitle"></div>
-            <div class="form-group"><label>Company Name</label><input type="text" class="company"></div>
+            <div class="form-group"><label>Company</label><input type="text" class="company"></div>
         </div>
         <div class="form-group"><label>Duration</label><input type="text" class="duration"></div>
-        <div class="form-group"><label>Responsibilities</label><textarea class="responsibilities" rows="3"></textarea></div>
-        <div class="form-group"><label>Achievements</label><input type="text" class="achievements"></div>`;
+        <div class="form-group"><label>Responsibilities</label><textarea class="responsibilities" rows="2"></textarea></div>`;
         document.getElementById('experienceContainer').appendChild(entry);
     });
-
-    document.getElementById('addOtherQual').addEventListener('click', () => {
+    document.getElementById('addProject').addEventListener('click', () => {
         const entry = document.createElement('div');
-        entry.className = 'other-entry';
-        entry.innerHTML = `<div class="form-row">
-            <div class="form-group"><label>Qualification Name</label><input type="text" class="qualName"></div>
-            <div class="form-group"><label>Institute/Organization</label><input type="text" class="institute"></div>
-        </div>
-        <div class="form-row">
-            <div class="form-group"><label>Passing Year</label><input type="text" class="qualYear"></div>
-            <div class="form-group"><label>Score/Grade</label><input type="text" class="score"></div>
-        </div>
-        <div class="form-group"><label>Duration</label><input type="text" class="oDuration"></div>`;
-        document.getElementById('otherQualContainer').appendChild(entry);
+        entry.className = 'project-entry';
+        entry.innerHTML = `<div class="form-group"><label>Project Title</label><input type="text" class="projectTitle"></div>
+        <div class="form-group"><label>Description</label><textarea class="projectDesc" rows="2"></textarea></div>`;
+        document.getElementById('projectsContainer').appendChild(entry);
     });
-
-    // Photo upload feedback
-    document.getElementById('photoUpload')?.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        const status = document.getElementById('photoStatus');
-        status.textContent = file ? `File: ${file.name} (${(file.size/1024).toFixed(1)} KB)` : 'No file chosen';
+    document.getElementById('addCertification').addEventListener('click', () => {
+        const entry = document.createElement('div');
+        entry.className = 'certification-entry';
+        entry.innerHTML = `<div class="form-group"><label>Certification Name</label><input type="text" class="certName"></div>
+        <div class="form-group"><label>Issuing Organization</label><input type="text" class="certOrg"></div>`;
+        document.getElementById('certificationsContainer').appendChild(entry);
+    });
+    document.getElementById('addAchievement').addEventListener('click', () => {
+        const entry = document.createElement('div');
+        entry.className = 'achievement-entry';
+        entry.innerHTML = `<div class="form-group"><label>Achievement</label><input type="text" class="achievementDesc"></div>`;
+        document.getElementById('achievementsContainer').appendChild(entry);
     });
 
     // ---------- Generate PDF & Save ----------
     document.getElementById('generateBtn').addEventListener('click', async () => {
-        if (!validateStep(5)) return;
+        if (!validateStep(6)) return;
         const user = auth.currentUser;
         if (!user) {
             saveFormData();
@@ -409,63 +406,42 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const data = {
-            name: document.getElementById('applicantName').value,
-            father: document.getElementById('fatherName').value,
-            mother: document.getElementById('motherName').value,
-            mobile: document.getElementById('mobile').value,
-            email: document.getElementById('email').value,
-            dob: document.getElementById('dob').value,
-            gender: document.getElementById('gender').value,
-            languages: document.getElementById('languages').value,
-            category: document.getElementById('category').value,
-            marital: document.getElementById('maritalStatus').value,
-            experience: document.getElementById('experience').value,
-            village: document.getElementById('village').value,
-            postOffice: document.getElementById('postOffice').value,
-            mouza: document.getElementById('mouza').value,
-            district: document.getElementById('district').value,
-            state: document.getElementById('state').value,
-            pin: document.getElementById('pin').value,
-            objective: document.getElementById('objective').value,
-            skills: skillsHidden.value,
-            education: [],
-            experienceEntries: [],
-            otherQual: [],
-            place: document.getElementById('place').value || 'Guwahati',
-            date: document.getElementById('dateAuto').value,
-            photo: null
-        };
-
-        document.querySelectorAll('.education-entry').forEach(entry => {
-            const exam = entry.querySelector('.examName')?.value;
+        const data = gatherFormData();
+        data.education = [];
+        document.querySelectorAll('.education-entry').forEach(e => {
+            const exam = e.querySelector('.examName')?.value;
             if (exam) data.education.push({
                 exam,
-                board: entry.querySelector('.board')?.value,
-                year: entry.querySelector('.passYear')?.value,
-                percent: entry.querySelector('.percentage')?.value,
-                division: entry.querySelector('.division')?.value
+                board: e.querySelector('.board')?.value || '',
+                year: e.querySelector('.passYear')?.value || '',
+                percent: e.querySelector('.percentage')?.value || '',
+                division: e.querySelector('.division')?.value || ''
             });
         });
-        document.querySelectorAll('.experience-entry').forEach(entry => {
-            const jobTitle = entry.querySelector('.jobTitle')?.value;
-            const company = entry.querySelector('.company')?.value;
-            if (jobTitle || company) data.experienceEntries.push({
-                jobTitle, company,
-                duration: entry.querySelector('.duration')?.value,
-                responsibilities: entry.querySelector('.responsibilities')?.value,
-                achievements: entry.querySelector('.achievements')?.value
+        data.experience = [];
+        document.querySelectorAll('.experience-entry').forEach(e => {
+            const jobTitle = e.querySelector('.jobTitle')?.value;
+            const company = e.querySelector('.company')?.value;
+            if (jobTitle || company) data.experience.push({
+                jobTitle: jobTitle || '', company: company || '',
+                duration: e.querySelector('.duration')?.value || '',
+                responsibilities: e.querySelector('.responsibilities')?.value || ''
             });
         });
-        document.querySelectorAll('.other-entry').forEach(entry => {
-            const qual = entry.querySelector('.qualName')?.value;
-            const inst = entry.querySelector('.institute')?.value;
-            if (qual || inst) data.otherQual.push({
-                qual, inst,
-                year: entry.querySelector('.qualYear')?.value,
-                score: entry.querySelector('.score')?.value,
-                duration: entry.querySelector('.oDuration')?.value
-            });
+        data.projects = [];
+        document.querySelectorAll('.project-entry').forEach(e => {
+            const title = e.querySelector('.projectTitle')?.value;
+            if (title) data.projects.push({ title, desc: e.querySelector('.projectDesc')?.value || '' });
+        });
+        data.certifications = [];
+        document.querySelectorAll('.certification-entry').forEach(e => {
+            const name = e.querySelector('.certName')?.value;
+            if (name) data.certifications.push({ name, org: e.querySelector('.certOrg')?.value || '' });
+        });
+        data.achievements = [];
+        document.querySelectorAll('.achievement-entry').forEach(e => {
+            const val = e.querySelector('.achievementDesc')?.value;
+            if (val) data.achievements.push(val);
         });
 
         const photoFile = document.getElementById('photoUpload').files[0];
@@ -503,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 pdf.rect(margin - 1, margin - 1, imgWidth + 2, 297 - margin * 2 + 2, 'S');
                 heightLeft -= (297 - margin * 2);
             }
-            pdf.save(`${data.name.replace(/\s+/g, '_')}_CV.pdf`);
+            pdf.save(`${data.fullName.replace(/\s+/g, '_')}_CV.pdf`);
             document.getElementById('successMessage').style.display = 'flex';
             document.querySelector('#successMessage h3').textContent = '✅ Resume Downloaded & Saved!';
             document.querySelector('#successMessage p').textContent = 'Your resume has been saved to your dashboard.';
@@ -525,7 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showStep(1);
 });
 
-// ---------- Helper Functions ----------
+// ---------- Helpers ----------
 function readFileAsDataURL(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -539,7 +515,7 @@ function saveResumeToFirestore(uid, data) {
     const { photo, ...cleanData } = data;
     firebase.firestore().collection('resumes').add({
         uid,
-        name: data.name,
+        name: data.fullName,
         template: 'formal',
         data: cleanData,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -550,51 +526,182 @@ function saveResumeToFirestore(uid, data) {
 }
 
 function buildFormalResume(data) {
-    const greyBar = '#d5d8dc';
-    const textColor = '#2c3e50';
-    let eduRows = data.education.map(e => `<tr><td>${e.exam||''}</td><td>${e.year||''}</td><td>${e.board||''}</td><td>${e.percent||''}</td><td>${e.division||''}</td></tr>`).join('');
-    let expBlocks = data.experienceEntries.map(exp => `<div style="margin-bottom:10px;"><strong>${exp.jobTitle||''}</strong> – ${exp.company||''}<br><em>${exp.duration||''}</em><p style="white-space:pre-line;">${exp.responsibilities||''}</p>${exp.achievements ? `<p><strong>Achievements:</strong> ${exp.achievements}</p>` : ''}</div>`).join('');
-    const fullAddress = [data.village, data.postOffice, data.mouza, data.district, data.state, data.pin].filter(Boolean).join(', ');
+    // Photo – oval shape via CSS
+    const photoHtml = data.photo
+        ? `<img src="${data.photo}" class="photo-oval" alt="Passport Photo">`
+        : `<div class="photo-oval" style="background:#ddd;"></div>`;
 
-    return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-        *{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;color:${textColor};background:white;margin:0;padding:0}
-        .page{width:780px;margin:0 auto;padding:25px;background:white;border:1px solid #aaa;page-break-after:always}
-        .page:last-child{page-break-after:auto}
-        .header{text-align:center;margin-bottom:20px;position:relative}
-        .header h1{font-size:2rem;text-decoration:underline;margin-bottom:10px}
-        .photo{position:absolute;right:0;top:0;width:110px;height:130px;border:1px solid #aaa;object-fit:cover}
-        .section-bar{background:${greyBar};padding:6px 10px;font-weight:bold;margin:15px 0 10px;text-transform:uppercase;font-size:0.9rem}
-        table{width:100%;border-collapse:collapse;margin-bottom:10px}
-        th,td{border:1px solid #aaa;padding:5px 8px;text-align:left;font-size:0.85rem}
-        th{background:#f0f0f0}
-        .profile-table td:first-child{font-weight:bold;width:35%}
-        .declaration{margin-top:30px;font-size:0.9rem}
-        .signature{margin-top:20px;text-align:right}
-    </style></head><body>
-    <div class="page">
-        <div class="header"><h1>Curriculum Vitae</h1>${data.photo ? `<img src="${data.photo}" class="photo">` : ''}</div>
-        <div class="section-bar">Personal Profile</div>
-        <table class="profile-table">
-            <tr><td>Name</td><td>${data.name||''}</td></tr>
-            <tr><td>Father's Name</td><td>${data.father||''}</td></tr>
-            <tr><td>Mother's Name</td><td>${data.mother||''}</td></tr>
-            <tr><td>Date of Birth</td><td>${data.dob||''}</td></tr>
-            <tr><td>Gender</td><td>${data.gender||''}</td></tr>
-            <tr><td>Mobile</td><td>${data.mobile||''}</td></tr>
-            <tr><td>Email</td><td>${data.email||''}</td></tr>
-            <tr><td>Address</td><td>${fullAddress}</td></tr>
-            <tr><td>Category</td><td>${data.category||''}</td></tr>
-            <tr><td>Marital Status</td><td>${data.marital||''}</td></tr>
-            <tr><td>Languages Known</td><td>${data.languages||''}</td></tr>
-            <tr><td>Experience</td><td>${data.experience||''}</td></tr>
-        </table>
-        <div class="section-bar">Career Objective</div>
-        <p>${data.objective||''}</p>
-        <div class="section-bar">Academic Qualifications</div>
-        <table><tr><th>Qualification</th><th>Year</th><th>Board/University</th><th>Percentage</th><th>Division</th></tr>${eduRows}</table>
-        ${expBlocks ? `<div class="section-bar">Professional Experience</div>${expBlocks}` : ''}
-        ${data.skills ? `<div class="section-bar">Skills</div><p>${data.skills}</p>` : ''}
-        <div class="declaration"><p>I hereby declare that the above information is true and correct to the best of my knowledge.</p></div>
-        <div class="signature"><p>Place: ${data.place||''}</p><p>Date: ${data.date||''}</p><p>Signature: ${data.name||''}</p></div>
-    </div></body></html>`;
+    // Education rows
+    let eduRows = data.education.map(e => `
+        <tr>
+            <td>${e.exam || ''}</td>
+            <td>${e.board || ''}</td>
+            <td>${e.year || ''}</td>
+            <td>${e.percent || ''}</td>
+            <td>${e.division || ''}</td>
+        </tr>`).join('');
+
+    // Experience list
+    let expHtml = data.experience.map(exp => `
+        <div class="info-row">
+            <span class="info-label">Job Title</span><span class="info-value">${exp.jobTitle || ''}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Company</span><span class="info-value">${exp.company || ''}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Duration</span><span class="info-value">${exp.duration || ''}</span>
+        </div>
+        <div class="full-width-text"><strong>Responsibilities:</strong> ${exp.responsibilities || ''}</div>
+    `).join('');
+
+    // Projects list
+    let projHtml = data.projects.map(p => `
+        <div class="info-row">
+            <span class="info-label">Project Title</span><span class="info-value">${p.title || ''}</span>
+        </div>
+        <div class="full-width-text"><strong>Description:</strong> ${p.desc || ''}</div>
+    `).join('');
+
+    // Certifications list
+    let certHtml = data.certifications.map(c => `
+        <div class="info-row">
+            <span class="info-label">Certification</span><span class="info-value">${c.name || ''}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Issuing Org.</span><span class="info-value">${c.org || ''}</span>
+        </div>
+    `).join('');
+
+    // Achievements list
+    let achHtml = data.achievements.length
+        ? '<ul class="achievement-list">' + data.achievements.map(a => `<li>${a}</li>`).join('') + '</ul>'
+        : '';
+
+    // Optional sections visibility
+    const showSection = (content, heading) => content ? `<div class="section-heading">${heading}</div>${content}` : '';
+
+    return `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .resume-page {
+            width: 794px;
+            min-height: 1123px;
+            background: linear-gradient(135deg, #f6d5f7, #fbe2e5, #d4f0f0, #e0f0ff, #f5e6ff);
+            background-size: 400% 400%;
+            animation: aurora 10s ease infinite;
+            padding: 40px 45px;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+            color: #2c3e50;
+        }
+        @keyframes aurora {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .photo-wrapper { text-align: center; margin-bottom: 20px; }
+        .photo-oval {
+            width: 140px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .applicant-name {
+            text-align: center;
+            font-size: 2.6rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+            color: #1a2a3a;
+        }
+        .professional-title {
+            text-align: center;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #4a5568;
+            margin-bottom: 20px;
+        }
+        .section-heading {
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid #cbd5e0;
+            padding-bottom: 4px;
+            margin: 18px 0 10px;
+            color: #2d3748;
+        }
+        .info-row { display: flex; margin-bottom: 5px; font-size: 0.9rem; }
+        .info-label { width: 150px; font-weight: 600; flex-shrink: 0; color: #4a5568; }
+        .info-value { flex: 1; }
+        .full-width-text { margin-bottom: 8px; font-size: 0.9rem; line-height: 1.5; }
+        .edu-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .edu-table th, .edu-table td { border: 1px solid #cbd5e0; padding: 6px 8px; text-align: left; font-size: 0.85rem; }
+        .edu-table th { background: rgba(255,255,255,0.6); font-weight: 600; }
+        .achievement-list { list-style: disc; margin-left: 20px; font-size: 0.9rem; margin-bottom: 8px; }
+        .achievement-list li { margin-bottom: 3px; }
+        .declaration { margin-top: 30px; font-size: 0.9rem; line-height: 1.5; }
+        .signature { text-align: right; margin-top: 15px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="resume-page">
+        <div class="photo-wrapper">${photoHtml}</div>
+        <div class="applicant-name">${data.fullName || 'Your Name'}</div>
+        <div class="professional-title">${data.professionalTitle || ''}</div>
+
+        <div class="section-heading">Career Objective</div>
+        <div class="full-width-text">${data.objective || ''}</div>
+
+        <div class="section-heading">Contact Details</div>
+        <div class="info-row"><span class="info-label">Mobile</span><span class="info-value">${data.mobile || ''}</span></div>
+        <div class="info-row"><span class="info-label">Email</span><span class="info-value">${data.email || ''}</span></div>
+        <div class="info-row"><span class="info-label">Address</span><span class="info-value">${data.address || ''}</span></div>
+        <div class="info-row"><span class="info-label">City / State</span><span class="info-value">${data.city || ''}, ${data.state || ''}</span></div>
+        <div class="info-row"><span class="info-label">Country / ZIP</span><span class="info-value">${data.country || ''} – ${data.postalCode || ''}</span></div>
+        ${data.linkedin ? `<div class="info-row"><span class="info-label">LinkedIn</span><span class="info-value">${data.linkedin}</span></div>` : ''}
+        ${data.github ? `<div class="info-row"><span class="info-label">GitHub</span><span class="info-value">${data.github}</span></div>` : ''}
+        ${data.portfolio ? `<div class="info-row"><span class="info-label">Portfolio</span><span class="info-value">${data.portfolio}</span></div>` : ''}
+
+        ${showSection(`<table class="edu-table"><tr><th>Examination</th><th>Board/University</th><th>Year</th><th>Percentage</th><th>Division</th></tr>${eduRows}</table>`, 'Education')}
+        ${showSection(expHtml, 'Work Experience')}
+        ${showSection(projHtml, 'Projects')}
+        ${showSection(certHtml, 'Certifications')}
+        ${showSection(`<div class="full-width-text">${data.skills.join(', ')}</div>`, 'Skills')}
+        ${showSection(`<div class="full-width-text">${data.languages.join(', ')}</div>`, 'Languages')}
+        ${showSection(`<div class="full-width-text">${data.interests.join(', ')}</div>`, 'Interests')}
+        ${showSection(achHtml, 'Achievements')}
+
+        <div class="section-heading">Additional Information</div>
+        <div class="info-row"><span class="info-label">Gender</span><span class="info-value">${data.gender || ''}</span></div>
+        <div class="info-row"><span class="info-label">Marital Status</span><span class="info-value">${data.maritalStatus || ''}</span></div>
+        <div class="info-row"><span class="info-label">Nationality</span><span class="info-value">${data.nationality || ''}</span></div>
+        <div class="info-row"><span class="info-label">Date of Birth</span><span class="info-value">${data.dob || ''}</span></div>
+
+        <div class="declaration">
+            I hereby declare that the above particulars of facts and information stated are true, correct and complete to the best of my belief and knowledge.
+        </div>
+        <div class="signature">
+            <p>Place: ${data.place || ''}</p>
+            <p>Date: ${data.date || ''}</p>
+            <p>Signature: <em>${data.fullName || ''}</em></p>
+        </div>
+    </div>
+</body>
+</html>`;
 }
