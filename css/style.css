@@ -361,3 +361,21 @@ footer { text-align: center; padding: 1.5rem; background: var(--surface); border
 #authLink, #userDisplay {
     display: none;
 }
+/* New template preview backgrounds */
+.angel-preview {
+    background: #fdfcff;
+    border-bottom: 3px solid #f0d78c;
+}
+.angel-header { color: #b89b4b; }
+
+.mermaid-preview {
+    background: #f0faff;
+    border-bottom: 3px solid #7ec8c8;
+}
+.mermaid-header { color: #3a7c7c; }
+
+.celestial-preview {
+    background: #f9f4ff;
+    border-bottom: 3px solid #b39dd8;
+}
+.celestial-header { color: #7e57c2; }
