@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login – Resume By Ame</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Firebase SDK (compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
@@ -17,7 +16,7 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="templates.html">Templates</a></li>
                 <li><a href="form.html">Build Resume</a></li>
-                <li><a href="dashboard.html">Dashboard</a></li>
+                <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
                 <li id="authLink"><a href="login.html" class="btn-login active">Login / Sign Up</a></li>
                 <li id="userDisplay" style="display:none;">
                     <span id="userName"></span>
@@ -44,9 +43,7 @@
                 <button type="submit" class="cta-button full-width">Log In</button>
             </form>
 
-            <div class="divider">
-                <span>or</span>
-            </div>
+            <div class="divider"><span>or</span></div>
 
             <button class="google-btn full-width" id="googleLoginBtn">
                 <span class="google-icon">G</span> Sign in with Google
@@ -61,82 +58,69 @@
         <p>Made with ❤️ by Ame</p>
     </footer>
 
+    <script src="js/animations.js"></script>
     <script>
-        // Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyBLX-DBrAZZgi7OGRW3-oeno0PJsZ9hzEg",
             authDomain: "its-me-ame.firebaseapp.com",
             projectId: "its-me-ame",
             storageBucket: "its-me-ame.firebasestorage.app",
             messagingSenderId: "832380884001",
-            appId: "1:832380884001:web:0c9239588ceb8d8995bf60",
-            measurementId: "G-L12EEJG7L9"
+            appId: "1:832380884001:web:0c9239588ceb8d8995bf60"
         };
-
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        // Auth-aware navbar
         const authLink = document.getElementById('authLink');
         const userDisplay = document.getElementById('userDisplay');
         const userNameSpan = document.getElementById('userName');
         const logoutBtn = document.getElementById('logoutBtn');
+        const dashboardLink = document.getElementById('dashboardLink');
 
         auth.onAuthStateChanged(user => {
             if (user) {
                 authLink.style.display = 'none';
                 userDisplay.style.display = 'flex';
                 userNameSpan.textContent = user.displayName || user.email;
+                dashboardLink.style.display = 'inline-block';
             } else {
                 authLink.style.display = 'block';
                 userDisplay.style.display = 'none';
+                dashboardLink.style.display = 'none';
             }
         });
+        logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
 
-        logoutBtn.addEventListener('click', () => {
-            auth.signOut().then(() => window.location.href = 'index.html');
-        });
-
-        // Email/Password Login
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             const errorDiv = document.getElementById('authError');
             errorDiv.style.display = 'none';
-
             if (!email || !password) {
                 errorDiv.textContent = 'Please fill in all fields.';
                 errorDiv.style.display = 'block';
                 return;
             }
-
             auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    window.location.href = 'dashboard.html';  // Redirect to dashboard
-                })
-                .catch((error) => {
+                .then(() => window.location.href = 'dashboard.html')
+                .catch(error => {
                     errorDiv.textContent = error.message;
                     errorDiv.style.display = 'block';
                 });
         });
 
-        // Google Sign-In
-        document.getElementById('googleLoginBtn').addEventListener('click', function() {
+        document.getElementById('googleLoginBtn').addEventListener('click', () => {
             const provider = new firebase.auth.GoogleAuthProvider();
             const errorDiv = document.getElementById('authError');
             errorDiv.style.display = 'none';
-
             auth.signInWithPopup(provider)
-                .then((result) => {
-                    window.location.href = 'dashboard.html';  // Redirect to dashboard
-                })
-                .catch((error) => {
+                .then(() => window.location.href = 'dashboard.html')
+                .catch(error => {
                     errorDiv.textContent = error.message;
                     errorDiv.style.display = 'block';
                 });
         });
     </script>
-    <script src="js/animations.js"></script>
 </body>
 </html>
