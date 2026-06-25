@@ -60,6 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // ---------- Hamburger menu toggle ----------
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    if (hamburgerBtn) {
+        hamburgerBtn.addEventListener('click', () => {
+            document.querySelector('.nav-links').classList.toggle('show');
+        });
+    }
+
     // ---------- Save / Restore Form Data ----------
     function saveFormData() {
         const formData = {
@@ -369,7 +377,6 @@ document.addEventListener('DOMContentLoaded', () => {
             let heightLeft = imgHeight;
             let position = margin;
 
-            // Template accent color for page border
             const themeColors = {
                 elf: '#c9a84c',
                 dwarf: '#d4782f',
@@ -379,7 +386,6 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             const borderColor = themeColors[template] || '#c9a84c';
 
-            // First page
             pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
             pdf.setDrawColor(borderColor);
             pdf.setLineWidth(0.8);
@@ -418,6 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showStep(1);
 });
 
+// ---------- Helper Functions ----------
 function readFileAsDataURL(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -429,16 +436,19 @@ function readFileAsDataURL(file) {
 
 function saveResumeToFirestore(uid, data, template) {
     const db = firebase.firestore();
+    // Remove photo from data before saving (too large for Firestore)
+    const { photo, ...cleanData } = data;
     db.collection('resumes').add({
         uid,
         name: data.name,
         template,
-        data: JSON.parse(JSON.stringify(data)),
+        data: cleanData,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
     }).then(() => {
         console.log('Resume saved to Firestore');
     }).catch(err => {
         console.error('Firestore save error:', err);
+        alert('Failed to save resume to cloud. Please try again.');
     });
 }
 
@@ -455,7 +465,6 @@ function buildResumeHTML(data, template) {
     const textColor = t.text;
     const borderColor = t.border;
 
-    // Section heading style - background matches border/accent, Arial font, padding 8px 10px
     const sectionHeadingStyle = `
         background: ${accentColor};
         color: #ffffff;
@@ -472,7 +481,6 @@ function buildResumeHTML(data, template) {
         line-height: 1.4;
     `;
 
-    // Table style: 1px solid dark grey border, 5px border-radius
     const tableStyle = `
         border: 1px solid #555;
         border-radius: 5px;
@@ -482,7 +490,6 @@ function buildResumeHTML(data, template) {
         width: 100%;
     `;
 
-    // Photo style: slightly larger, 5px border-radius, border color matches template
     const photoStyle = `
         width: 110px;
         height: 130px;
@@ -645,6 +652,3 @@ function buildResumeHTML(data, template) {
 </body>
 </html>`;
 }
-document.getElementById('hamburgerBtn').addEventListener('click', () => {
-    document.querySelector('.nav-links').classList.toggle('show');
-});
