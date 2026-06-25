@@ -227,3 +227,131 @@ footer { text-align: center; padding: 1.5rem; background: var(--surface); border
         margin: 0 auto;
     }
 }
+/* ========== DASHBOARD ========== */
+.dashboard-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+    align-items: flex-start;
+    justify-content: center;      /* center the whole section nicely */
+}
+
+/* Profile sidebar */
+.profile-sidebar {
+    flex: 0 0 280px;
+    background: var(--surface);
+    padding: 2rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+    align-self: stretch;
+}
+
+/* Resumes section */
+.resumes-section {
+    flex: 1;
+    min-width: 300px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Create new button */
+.create-new-btn {
+    margin-bottom: 1.5rem;
+}
+
+/* Resume table */
+.resumes-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.resumes-table th,
+.resumes-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.resumes-table th {
+    background: var(--primary);
+    color: white;
+    font-weight: 500;
+}
+
+.resumes-table tr:last-child td {
+    border-bottom: none;
+}
+
+.action-link {
+    color: var(--primary);
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+/* Avatar circle */
+.avatar-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0 auto 1rem;
+}
+
+.welcome-text {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.user-email {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.logout-btn-side {
+    background: var(--error);
+    color: white;
+    border: none;
+    padding: 0.7rem 2rem;
+    border-radius: 30px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.logout-btn-side:hover {
+    background: #c0392b;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dashboard-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+    .profile-sidebar {
+        flex: 1 1 auto;
+        width: 100%;
+        max-width: 400px;
+    }
+    .resumes-section {
+        width: 100%;
+    }
+}
