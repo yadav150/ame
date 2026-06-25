@@ -16,7 +16,7 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="templates.html" class="active">Templates</a></li>
                 <li><a href="form.html">Build Resume</a></li>
-                <li><a href="dashboard.html">Dashboard</a></li>
+                <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
                 <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
                 <li id="userDisplay" style="display:none;">
                     <span id="userName"></span>
@@ -57,6 +57,7 @@
         <p>Made with ❤️ by Ame</p>
     </footer>
 
+    <script src="js/animations.js"></script>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBLX-DBrAZZgi7OGRW3-oeno0PJsZ9hzEg",
@@ -64,8 +65,7 @@
             projectId: "its-me-ame",
             storageBucket: "its-me-ame.firebasestorage.app",
             messagingSenderId: "832380884001",
-            appId: "1:832380884001:web:0c9239588ceb8d8995bf60",
-            measurementId: "G-L12EEJG7L9"
+            appId: "1:832380884001:web:0c9239588ceb8d8995bf60"
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
@@ -74,22 +74,21 @@
         const userDisplay = document.getElementById('userDisplay');
         const userNameSpan = document.getElementById('userName');
         const logoutBtn = document.getElementById('logoutBtn');
+        const dashboardLink = document.getElementById('dashboardLink');
 
         auth.onAuthStateChanged(user => {
             if (user) {
                 authLink.style.display = 'none';
                 userDisplay.style.display = 'flex';
                 userNameSpan.textContent = user.displayName || user.email;
+                dashboardLink.style.display = 'inline-block';
             } else {
                 authLink.style.display = 'block';
                 userDisplay.style.display = 'none';
+                dashboardLink.style.display = 'none';
             }
         });
-
-        logoutBtn.addEventListener('click', () => {
-            auth.signOut().then(() => window.location.href = 'index.html');
-        });
+        logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
     </script>
-    <script src="js/animations.js"></script>
 </body>
 </html>
