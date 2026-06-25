@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard – Resume By Ame</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
 </head>
 <body>
     <nav class="navbar">
@@ -19,7 +19,7 @@
                 <li><a href="templates.html">Templates</a></li>
                 <li><a href="form.html">Build Resume</a></li>
                 <li id="dashboardLink"><a href="dashboard.html" class="active">Dashboard</a></li>
-                <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+                <li id="authLink" style="display:none;"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
                 <li id="userDisplay" style="display:none;">
                     <span id="userName"></span>
                     <button id="logoutBtn" class="btn-logout">Logout</button>
@@ -29,27 +29,26 @@
         </div>
     </nav>
 
-    <main>
-        <div class="dashboard-wrapper fade-in">
-            <aside class="profile-sidebar">
+    <main class="dashboard-main">
+        <div class="dashboard-grid">
+            <!-- Profile Sidebar Card -->
+            <aside class="profile-card">
                 <div class="avatar-circle" id="avatarLetter">?</div>
-                <div class="welcome-text">Welcome, <strong id="welcomeName">User</strong></div>
-                <div class="user-email" id="userEmailDisplay">user@example.com</div>
+                <h3 id="welcomeName">Welcome</h3>
+                <p class="user-email" id="userEmailDisplay">user@example.com</p>
                 <button class="logout-btn-side" id="sidebarLogout">Logout</button>
             </aside>
-            <section class="resumes-section">
-                <div class="create-new-btn">
-                    <a href="form.html" class="cta-button">+ Create New Resume</a>
+
+            <!-- Resumes Section -->
+            <section class="resumes-area">
+                <div class="resumes-header">
+                    <h2>Your Resumes</h2>
+                    <a href="form.html" class="cta-button">+ Create New</a>
                 </div>
-                <table class="resumes-table" id="resumeTable">
-                    <thead>
-                        <tr><th>Name</th><th>Template</th><th>Created</th><th>Action</th></tr>
-                    </thead>
-                    <tbody id="resumeTableBody">
-                        <tr><td colspan="4">Loading…</td></tr>
-                    </tbody>
-                </table>
-                <p id="noResumesMsg" style="display:none; margin-top:1rem;">No resumes yet. Create your first one!</p>
+                <div id="resumeCards" class="resume-cards">
+                    <!-- Dynamic resume cards will appear here -->
+                </div>
+                <p id="noResumesMsg" class="empty-state">No resumes yet. Create your first one!</p>
             </section>
         </div>
     </main>
@@ -80,11 +79,11 @@
         const avatarLetter = document.getElementById('avatarLetter');
         const welcomeName = document.getElementById('welcomeName');
         const userEmailDisplay = document.getElementById('userEmailDisplay');
-        const resumeTableBody = document.getElementById('resumeTableBody');
+        const resumeCards = document.getElementById('resumeCards');
         const noResumesMsg = document.getElementById('noResumesMsg');
         const hamburgerBtn = document.getElementById('hamburgerBtn');
 
-        // Hamburger menu toggle
+        // Hamburger menu
         hamburgerBtn.addEventListener('click', () => {
             document.querySelector('.nav-links').classList.toggle('show');
         });
@@ -95,7 +94,7 @@
                 const firstName = displayName.split(' ')[0] || displayName;
                 const firstLetter = (user.displayName?.[0] || user.email[0]).toUpperCase();
                 avatarLetter.textContent = firstLetter;
-                welcomeName.textContent = firstName;
+                welcomeName.textContent = `Welcome, ${firstName}`;
                 userEmailDisplay.textContent = user.email;
 
                 authLink.style.display = 'none';
@@ -117,13 +116,13 @@
         sidebarLogout.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
 
         function loadResumes(uid) {
-            resumeTableBody.innerHTML = '<tr><td colspan="4">Loading…</td></tr>';
+            resumeCards.innerHTML = '<p class="loading-text">Loading your resumes…</p>';
             db.collection('resumes')
                 .where('uid', '==', uid)
                 .get()
                 .then(snapshot => {
                     if (snapshot.empty) {
-                        resumeTableBody.innerHTML = '';
+                        resumeCards.innerHTML = '';
                         noResumesMsg.style.display = 'block';
                         return;
                     }
@@ -134,28 +133,28 @@
                         resume.id = doc.id;
                         resumes.push(resume);
                     });
-                    // Sort by createdAt descending (client-side)
-                    resumes.sort((a, b) => {
-                        const timeA = a.createdAt ? a.createdAt.toMillis() : 0;
-                        const timeB = b.createdAt ? b.createdAt.toMillis() : 0;
-                        return timeB - timeA;
-                    });
+                    // Sort newest first
+                    resumes.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
                     let html = '';
                     resumes.forEach(resume => {
                         const date = resume.createdAt ? resume.createdAt.toDate().toLocaleDateString() : 'N/A';
                         html += `
-                            <tr>
-                                <td>${resume.name || 'Unnamed'}</td>
-                                <td>${resume.template}</td>
-                                <td>${date}</td>
-                                <td><a href="#" class="action-link" onclick="alert('Download coming soon')">Download</a></td>
-                            </tr>
+                            <div class="resume-card">
+                                <div class="card-top">
+                                    <h4>${resume.name || 'Unnamed'}</h4>
+                                    <span class="template-badge">${resume.template}</span>
+                                </div>
+                                <p class="card-date">Created: ${date}</p>
+                                <div class="card-actions">
+                                    <button class="cta-button small" onclick="alert('Download coming soon')">Download PDF</button>
+                                </div>
+                            </div>
                         `;
                     });
-                    resumeTableBody.innerHTML = html;
+                    resumeCards.innerHTML = html;
                 })
                 .catch(err => {
-                    resumeTableBody.innerHTML = `<tr><td colspan="4">Error: ${err.message}</td></tr>`;
+                    resumeCards.innerHTML = `<p class="error-text">Error: ${err.message}</p>`;
                 });
         }
     </script>
