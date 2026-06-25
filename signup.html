@@ -10,21 +10,22 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="templates.html">Templates</a></li>
-                <li><a href="form.html">Build Resume</a></li>
-                <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
-                <li id="authLink"><a href="login.html" class="btn-login active">Login / Sign Up</a></li>
-                <li id="userDisplay" style="display:none;">
-                    <span id="userName"></span>
-                    <button id="logoutBtn" class="btn-logout">Logout</button>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    <div class="nav-container">
+        <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="templates.html">Templates</a></li>
+            <li><a href="form.html">Build Resume</a></li>
+            <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
+            <li id="authLink"><a href="login.html" class="btn-login active">Login / Sign Up</a></li>
+            <li id="userDisplay" style="display:none;">
+                <span id="userName"></span>
+                <button id="logoutBtn" class="btn-logout">Logout</button>
+            </li>
+        </ul>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
+    </div>
+</nav>
 
     <main class="auth-container">
         <div class="auth-card">
@@ -129,6 +130,9 @@
                     errorDiv.style.display = 'block';
                 });
         });
+        document.getElementById('hamburgerBtn').addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.toggle('show');
+});
     </script>
 </body>
 </html>
