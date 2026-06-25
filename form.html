@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Your Resume – Resume By Ame</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="templates.html">Templates</a></li>
+                <li><a href="form.html" class="active">Build Resume</a></li>
+                <li><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="form-container">
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step active" data-step="1"><span>1</span> Personal</div>
+            <div class="step" data-step="2"><span>2</span> Education</div>
+            <div class="step" data-step="3"><span>3</span> Other Qual.</div>
+            <div class="step" data-step="4"><span>4</span> Finalize</div>
+        </div>
+
+        <form id="resumeForm" novalidate>
+            <!-- Step 1: Personal Details -->
+            <section class="form-step active" id="step1">
+                <h2>Personal Details</h2>
+                <div class="form-group">
+                    <label>Applicant's Name <span class="req">*</span></label>
+                    <input type="text" id="applicantName" required placeholder="Full name">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Father's Name <span class="req">*</span></label>
+                        <input type="text" id="fatherName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mother's Name <span class="req">*</span></label>
+                        <input type="text" id="motherName" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Mobile Number <span class="req">*</span></label>
+                        <input type="tel" id="mobile" required placeholder="e.g. 9876543210">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address <span class="req">*</span></label>
+                        <input type="email" id="email" required placeholder="you@example.com">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date of Birth <span class="req">*</span></label>
+                        <input type="date" id="dob" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender <span class="req">*</span></label>
+                        <select id="gender" required>
+                            <option value="">-- Select Gender --</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Known Languages <span class="req">*</span></label>
+                    <input type="text" id="languages" required placeholder="e.g., Assamese, English, Hindi">
+                </div>
+                <div class="form-group">
+                    <label>Address <span class="req">*</span></label>
+                    <textarea id="address" required placeholder="e.g., Pan Bazaar, Guwahati, Assam 781001"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category <span class="req">*</span></label>
+                        <select id="category" required>
+                            <option value="">-- Select Category --</option>
+                            <option value="General">General</option>
+                            <option value="OBC">OBC</option>
+                            <option value="SC">SC</option>
+                            <option value="ST">ST</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Marital Status <span class="req">*</span></label>
+                        <select id="maritalStatus" required>
+                            <option value="">-- Marital Status --</option>
+                            <option value="Unmarried">Unmarried</option>
+                            <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                            <option value="Widowed">Widowed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Experience <span class="req">*</span></label>
+                    <input type="text" id="experience" required placeholder="e.g., 2 years in XYZ Company">
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn-next" data-next="2">Next →</button>
+                </div>
+            </section>
+
+            <!-- Step 2: Educational Qualifications -->
+            <section class="form-step" id="step2">
+                <h2>Educational Qualifications</h2>
+                <div id="educationContainer">
+                    <div class="education-entry">
+                        <div class="form-row">
+                            <div class="form-group"><label>Exam Name <span class="req">*</span></label><input type="text" class="examName" required></div>
+                            <div class="form-group"><label>Board/University <span class="req">*</span></label><input type="text" class="board" required></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Passing Year <span class="req">*</span></label><input type="text" class="passYear" required placeholder="YYYY"></div>
+                            <div class="form-group"><label>Percentage <span class="req">*</span></label><input type="text" class="percentage" required placeholder="e.g. 85%"></div>
+                        </div>
+                        <div class="form-group"><label>Division <span class="req">*</span></label>
+                            <select class="division" required>
+                                <option value="">-- Division --</option>
+                                <option value="First">First</option>
+                                <option value="Second">Second</option>
+                                <option value="Third">Third</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn-add" id="addEducation">+ Add More Education</button>
+                <div class="btn-group">
+                    <button type="button" class="btn-prev" data-prev="1">← Previous</button>
+                    <button type="button" class="btn-next" data-next="3">Next →</button>
+                </div>
+            </section>
+
+            <!-- Step 3: Other Qualifications -->
+            <section class="form-step" id="step3">
+                <h2>Other Qualifications</h2>
+                <div id="otherQualContainer">
+                    <div class="other-entry">
+                        <div class="form-row">
+                            <div class="form-group"><label>Qualification Name <span class="req">*</span></label><input type="text" class="qualName" required></div>
+                            <div class="form-group"><label>Institute/Organization <span class="req">*</span></label><input type="text" class="institute" required></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Passing Year <span class="req">*</span></label><input type="text" class="qualYear" required placeholder="YYYY"></div>
+                            <div class="form-group"><label>Score/Grade <span class="req">*</span></label><input type="text" class="score" required></div>
+                        </div>
+                        <div class="form-group"><label>Duration <span class="req">*</span></label><input type="text" class="duration" required placeholder="e.g., 6 months"></div>
+                    </div>
+                </div>
+                <button type="button" class="btn-add" id="addOtherQual">+ Add More</button>
+                <div class="btn-group">
+                    <button type="button" class="btn-prev" data-prev="2">← Previous</button>
+                    <button type="button" class="btn-next" data-next="4">Next →</button>
+                </div>
+            </section>
+
+            <!-- Step 4: Final Steps -->
+            <section class="form-step" id="step4">
+                <h2>Final Steps</h2>
+                <div class="upload-section">
+                    <label>Upload Passport Size Photo <span class="req">*</span> (Max 100KB)</label>
+                    <input type="file" id="photoUpload" accept="image/*" required>
+                    <small id="photoStatus">No file chosen</small>
+                </div>
+                <div class="declaration">
+                    <input type="checkbox" id="declarationCheck" required>
+                    <label for="declarationCheck">I declare that all the information provided is true and correct.</label>
+                </div>
+                <div class="form-group">
+                    <label>Place:</label>
+                    <input type="text" id="place" placeholder="Guwahati" value="">
+                </div>
+                <div class="form-group">
+                    <label>Date:</label>
+                    <input type="text" id="dateAuto" readonly>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn-prev" data-prev="3">← Previous</button>
+                    <button type="button" class="btn-generate" id="generateBtn">✨ Generate Resume</button>
+                </div>
+            </section>
+        </form>
+
+        <!-- Success Message (hidden initially) -->
+        <div id="successMessage" class="success-overlay" style="display: none;">
+            <div class="success-card">
+                <h3>🎉 Your Resume Has Been Successfully Built!</h3>
+                <p>To download your beautiful fantasy resume, please log in or create an account.</p>
+                <div class="success-actions">
+                    <a href="login.html" class="cta-button">Login</a>
+                    <a href="signup.html" class="cta-button secondary">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Made with ❤️ by Ame</p>
+    </footer>
+
+    <script src="js/form.js"></script>
+</body>
+</html>
