@@ -28,21 +28,23 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="templates.html">Templates</a></li>
-                <li><a href="form.html">Build Resume</a></li>
-                <li id="dashboardLink"><a href="dashboard.html" class="active">Dashboard</a></li>
-                <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
-                <li id="userDisplay" style="display:none;">
-                    <span id="userName"></span>
-                    <button id="logoutBtn" class="btn-logout">Logout</button>
-                </li>
-            </ul>
-        </div>
-    </nav>
+        <nav class="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="templates.html">Templates</a></li>
+            <li><a href="form.html">Build Resume</a></li>
+            <li id="dashboardLink"><a href="dashboard.html" class="active">Dashboard</a></li>
+            <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+            <li id="userDisplay" style="display:none;">
+                <span id="userName"></span>
+                <button id="logoutBtn" class="btn-logout">Logout</button>
+            </li>
+        </ul>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
+    </div>
+</nav>
 
     <main>
         <div class="dashboard-wrapper fade-in">
@@ -165,6 +167,9 @@
                     resumeTableBody.innerHTML = `<tr><td colspan="4">Error: ${err.message}</td></tr>`;
                 });
         }
+        document.getElementById('hamburgerBtn').addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.toggle('show');
+});
     </script>
 </body>
 </html>
