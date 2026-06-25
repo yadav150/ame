@@ -357,3 +357,7 @@ footer { text-align: center; padding: 1.5rem; background: var(--surface); border
         width: 100%;
     }
 }
+/* CLS */
+#authLink, #userDisplay {
+    display: none;
+}
