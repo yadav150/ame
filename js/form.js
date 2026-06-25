@@ -62,6 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function validateStep(stepNumber) {
+        // Step 3 (Other Qualifications) is optional – always pass
+        if (stepNumber === 3) return true;
+
         const currentStepEl = document.getElementById(`step${stepNumber}`);
         const requiredFields = currentStepEl.querySelectorAll('[required]');
         let isValid = true;
@@ -131,14 +134,14 @@ document.addEventListener('DOMContentLoaded', () => {
         newEntry.className = 'other-entry';
         newEntry.innerHTML = `
             <div class="form-row">
-                <div class="form-group"><label>Qualification Name <span class="req">*</span></label><input type="text" class="qualName" required></div>
-                <div class="form-group"><label>Institute/Organization <span class="req">*</span></label><input type="text" class="institute" required></div>
+                <div class="form-group"><label>Qualification Name</label><input type="text" class="qualName"></div>
+                <div class="form-group"><label>Institute/Organization</label><input type="text" class="institute"></div>
             </div>
             <div class="form-row">
-                <div class="form-group"><label>Passing Year <span class="req">*</span></label><input type="text" class="qualYear" required placeholder="YYYY"></div>
-                <div class="form-group"><label>Score/Grade <span class="req">*</span></label><input type="text" class="score" required></div>
+                <div class="form-group"><label>Passing Year</label><input type="text" class="qualYear" placeholder="YYYY"></div>
+                <div class="form-group"><label>Score/Grade</label><input type="text" class="score"></div>
             </div>
-            <div class="form-group"><label>Duration <span class="req">*</span></label><input type="text" class="duration" required placeholder="e.g., 6 months"></div>
+            <div class="form-group"><label>Duration</label><input type="text" class="duration" placeholder="e.g., 6 months"></div>
         `;
         container.appendChild(newEntry);
     });
