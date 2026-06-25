@@ -6,7 +6,6 @@
     <title>Build Your Resume – Resume By Ame</title>
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
     <link rel="stylesheet" href="css/style.css">
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -34,7 +33,7 @@
         <div class="step-indicator">
             <div class="step active" data-step="1"><span>1</span> Personal</div>
             <div class="step" data-step="2"><span>2</span> Education</div>
-            <div class="step" data-step="3"><span>3</span> Skills & Objectives</div>
+            <div class="step" data-step="3"><span>3</span> Skills & Objective</div>
             <div class="step" data-step="4"><span>4</span> Experience & Other</div>
             <div class="step" data-step="5"><span>5</span> Finalize</div>
         </div>
@@ -98,7 +97,6 @@
                     <input type="text" id="experience" required placeholder="e.g., 2 years in XYZ Company">
                 </div>
 
-                <!-- Address fields -->
                 <h3>Address</h3>
                 <div class="form-row">
                     <div class="form-group"><label>Village / Town <span class="req">*</span></label><input type="text" id="village" required></div>
@@ -152,34 +150,38 @@
             <!-- Step 3: Skills & Objectives -->
             <section class="form-step" id="step3">
                 <div class="step-error" id="step3Error" style="display:none;"></div>
-                <h2>Skills & Objectives</h2>
+                <h2>Skills & Objective</h2>
 
-                <!-- Objectives -->
                 <div class="form-group">
                     <label>Career Objective <span class="req">*</span></label>
                     <select id="objective" required>
                         <option value="">-- Select an objective --</option>
                         <option value="Seeking a challenging position in a reputable organization to expand my learnings, knowledge, and skills.">Seeking a challenging position in a reputable organization to expand my learnings, knowledge, and skills.</option>
-                        <option value="To obtain a responsible position that fully utilizes my skills and offers professional growth while being resourceful and innovative.">To obtain a responsible position that fully utilizes my skills and offers professional growth while being resourceful and innovative.</option>
-                        <option value="Looking for a stable career opportunity where I can contribute to the company's success through my dedication and hard work.">Looking for a stable career opportunity where I can contribute to the company's success through my dedication and hard work.</option>
-                        <option value="To secure a promising position in a dynamic organization that provides both a challenge and a chance to demonstrate my abilities.">To secure a promising position in a dynamic organization that provides both a challenge and a chance to demonstrate my abilities.</option>
-                        <option value="Aspiring to join an esteemed organization that encourages continuous learning and provides exposure to new ideas and personal development.">Aspiring to join an esteemed organization that encourages continuous learning and provides exposure to new ideas and personal development.</option>
+                        <option value="To obtain a responsible position that fully utilizes my skills and offers professional growth while being resourceful and innovative.">To obtain a responsible position that fully utilizes my skills and offers professional growth.</option>
+                        <option value="Looking for a stable career opportunity where I can contribute to the company's success through my dedication and hard work.">Looking for a stable career opportunity where I can contribute to the company's success.</option>
+                        <option value="To secure a promising position in a dynamic organization that provides both a challenge and a chance to demonstrate my abilities.">To secure a promising position in a dynamic organization.</option>
+                        <option value="Aspiring to join an esteemed organization that encourages continuous learning and provides exposure to new ideas and personal development.">Aspiring to join an esteemed organization that encourages continuous learning.</option>
                     </select>
                 </div>
 
-                <!-- Skills multi-select -->
+                <!-- Multi-select Skills Dropdown (max 5) -->
                 <div class="form-group">
-                    <label>Skills <span class="req">*</span> (click to add, click again to remove)</label>
-                    <div id="skillsContainer" class="skills-container">
-                        <div class="skills-selected" id="skillsSelected"></div>
-                        <div class="skills-list" id="skillsList"></div>
+                    <label>Skills <span class="req">*</span> (select up to 5)</label>
+                    <div class="multi-select-wrapper" id="skillsWrapper">
+                        <div class="multi-select-display" id="skillsDisplay">
+                            <span class="placeholder-text">Click to select skills...</span>
+                        </div>
+                        <div class="multi-select-dropdown" id="skillsDropdown">
+                            <div class="dropdown-search">
+                                <input type="text" id="skillSearch" placeholder="Search skills...">
+                            </div>
+                            <div class="dropdown-list" id="skillsCheckboxList"></div>
+                            <div class="dropdown-footer">
+                                <span id="skillCount">0 / 5 selected</span>
+                            </div>
+                        </div>
                     </div>
                     <input type="hidden" id="skillsHidden" required>
-                    <small class="skill-hint">Select at least one skill from the list or type your own and press Enter.</small>
-                    <div class="custom-skill-add">
-                        <input type="text" id="customSkillInput" placeholder="Add your own skill...">
-                        <button type="button" id="addCustomSkill" class="btn-add small">+ Add</button>
-                    </div>
                 </div>
 
                 <div class="btn-group">
@@ -188,7 +190,7 @@
                 </div>
             </section>
 
-            <!-- Step 4: Experience & Other Qualifications (Optional) -->
+            <!-- Step 4: Experience & Other Qualifications -->
             <section class="form-step" id="step4">
                 <h2>Professional Experience (Optional)</h2>
                 <div id="experienceContainer">
@@ -255,7 +257,6 @@
             </section>
         </form>
 
-        <!-- Success Message -->
         <div id="successMessage" class="success-overlay" style="display: none;">
             <div class="success-card">
                 <h3>✅ Resume Downloaded & Saved!</h3>
