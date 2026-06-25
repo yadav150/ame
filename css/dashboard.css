@@ -64,9 +64,7 @@
     width: 100%;
     margin-top: 0.5rem;
 }
-.logout-btn-side:hover {
-    background: #c0392b;
-}
+.logout-btn-side:hover { background: #c0392b; }
 
 /* Resumes Area (Right) */
 .resumes-area {
@@ -96,6 +94,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.2rem;
+    min-height: 120px;   /* prevents CLS while loading */
 }
 
 .resume-card {
@@ -152,9 +151,7 @@
     padding: 2rem;
     font-size: 0.95rem;
 }
-.error-text {
-    color: var(--error);
-}
+.error-text { color: var(--error); }
 
 /* Responsive */
 @media (max-width: 768px) {
