@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // ---------- Auth State & Navbar (with dashboard toggle) ----------
+    // ---------- Auth State & Navbar ----------
     const authLink = document.getElementById('authLink');
     const userDisplay = document.getElementById('userDisplay');
     const userNameSpan = document.getElementById('userName');
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Logged out due to inactivity.');
                 window.location.href = 'index.html';
             });
-        }, 60000); // 1 minute
+        }, 60000);
     }
     ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(event => {
         document.addEventListener(event, resetInactivityTimer);
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ---------- Hamburger menu toggle ----------
+    // Hamburger toggle
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     if (hamburgerBtn) {
         hamburgerBtn.addEventListener('click', () => {
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function validateStep(stepNumber) {
-        if (stepNumber === 3) return true; // optional
+        if (stepNumber === 3) return true;
         const currentStepEl = document.getElementById(`step${stepNumber}`);
         const requiredFields = currentStepEl.querySelectorAll('[required]');
         let isValid = true;
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ---------- Generate PDF ----------
+    // ---------- Generate PDF & Save ----------
     document.getElementById('generateBtn').addEventListener('click', async () => {
         if (!validateStep(4)) return;
         const user = auth.currentUser;
@@ -382,7 +382,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 dwarf: '#d4782f',
                 fae: '#e891b9',
                 dragon: '#d4a017',
-                necro: '#b8a9d4'
+                necro: '#b8a9d4',
+                angel: '#f0d78c',
+                mermaid: '#7ec8c8',
+                celestial: '#b39dd8'
             };
             const borderColor = themeColors[template] || '#c9a84c';
 
@@ -404,12 +407,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
             pdf.save(`${data.name.replace(/\s+/g, '_')}_Resume.pdf`);
             document.getElementById('successMessage').style.display = 'flex';
+            // Update success message text
+            document.querySelector('#successMessage .success-card h3').textContent = '✅ Resume Downloaded & Saved!';
+            document.querySelector('#successMessage .success-card p').textContent = 'Your resume has been saved to your dashboard.';
+
+            // Save to Firestore
             saveResumeToFirestore(user.uid, data, template);
         }).catch(err => {
             console.error('PDF generation error:', err);
             alert('Something went wrong while generating PDF.');
         });
     });
+
+    function saveResumeToFirestore(uid, data, template) {
+        const { photo, ...cleanData } = data;
+        db.collection('resumes').add({
+            uid,
+            name: data.name,
+            template,
+            data: cleanData,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+            console.log('Resume saved to Firestore');
+            alert('Resume saved to your dashboard successfully!');
+        }).catch(err => {
+            console.error('Firestore save error:', err);
+            alert('Failed to save resume to cloud. Please try again.');
+        });
+    }
 
     document.getElementById('closeSuccess').addEventListener('click', () => {
         document.getElementById('successMessage').style.display = 'none';
@@ -434,37 +459,24 @@ function readFileAsDataURL(file) {
     });
 }
 
-function saveResumeToFirestore(uid, data, template) {
-    const db = firebase.firestore();
-    // Remove photo from data before saving (too large for Firestore)
-    const { photo, ...cleanData } = data;
-    db.collection('resumes').add({
-        uid,
-        name: data.name,
-        template,
-        data: cleanData,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-        console.log('Resume saved to Firestore');
-    }).catch(err => {
-        console.error('Firestore save error:', err);
-        alert('Failed to save resume to cloud. Please try again.');
-    });
-}
-
 function buildResumeHTML(data, template) {
     const themes = {
         elf: { bg: '#f5f1e3', border: '#c9a84c', text: '#2d5a27', accent: '#c9a84c', headerBg: '#fdfcf5', font: "'Georgia', serif" },
         dwarf: { bg: '#fdf5e6', border: '#d4782f', text: '#4a2c17', accent: '#d4782f', headerBg: '#fdf0e0', font: "'Georgia', serif" },
         fae: { bg: '#fef9ff', border: '#e891b9', text: '#8b5cf6', accent: '#e891b9', headerBg: '#fdf0fa', font: "'Georgia', serif" },
         dragon: { bg: '#1c0f0f', border: '#d4a017', text: '#e0d5c0', accent: '#d4a017', headerBg: '#2a1515', font: "'Georgia', serif", dark: true },
-        necro: { bg: '#111016', border: '#b8a9d4', text: '#d5cde8', accent: '#b8a9d4', headerBg: '#1a1822', font: "'Georgia', serif", dark: true }
+        necro: { bg: '#111016', border: '#b8a9d4', text: '#d5cde8', accent: '#b8a9d4', headerBg: '#1a1822', font: "'Georgia', serif", dark: true },
+        // New soft templates
+        angel: { bg: '#fdfcff', border: '#f0d78c', text: '#4a3b2f', accent: '#f0d78c', headerBg: '#fff9ef', font: "'Georgia', serif" },
+        mermaid: { bg: '#f0faff', border: '#7ec8c8', text: '#2e4a4a', accent: '#7ec8c8', headerBg: '#e8f7f7', font: "'Georgia', serif" },
+        celestial: { bg: '#f9f4ff', border: '#b39dd8', text: '#3d2b4f', accent: '#b39dd8', headerBg: '#f3ecff', font: "'Georgia', serif" }
     };
     const t = themes[template] || themes.elf;
     const accentColor = t.accent;
     const textColor = t.text;
     const borderColor = t.border;
 
+    // Section heading style - background matches border/accent, Arial font, padding 8px 10px
     const sectionHeadingStyle = `
         background: ${accentColor};
         color: #ffffff;
@@ -481,6 +493,7 @@ function buildResumeHTML(data, template) {
         line-height: 1.4;
     `;
 
+    // Table style: 1px solid dark grey border, 5px border-radius
     const tableStyle = `
         border: 1px solid #555;
         border-radius: 5px;
@@ -490,6 +503,7 @@ function buildResumeHTML(data, template) {
         width: 100%;
     `;
 
+    // Photo style: slightly larger, 5px border-radius, border color matches template
     const photoStyle = `
         width: 110px;
         height: 130px;
