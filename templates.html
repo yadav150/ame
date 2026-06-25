@@ -3,82 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choose a Template – Resume By Ame</title>
+    <title>Choose Template – Resume By Ame</title>
+    <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
 </head>
 <body>
     <nav class="navbar">
-    <div class="nav-container">
-        <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="templates.html" class="active">Templates</a></li>
-            <li><a href="form.html">Build Resume</a></li>
-            <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
-            <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
-            <li id="userDisplay" style="display:none;">
-                <span id="userName"></span>
-                <button id="logoutBtn" class="btn-logout">Logout</button>
-            </li>
-        </ul>
-        <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
-    </div>
-</nav>
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="templates.html" class="active">Templates</a></li>
+                <li><a href="templates.html">Build Resume</a></li>
+                <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
+                <li id="authLink" style="display:none;"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+                <li id="userDisplay" style="display:none;">
+                    <span id="userName"></span>
+                    <button id="logoutBtn" class="btn-logout">Logout</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
     <main class="templates-container">
-        <h2>Select Your Fantasy Resume Template</h2>
-        <p class="subtitle">Click on any design to start filling your details.</p>
+        <h2>Select Your Resume Template</h2>
+        <p class="subtitle">Currently available – formal government‑style CV. More coming soon!</p>
         <div class="template-grid">
-    <!-- Existing templates -->
-    <a href="form.html?template=elf" class="template-card">
-        <div class="template-preview elf-preview"><div class="mini-resume"><div class="mini-header elf-header">🌿 Elven Archmage</div><div class="mini-details">Elegant · Nature · Mystical</div></div></div>
-        <div class="template-name">Elowen Starweave</div>
-    </a>
-    <a href="form.html?template=dwarf" class="template-card">
-        <div class="template-preview dwarf-preview"><div class="mini-resume"><div class="mini-header dwarf-header">🔨 Dwarven Smith</div><div class="mini-details">Rugged · Stone · Forge</div></div></div>
-        <div class="template-name">Thorin Ironmantle</div>
-    </a>
-    <a href="form.html?template=fae" class="template-card">
-        <div class="template-preview fae-preview"><div class="mini-resume"><div class="mini-header fae-header">🧚 Fae Trickster</div><div class="mini-details">Whimsical · Playful · Enchant</div></div></div>
-        <div class="template-name">Pixie Duskwhisper</div>
-    </a>
-    <a href="form.html?template=dragon" class="template-card">
-        <div class="template-preview dragon-preview"><div class="mini-resume"><div class="mini-header dragon-header">🐉 Dragon Knight</div><div class="mini-details">Bold · Fiery · Battle</div></div></div>
-        <div class="template-name">Aldric Flamebane</div>
-    </a>
-    <a href="form.html?template=necro" class="template-card">
-        <div class="template-preview necro-preview"><div class="mini-resume"><div class="mini-header necro-header">💀 Necromancer</div><div class="mini-details">Dark · Scholarly · Gothic</div></div></div>
-        <div class="template-name">Morvath Duskrend</div>
-    </a>
-
-    <!-- NEW soft templates -->
-    <a href="form.html?template=angel" class="template-card">
-        <div class="template-preview angel-preview"><div class="mini-resume"><div class="mini-header angel-header">👼 Angelic Aura</div><div class="mini-details">Soft · Pure · Golden</div></div></div>
-        <div class="template-name">Seraphina Light</div>
-    </a>
-    <a href="form.html?template=mermaid" class="template-card">
-        <div class="template-preview mermaid-preview"><div class="mini-resume"><div class="mini-header mermaid-header">🧜‍♀️ Mermaid Dreams</div><div class="mini-details">Ocean · Calm · Coral</div></div></div>
-        <div class="template-name">Coralia Wave</div>
-    </a>
-    <a href="form.html?template=celestial" class="template-card">
-        <div class="template-preview celestial-preview"><div class="mini-resume"><div class="mini-header celestial-header">🌙 Celestial Glow</div><div class="mini-details">Lavender · Starry · Serene</div></div></div>
-        <div class="template-name">Luna Starshine</div>
-    </a>
-
-    <!-- NEW modern template -->
-    <a href="form.html?template=modern" class="template-card">
-        <div class="template-preview modern-preview">
-            <div class="mini-resume">
-                <div class="mini-header modern-header">🧑‍💼 Modern Professional</div>
-                <div class="mini-details">Two‑Column · Timeline · Clean</div>
-            </div>
+            <!-- Only one template: Formal CV -->
+            <a href="form.html?template=formal" class="template-card">
+                <div class="template-preview formal-preview">
+                    <div class="mini-resume">
+                        <div class="mini-header formal-header">📄 Formal CV</div>
+                        <div class="mini-details">Government Style · Clean · Professional</div>
+                    </div>
+                </div>
+                <div class="template-name">John Doe</div>
+            </a>
         </div>
-        <div class="template-name">Aarav Sharma</div>
-    </a>
-</div>
     </main>
 
     <footer>
@@ -103,6 +67,10 @@
         const userNameSpan = document.getElementById('userName');
         const logoutBtn = document.getElementById('logoutBtn');
         const dashboardLink = document.getElementById('dashboardLink');
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburgerBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
 
         auth.onAuthStateChanged(user => {
             if (user) {
@@ -117,10 +85,6 @@
             }
         });
         logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
-
-        document.getElementById('hamburgerBtn').addEventListener('click', () => {
-    document.querySelector('.nav-links').classList.toggle('show');
-});
     </script>
 </body>
 </html>
