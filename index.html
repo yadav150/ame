@@ -3,61 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume By Ame – Build Your Resume</title>
+    <title>Resume By Ame – Build Your Fantasy Resume</title>
+    <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
 </head>
 <body>
     <nav class="navbar">
-    <div class="nav-container">
-        <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
-        <ul class="nav-links">
-            <li><a href="index.html" class="active">Home</a></li>
-            <li><a href="templates.html">Templates</a></li>
-            <li><a href="form.html">Build Resume</a></li>
-            <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
-            <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
-            <li id="userDisplay" style="display:none;">
-                <span id="userName"></span>
-                <button id="logoutBtn" class="btn-logout">Logout</button>
-            </li>
-        </ul>
-        <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
-    </div>
-</nav>
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="templates.html">Templates</a></li>
+                <li><a href="templates.html">Build Resume</a></li>
+                <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
+                <li id="authLink" style="display:none;"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+                <li id="userDisplay" style="display:none;">
+                    <span id="userName"></span>
+                    <button id="logoutBtn" class="btn-logout">Logout</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
     <main>
-        <!-- Hero Section -->
         <section class="hero fade-up">
             <div class="hero-content">
                 <h1>Craft Your <span class="gradient-text">Fantasy Resume</span></h1>
-                <p>Choose from 5 magical templates – Elven Archmage, Dwarven Blacksmith, Fae Trickster, Dragon Knight, or Necromancer Scholar. Fill your details step-by-step and download a stunning bio‑data.</p>
+                <p>Choose from 9 magical templates – Elven, Dwarven, Fae, Dragon, Necromancer, Angel, Mermaid, Celestial & Modern Professional. Fill your details step‑by‑step and download a stunning bio‑data.</p>
                 <a href="templates.html" class="cta-button">✨ Build Resume Now</a>
             </div>
             <div class="hero-illustration">
                 <div class="floating-shapes">
                     <span>🧝‍♀️</span> <span>⚒️</span> <span>🧚</span> <span>🐉</span> <span>💀</span>
+                    <span>👼</span> <span>🧜‍♀️</span> <span>🌙</span> <span>🧑‍💼</span>
                 </div>
             </div>
         </section>
 
-        <!-- Features -->
         <section class="features">
-            <div class="feature-card fade-up"><div class="feature-icon">📝</div><h3>Step-by-Step Form</h3><p>Fill each section at your own pace. Required fields are validated before you proceed.</p></div>
-            <div class="feature-card fade-up"><div class="feature-icon">🎨</div><h3>5 Unique Themes</h3><p>Elf, Dwarf, Fae, Dragon, Necromancer – each with a distinct visual style and layout.</p></div>
-            <div class="feature-card fade-up"><div class="feature-icon">⬇️</div><h3>Download Ready</h3><p>Generate a beautiful PDF bio‑data. Login to download and keep your resumes safe.</p></div>
+            <div class="feature-card fade-up"><div class="feature-icon">📝</div><h3>Step‑by‑Step Form</h3><p>Easy 5‑step process with validation and optional sections.</p></div>
+            <div class="feature-card fade-up"><div class="feature-icon">🎨</div><h3>9 Unique Themes</h3><p>Fantasy, soft, and modern – all with distinct visual styles.</p></div>
+            <div class="feature-card fade-up"><div class="feature-icon">⬇️</div><h3>Instant PDF Download</h3><p>Professional ATS‑friendly resumes ready in seconds.</p></div>
         </section>
 
-        <!-- Objectives -->
         <h2 class="section-title fade-in">Our Objective</h2>
         <section class="objectives-section">
-            <div class="objective-card fade-up"><p>To provide a hassle‑free, online bio‑data maker that lets anyone create a professional, fantasy‑themed resume in minutes.</p></div>
+            <div class="objective-card fade-up"><p>To provide a hassle‑free online bio‑data maker that lets anyone create a professional, fantasy‑themed resume in minutes.</p></div>
             <div class="objective-card fade-up"><p>To offer unique, visually stunning templates that stand out in job applications and personal projects.</p></div>
         </section>
 
-        <!-- FAQ -->
         <h2 class="section-title fade-in">Frequently Asked Questions</h2>
         <section class="faq-section">
             <div class="faq-card fade-up"><h3>Is the resume builder free?</h3><p>Yes, completely free! You can create and download resumes without any cost.</p></div>
@@ -88,24 +85,28 @@
         const userNameSpan = document.getElementById('userName');
         const logoutBtn = document.getElementById('logoutBtn');
         const dashboardLink = document.getElementById('dashboardLink');
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navLinks = document.getElementById('navLinks');
+
+        // Mobile menu toggle
+        hamburgerBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('show');
+        });
 
         auth.onAuthStateChanged(user => {
             if (user) {
                 authLink.style.display = 'none';
                 userDisplay.style.display = 'flex';
                 userNameSpan.textContent = user.displayName || user.email;
-                dashboardLink.style.display = 'inline-block';  // show Dashboard
+                dashboardLink.style.display = 'inline-block';
             } else {
                 authLink.style.display = 'block';
                 userDisplay.style.display = 'none';
                 dashboardLink.style.display = 'none';
             }
         });
-        logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
 
-        document.getElementById('hamburgerBtn').addEventListener('click', () => {
-    document.querySelector('.nav-links').classList.toggle('show');
-});
+        logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
     </script>
 </body>
 </html>
