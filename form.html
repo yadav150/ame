@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Build Your Resume – Resume By Ame</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase SDK (compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -14,13 +17,16 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="templates.html">Templates</a></li>
                 <li><a href="form.html" class="active">Build Resume</a></li>
-                <li><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+                <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+                <li id="userDisplay" style="display:none;">
+                    <span id="userName"></span>
+                    <button id="logoutBtn" class="btn-logout">Logout</button>
+                </li>
             </ul>
         </div>
     </nav>
 
     <main class="form-container">
-        <!-- Step Indicator -->
         <div class="step-indicator">
             <div class="step active" data-step="1"><span>1</span> Personal</div>
             <div class="step" data-step="2"><span>2</span> Education</div>
@@ -190,15 +196,12 @@
             </section>
         </form>
 
-        <!-- Success Message (hidden initially) -->
+        <!-- Success Message -->
         <div id="successMessage" class="success-overlay" style="display: none;">
             <div class="success-card">
                 <h3>🎉 Your Resume Has Been Successfully Built!</h3>
-                <p>To download your beautiful fantasy resume, please log in or create an account.</p>
-                <div class="success-actions">
-                    <a href="login.html" class="cta-button">Login</a>
-                    <a href="signup.html" class="cta-button secondary">Sign Up</a>
-                </div>
+                <p>You are now logged in and can download your resume. (PDF generation will be added soon.)</p>
+                <button class="cta-button" id="closeSuccess">OK</button>
             </div>
         </div>
     </main>
