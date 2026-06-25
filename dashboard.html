@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard – Resume By Ame</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="templates.html">Templates</a></li>
+                <li><a href="form.html">Build Resume</a></li>
+                <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+                <li id="userDisplay" style="display:none;">
+                    <span id="userName"></span>
+                    <button id="logoutBtn" class="btn-logout">Logout</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+        <div class="dashboard-header">
+            <h2>Your Resumes</h2>
+            <a href="form.html" class="cta-button">+ Create New Resume</a>
+        </div>
+        <div id="resumeList" class="resume-list">
+            <!-- Resumes loaded here -->
+        </div>
+    </main>
+
+    <footer>
+        <p>Made with ❤️ by Ame</p>
+    </footer>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLX-DBrAZZgi7OGRW3-oeno0PJsZ9hzEg",
+            authDomain: "its-me-ame.firebaseapp.com",
+            projectId: "its-me-ame",
+            storageBucket: "its-me-ame.firebasestorage.app",
+            messagingSenderId: "832380884001",
+            appId: "1:832380884001:web:0c9239588ceb8d8995bf60",
+            measurementId: "G-L12EEJG7L9"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const authLink = document.getElementById('authLink');
+        const userDisplay = document.getElementById('userDisplay');
+        const userNameSpan = document.getElementById('userName');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                authLink.style.display = 'none';
+                userDisplay.style.display = 'flex';
+                userNameSpan.textContent = user.displayName || user.email;
+                loadResumes(user.uid);
+            } else {
+                window.location.href = 'login.html'; // must be logged in
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => window.location.href = 'index.html');
+        });
+
+        function loadResumes(uid) {
+            const listEl = document.getElementById('resumeList');
+            listEl.innerHTML = '<p>Loading...</p>';
+            db.collection('resumes')
+                .where('uid', '==', uid)
+                .orderBy('createdAt', 'desc')
+                .get()
+                .then(snapshot => {
+                    if (snapshot.empty) {
+                        listEl.innerHTML = '<p>No resumes yet. <a href="form.html">Create your first resume</a>.</p>';
+                        return;
+                    }
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const resume = doc.data();
+                        const date = resume.createdAt ? resume.createdAt.toDate().toLocaleDateString() : '';
+                        html += `
+                            <div class="resume-card">
+                                <h3>${resume.name}</h3>
+                                <p>Template: ${resume.template} | Created: ${date}</p>
+                                <button class="cta-button small" onclick="regeneratePDF('${doc.id}')">Download PDF</button>
+                            </div>
+                        `;
+                    });
+                    listEl.innerHTML = html;
+                })
+                .catch(err => {
+                    listEl.innerHTML = `<p>Error loading resumes: ${err.message}</p>`;
+                });
+        }
+
+        // This function will regenerate PDF from stored data (we'll need to rebuild using stored data)
+        // For simplicity, store the built HTML? Not needed now; we can just show a message.
+        // Later you can implement full regeneration. For now, we'll just alert.
+        window.regeneratePDF = function(docId) {
+            alert('PDF regeneration from saved data will be available soon. Please recreate the resume if needed.');
+        };
+    </script>
+</body>
+</html>
