@@ -360,19 +360,42 @@ document.addEventListener('DOMContentLoaded', () => {
             const imgData = canvas.toDataURL('image/png');
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgWidth = 210;
+            const pageWidth = 210;
             const pageHeight = 297;
+            const imgWidth = pageWidth - 20;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            const margin = 10;
+
             let heightLeft = imgHeight;
-            let position = 0;
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+            let position = margin;
+
+            // Template accent color for page border
+            const themeColors = {
+                elf: '#c9a84c',
+                dwarf: '#d4782f',
+                fae: '#e891b9',
+                dragon: '#d4a017',
+                necro: '#b8a9d4'
+            };
+            const borderColor = themeColors[template] || '#c9a84c';
+
+            // First page
+            pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+            pdf.setDrawColor(borderColor);
+            pdf.setLineWidth(0.8);
+            pdf.rect(margin - 1, margin - 1, imgWidth + 2, pageHeight - 2 * margin + 2, 'S');
+            heightLeft -= (pageHeight - margin * 2);
+
             while (heightLeft > 0) {
-                position = position - pageHeight;
+                position = margin - (imgHeight - heightLeft);
                 pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
+                pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+                pdf.setDrawColor(borderColor);
+                pdf.setLineWidth(0.8);
+                pdf.rect(margin - 1, margin - 1, imgWidth + 2, pageHeight - 2 * margin + 2, 'S');
+                heightLeft -= (pageHeight - margin * 2);
             }
+
             pdf.save(`${data.name.replace(/\s+/g, '_')}_Resume.pdf`);
             document.getElementById('successMessage').style.display = 'flex';
             saveResumeToFirestore(user.uid, data, template);
@@ -428,61 +451,197 @@ function buildResumeHTML(data, template) {
         necro: { bg: '#111016', border: '#b8a9d4', text: '#d5cde8', accent: '#b8a9d4', headerBg: '#1a1822', font: "'Georgia', serif", dark: true }
     };
     const t = themes[template] || themes.elf;
-    const headingBg = t.accent;
-    const headingText = '#ffffff';
-    const sectionHeadingStyle = `background: ${headingBg}; color: ${headingText}; width: 100%; padding: 5px 8px; margin: 10px 0; border-radius: 5px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;`;
-    const tableStyle = `border: 1px solid #555; border-radius: 5px; border-collapse: separate; border-spacing: 0; overflow: hidden;`;
+    const accentColor = t.accent;
+    const textColor = t.text;
+    const borderColor = t.border;
 
-    let eduRows = data.education.map(e => `<tr><td>${e.exam}</td><td>${e.board}</td><td>${e.year}</td><td>${e.percent}</td><td>${e.division}</td></tr>`).join('');
-    let qualRows = data.otherQual.map(q => `<tr><td>${q.qual}</td><td>${q.inst}</td><td>${q.year}</td><td>${q.score}</td><td>${q.duration}</td></tr>`).join('');
+    // Section heading style - background matches border/accent, Arial font, padding 8px 10px
+    const sectionHeadingStyle = `
+        background: ${accentColor};
+        color: #ffffff;
+        font-family: Arial, sans-serif;
+        width: 100%;
+        padding: 8px 10px;
+        margin: 5px 0;
+        border-radius: 5px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: left;
+        box-sizing: border-box;
+        line-height: 1.4;
+    `;
+
+    // Table style: 1px solid dark grey border, 5px border-radius
+    const tableStyle = `
+        border: 1px solid #555;
+        border-radius: 5px;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden;
+        width: 100%;
+    `;
+
+    // Photo style: slightly larger, 5px border-radius, border color matches template
+    const photoStyle = `
+        width: 110px;
+        height: 130px;
+        border: 2px solid ${borderColor};
+        border-radius: 5px;
+        float: right;
+        margin-left: 20px;
+        object-fit: cover;
+    `;
+
+    let eduRows = data.education.map(e => `
+        <tr>
+            <td>${e.exam || ''}</td>
+            <td>${e.board || ''}</td>
+            <td>${e.year || ''}</td>
+            <td>${e.percent || ''}</td>
+            <td>${e.division || ''}</td>
+        </tr>
+    `).join('');
+
+    let qualRows = data.otherQual.map(q => `
+        <tr>
+            <td>${q.qual || ''}</td>
+            <td>${q.inst || ''}</td>
+            <td>${q.year || ''}</td>
+            <td>${q.score || ''}</td>
+            <td>${q.duration || ''}</td>
+        </tr>
+    `).join('');
 
     return `<!DOCTYPE html>
-<html><head><meta charset="UTF-8"><style>
-    body { font-family: ${t.font}; background: ${t.bg}; color: ${t.text}; margin: 0; padding: 0; }
-    .resume { width: 780px; margin: 0 auto; padding: 30px; border: 3px solid ${t.border}; border-radius: 4px; }
-    .resume-header { text-align: center; margin-bottom: 15px; }
-    .resume-header h1 { margin: 0; font-size: 2rem; color: ${t.accent}; text-transform: uppercase; letter-spacing: 3px; }
-    .applicant-name { font-size: 1.5rem; font-weight: bold; color: ${t.text}; text-align: left; margin-bottom: 15px; }
-    .photo { width: 100px; height: 120px; border: 2px solid ${t.border}; float: right; margin-left: 20px; }
-    .photo img { width: 100%; height: 100%; object-fit: cover; }
-    .section-heading { ${sectionHeadingStyle} }
-    table { width: 100%; ${tableStyle} }
-    th, td { border: 1px solid #555; padding: 6px 8px; text-align: left; font-size: 0.85rem; }
-    th { background: ${t.headerBg}; }
-    .info-table td:first-child { font-weight: bold; width: 30%; }
-    .declaration { margin-top: 20px; font-size: 0.9rem; }
-    .signature { margin-top: 30px; text-align: right; }
-</style></head><body>
-<div class="resume">
-    <div class="resume-header"><h1>Resume</h1></div>
-    <div class="applicant-name">${data.name || 'Your Name'}</div>
-    <div style="overflow:hidden;">
-        ${data.photo ? `<div class="photo"><img src="${data.photo}" alt="photo"/></div>` : ''}
-        <div class="section-heading">Personal Details</div>
-        <table class="info-table">
-            <tr><td>Father's Name</td><td>${data.father}</td></tr>
-            <tr><td>Mother's Name</td><td>${data.mother}</td></tr>
-            <tr><td>Mobile</td><td>${data.mobile}</td></tr>
-            <tr><td>Email</td><td>${data.email}</td></tr>
-            <tr><td>Date of Birth</td><td>${data.dob}</td></tr>
-            <tr><td>Gender</td><td>${data.gender}</td></tr>
-            <tr><td>Languages</td><td>${data.languages}</td></tr>
-            <tr><td>Address</td><td>${data.address}</td></tr>
-            <tr><td>Category</td><td>${data.category}</td></tr>
-            <tr><td>Marital Status</td><td>${data.marital}</td></tr>
-            <tr><td>Experience</td><td>${data.experience}</td></tr>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: ${t.font};
+            background: ${t.bg};
+            color: ${textColor};
+            margin: 0;
+            padding: 0;
+        }
+        .resume-page {
+            width: 780px;
+            margin: 0 auto;
+            padding: 30px;
+            border: 3px solid ${borderColor};
+            border-radius: 4px;
+            background: ${t.bg};
+            page-break-after: always;
+        }
+        .resume-page:last-child {
+            page-break-after: auto;
+        }
+        .resume-header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .resume-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            color: ${accentColor};
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-family: Arial, sans-serif;
+        }
+        .applicant-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: ${textColor};
+            text-align: left;
+            margin-bottom: 15px;
+            font-family: ${t.font};
+        }
+        .photo-container {
+            float: right;
+            margin-left: 20px;
+        }
+        .photo-container img {
+            ${photoStyle}
+        }
+        .section-heading {
+            ${sectionHeadingStyle}
+        }
+        table {
+            ${tableStyle}
+        }
+        th, td {
+            border: 1px solid #555;
+            padding: 6px 8px;
+            text-align: left;
+            font-size: 0.85rem;
+            font-family: ${t.font};
+        }
+        th {
+            background: ${t.headerBg};
+        }
+        .info-table td:first-child {
+            font-weight: bold;
+            width: 30%;
+        }
+        .declaration {
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        .signature {
+            margin-top: 30px;
+            text-align: right;
+        }
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-page">
+        <div class="resume-header">
+            <h1>Resume</h1>
+        </div>
+        <div class="applicant-name">${data.name || 'Your Name'}</div>
+        <div class="clearfix">
+            ${data.photo ? `<div class="photo-container"><img src="${data.photo}" alt="photo"/></div>` : ''}
+            <div class="section-heading">Personal Details</div>
+            <table class="info-table">
+                <tr><td>Father's Name</td><td>${data.father || ''}</td></tr>
+                <tr><td>Mother's Name</td><td>${data.mother || ''}</td></tr>
+                <tr><td>Mobile</td><td>${data.mobile || ''}</td></tr>
+                <tr><td>Email</td><td>${data.email || ''}</td></tr>
+                <tr><td>Date of Birth</td><td>${data.dob || ''}</td></tr>
+                <tr><td>Gender</td><td>${data.gender || ''}</td></tr>
+                <tr><td>Languages</td><td>${data.languages || ''}</td></tr>
+                <tr><td>Address</td><td>${data.address || ''}</td></tr>
+                <tr><td>Category</td><td>${data.category || ''}</td></tr>
+                <tr><td>Marital Status</td><td>${data.marital || ''}</td></tr>
+                <tr><td>Experience</td><td>${data.experience || ''}</td></tr>
+            </table>
+        </div>
+        <div class="section-heading">Educational Qualifications</div>
+        <table>
+            <tr><th>Exam</th><th>Board/University</th><th>Year</th><th>Percentage</th><th>Division</th></tr>
+            ${eduRows}
         </table>
+        <div class="section-heading">Other Qualifications</div>
+        <table>
+            <tr><th>Qualification</th><th>Institute</th><th>Year</th><th>Score</th><th>Duration</th></tr>
+            ${qualRows}
+        </table>
+        <div class="declaration">
+            <p>I declare that all information provided is true and correct.</p>
+        </div>
+        <div class="signature">
+            <p>Place: ${data.place || ''}</p>
+            <p>Date: ${data.date || ''}</p>
+            <p>Signature: ${data.name || ''}</p>
+        </div>
     </div>
-    <div class="section-heading">Educational Qualifications</div>
-    <table><tr><th>Exam</th><th>Board/University</th><th>Year</th><th>Percentage</th><th>Division</th></tr>${eduRows}</table>
-    <div class="section-heading">Other Qualifications</div>
-    <table><tr><th>Qualification</th><th>Institute</th><th>Year</th><th>Score</th><th>Duration</th></tr>${qualRows}</table>
-    <div class="declaration"><p>I declare that all information provided is true and correct.</p></div>
-    <div class="signature">
-        <p>Place: ${data.place}</p>
-        <p>Date: ${data.date}</p>
-        <p>Signature: ${data.name}</p>
-    </div>
-</div>
-</body></html>`;
+</body>
+</html>`;
 }
