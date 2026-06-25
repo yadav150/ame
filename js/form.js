@@ -12,15 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    // ---------- Auth State & Navbar ----------
+    // ---------- Auth State & Navbar (with dashboard toggle) ----------
     const authLink = document.getElementById('authLink');
     const userDisplay = document.getElementById('userDisplay');
     const userNameSpan = document.getElementById('userName');
     const logoutBtn = document.getElementById('logoutBtn');
+    const dashboardLink = document.getElementById('dashboardLink');
 
     let inactivityTimer;
-
     function resetInactivityTimer() {
         clearTimeout(inactivityTimer);
         inactivityTimer = setTimeout(() => {
@@ -30,8 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }, 60000); // 1 minute
     }
-
-    // Activity events
     ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(event => {
         document.addEventListener(event, resetInactivityTimer);
     });
@@ -42,15 +41,16 @@ document.addEventListener('DOMContentLoaded', () => {
             authLink.style.display = 'none';
             userDisplay.style.display = 'flex';
             userNameSpan.textContent = user.displayName || user.email;
+            if (dashboardLink) dashboardLink.style.display = 'inline-block';
             const emailField = document.getElementById('email');
             if (emailField && !emailField.value) {
                 emailField.value = user.email;
             }
-            // Restore saved form data if any
             restoreFormData();
         } else {
             authLink.style.display = 'block';
             userDisplay.style.display = 'none';
+            if (dashboardLink) dashboardLink.style.display = 'none';
         }
     });
 
@@ -120,9 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('place').value = data.place || 'Guwahati';
         document.getElementById('dateAuto').value = data.date || '';
 
-        // Restore education entries
         const eduContainer = document.getElementById('educationContainer');
-        eduContainer.innerHTML = ''; // clear existing
+        eduContainer.innerHTML = '';
         data.education.forEach(edu => {
             const newEntry = document.createElement('div');
             newEntry.className = 'education-entry';
@@ -147,7 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
             eduContainer.appendChild(newEntry);
         });
 
-        // Restore other qualifications
         const qualContainer = document.getElementById('otherQualContainer');
         qualContainer.innerHTML = '';
         data.otherQual.forEach(q => {
@@ -166,11 +164,10 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             qualContainer.appendChild(newEntry);
         });
-
         localStorage.removeItem('savedFormData');
     }
 
-    // ---------- Step Navigation (same as before) ----------
+    // ---------- Step Navigation ----------
     const steps = document.querySelectorAll('.form-step');
     const stepIndicators = document.querySelectorAll('.step');
     let currentStep = 1;
@@ -192,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function validateStep(stepNumber) {
-        if (stepNumber === 3) return true; // Optional
+        if (stepNumber === 3) return true; // optional
         const currentStepEl = document.getElementById(`step${stepNumber}`);
         const requiredFields = currentStepEl.querySelectorAll('[required]');
         let isValid = true;
@@ -223,7 +220,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (validateStep(currentStep)) showStep(nextStep);
         });
     });
-
     document.querySelectorAll('.btn-prev').forEach(btn => {
         btn.addEventListener('click', () => {
             const prevStep = parseInt(btn.dataset.prev);
@@ -289,14 +285,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!validateStep(4)) return;
         const user = auth.currentUser;
         if (!user) {
-            // Save form data to localStorage before redirect
             saveFormData();
             alert('Please log in to download your resume. Your data will be restored after login.');
             window.location.href = 'login.html';
             return;
         }
 
-        // Gather form data
         const data = {
             name: document.getElementById('applicantName').value,
             father: document.getElementById('fatherName').value,
@@ -381,7 +375,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             pdf.save(`${data.name.replace(/\s+/g, '_')}_Resume.pdf`);
             document.getElementById('successMessage').style.display = 'flex';
-            // Save to Firestore
             saveResumeToFirestore(user.uid, data, template);
         }).catch(err => {
             console.error('PDF generation error:', err);
@@ -393,7 +386,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('successMessage').style.display = 'none';
     });
 
-    // Read template from URL
     const urlParams = new URLSearchParams(window.location.search);
     const template = urlParams.get('template');
     if (template) {
@@ -403,23 +395,6 @@ document.addEventListener('DOMContentLoaded', () => {
     showStep(1);
 });
 
-// ---------- Firestore Save ----------
-function saveResumeToFirestore(uid, data, template) {
-    const db = firebase.firestore();
-    db.collection('resumes').add({
-        uid,
-        name: data.name,
-        template,
-        data: JSON.parse(JSON.stringify(data)), // Remove non-serializable
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-        console.log('Resume saved to Firestore');
-    }).catch(err => {
-        console.error('Firestore save error:', err);
-    });
-}
-
-// ---------- Helper Functions ----------
 function readFileAsDataURL(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -429,76 +404,46 @@ function readFileAsDataURL(file) {
     });
 }
 
+function saveResumeToFirestore(uid, data, template) {
+    const db = firebase.firestore();
+    db.collection('resumes').add({
+        uid,
+        name: data.name,
+        template,
+        data: JSON.parse(JSON.stringify(data)),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        console.log('Resume saved to Firestore');
+    }).catch(err => {
+        console.error('Firestore save error:', err);
+    });
+}
+
 function buildResumeHTML(data, template) {
     const themes = {
-        elf: {
-            bg: '#f5f1e3', border: '#c9a84c', text: '#2d5a27', accent: '#c9a84c',
-            headerBg: '#fdfcf5', font: "'Georgia', serif"
-        },
-        dwarf: {
-            bg: '#fdf5e6', border: '#d4782f', text: '#4a2c17', accent: '#d4782f',
-            headerBg: '#fdf0e0', font: "'Georgia', serif"
-        },
-        fae: {
-            bg: '#fef9ff', border: '#e891b9', text: '#8b5cf6', accent: '#e891b9',
-            headerBg: '#fdf0fa', font: "'Georgia', serif"
-        },
-        dragon: {
-            bg: '#1c0f0f', border: '#d4a017', text: '#e0d5c0', accent: '#d4a017',
-            headerBg: '#2a1515', font: "'Georgia', serif", dark: true
-        },
-        necro: {
-            bg: '#111016', border: '#b8a9d4', text: '#d5cde8', accent: '#b8a9d4',
-            headerBg: '#1a1822', font: "'Georgia', serif", dark: true
-        }
+        elf: { bg: '#f5f1e3', border: '#c9a84c', text: '#2d5a27', accent: '#c9a84c', headerBg: '#fdfcf5', font: "'Georgia', serif" },
+        dwarf: { bg: '#fdf5e6', border: '#d4782f', text: '#4a2c17', accent: '#d4782f', headerBg: '#fdf0e0', font: "'Georgia', serif" },
+        fae: { bg: '#fef9ff', border: '#e891b9', text: '#8b5cf6', accent: '#e891b9', headerBg: '#fdf0fa', font: "'Georgia', serif" },
+        dragon: { bg: '#1c0f0f', border: '#d4a017', text: '#e0d5c0', accent: '#d4a017', headerBg: '#2a1515', font: "'Georgia', serif", dark: true },
+        necro: { bg: '#111016', border: '#b8a9d4', text: '#d5cde8', accent: '#b8a9d4', headerBg: '#1a1822', font: "'Georgia', serif", dark: true }
     };
     const t = themes[template] || themes.elf;
-    const textColor = t.text;
-    const bgColor = t.bg;
-    const borderColor = t.border;
-    const accentColor = t.accent;
+    const headingBg = t.accent;
+    const headingText = '#ffffff';
+    const sectionHeadingStyle = `background: ${headingBg}; color: ${headingText}; width: 100%; padding: 5px 8px; margin: 10px 0; border-radius: 5px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;`;
+    const tableStyle = `border: 1px solid #555; border-radius: 5px; border-collapse: separate; border-spacing: 0; overflow: hidden;`;
 
-    // Section heading style: background = accent (matching border), text = white (or contrasting)
-    const headingBg = accentColor;
-    const headingText = '#ffffff'; // white for contrast
-
-    const sectionHeadingStyle = `
-        background: ${headingBg};
-        color: ${headingText};
-        width: 100%;
-        padding: 5px 8px;
-        margin: 10px 0;
-        border-radius: 5px;
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    `;
-
-    // Table border style
-    const tableStyle = `
-        border: 1px solid #555;
-        border-radius: 5px;
-        border-collapse: separate;
-        border-spacing: 0;
-        overflow: hidden;
-    `;
-
-    let eduRows = data.education.map(e => `
-        <tr><td>${e.exam}</td><td>${e.board}</td><td>${e.year}</td><td>${e.percent}</td><td>${e.division}</td></tr>
-    `).join('');
-
-    let qualRows = data.otherQual.map(q => `
-        <tr><td>${q.qual}</td><td>${q.inst}</td><td>${q.year}</td><td>${q.score}</td><td>${q.duration}</td></tr>
-    `).join('');
+    let eduRows = data.education.map(e => `<tr><td>${e.exam}</td><td>${e.board}</td><td>${e.year}</td><td>${e.percent}</td><td>${e.division}</td></tr>`).join('');
+    let qualRows = data.otherQual.map(q => `<tr><td>${q.qual}</td><td>${q.inst}</td><td>${q.year}</td><td>${q.score}</td><td>${q.duration}</td></tr>`).join('');
 
     return `<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><style>
-    body { font-family: ${t.font}; background: ${bgColor}; color: ${textColor}; margin: 0; padding: 0; }
-    .resume { width: 780px; margin: 0 auto; padding: 30px; border: 3px solid ${borderColor}; border-radius: 4px; }
+    body { font-family: ${t.font}; background: ${t.bg}; color: ${t.text}; margin: 0; padding: 0; }
+    .resume { width: 780px; margin: 0 auto; padding: 30px; border: 3px solid ${t.border}; border-radius: 4px; }
     .resume-header { text-align: center; margin-bottom: 15px; }
-    .resume-header h1 { margin: 0; font-size: 2rem; color: ${accentColor}; text-transform: uppercase; letter-spacing: 3px; }
-    .applicant-name { font-size: 1.5rem; font-weight: bold; color: ${textColor}; text-align: left; margin-bottom: 15px; }
-    .photo { width: 100px; height: 120px; border: 2px solid ${borderColor}; float: right; margin-left: 20px; }
+    .resume-header h1 { margin: 0; font-size: 2rem; color: ${t.accent}; text-transform: uppercase; letter-spacing: 3px; }
+    .applicant-name { font-size: 1.5rem; font-weight: bold; color: ${t.text}; text-align: left; margin-bottom: 15px; }
+    .photo { width: 100px; height: 120px; border: 2px solid ${t.border}; float: right; margin-left: 20px; }
     .photo img { width: 100%; height: 100%; object-fit: cover; }
     .section-heading { ${sectionHeadingStyle} }
     table { width: 100%; ${tableStyle} }
