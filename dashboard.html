@@ -8,6 +8,23 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <style>
+        /* Dashboard specific styles – already included in main CSS, but ensure they exist */
+        .dashboard-wrapper { display: flex; flex-wrap: wrap; gap: 2rem; max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
+        .profile-sidebar { flex: 0 0 280px; background: var(--surface); padding: 2rem; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; }
+        .avatar-circle { width: 100px; height: 100px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: bold; margin: 0 auto 1rem; }
+        .welcome-text { font-size: 1.2rem; margin-bottom: 0.5rem; }
+        .user-email { color: var(--text-light); font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .logout-btn-side { background: var(--error); color: white; border: none; padding: 0.7rem 2rem; border-radius: 30px; cursor: pointer; width: 100%; font-weight: 600; }
+        .resumes-section { flex: 1; min-width: 0; }
+        .resumes-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+        .resumes-table th, .resumes-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); }
+        .resumes-table th { background: var(--primary); color: white; font-weight: 500; }
+        .resumes-table tr:last-child td { border-bottom: none; }
+        .action-link { color: var(--primary); font-weight: 500; margin-right: 10px; }
+        .create-new-btn { margin-bottom: 1.5rem; }
+        @media (max-width: 768px) { .dashboard-wrapper { flex-direction: column; } .profile-sidebar { flex: none; } }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -17,20 +34,41 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="templates.html">Templates</a></li>
                 <li><a href="form.html">Build Resume</a></li>
-                <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                <li id="dashboardLink"><a href="dashboard.html" class="active">Dashboard</a></li>
                 <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
-                <li id="userDisplay" style="display:none;"><span id="userName"></span> <button id="logoutBtn" class="btn-logout">Logout</button></li>
+                <li id="userDisplay" style="display:none;">
+                    <span id="userName"></span>
+                    <button id="logoutBtn" class="btn-logout">Logout</button>
+                </li>
             </ul>
         </div>
     </nav>
 
-    <main class="dashboard-container fade-in">
-        <div class="dashboard-header">
-            <h2>Your Resumes</h2>
-            <a href="form.html" class="cta-button">+ Create New Resume</a>
-        </div>
-        <div id="resumeList" class="resume-list">
-            <!-- Resume cards will be inserted here; min-height set in CSS prevents CLS -->
+    <main>
+        <div class="dashboard-wrapper fade-in">
+            <!-- Profile Sidebar -->
+            <aside class="profile-sidebar">
+                <div class="avatar-circle" id="avatarLetter">?</div>
+                <div class="welcome-text">Welcome, <strong id="welcomeName">User</strong></div>
+                <div class="user-email" id="userEmailDisplay">user@example.com</div>
+                <button class="logout-btn-side" id="sidebarLogout">Logout</button>
+            </aside>
+
+            <!-- Resumes Section -->
+            <section class="resumes-section">
+                <div class="create-new-btn">
+                    <a href="form.html" class="cta-button">+ Create New Resume</a>
+                </div>
+                <table class="resumes-table" id="resumeTable">
+                    <thead>
+                        <tr><th>Name</th><th>Template</th><th>Created</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="resumeTableBody">
+                        <!-- Rows dynamically inserted -->
+                    </tbody>
+                </table>
+                <p id="noResumesMsg" style="display:none; margin-top:1rem;">No resumes yet. Create your first one!</p>
+            </section>
         </div>
     </main>
 
@@ -56,49 +94,75 @@
         const userDisplay = document.getElementById('userDisplay');
         const userNameSpan = document.getElementById('userName');
         const logoutBtn = document.getElementById('logoutBtn');
+        const sidebarLogout = document.getElementById('sidebarLogout');
+        const avatarLetter = document.getElementById('avatarLetter');
+        const welcomeName = document.getElementById('welcomeName');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+        const resumeTableBody = document.getElementById('resumeTableBody');
+        const noResumesMsg = document.getElementById('noResumesMsg');
 
-        auth.onAuthStateChanged(user => {
+        function updateUI(user) {
             if (user) {
+                const displayName = user.displayName || user.email;
+                const firstName = displayName.split(' ')[0] || displayName;
+                const firstLetter = (user.displayName?.[0] || user.email[0]).toUpperCase();
+                avatarLetter.textContent = firstLetter;
+                welcomeName.textContent = firstName;
+                userEmailDisplay.textContent = user.email;
+
+                // Navbar
                 authLink.style.display = 'none';
                 userDisplay.style.display = 'flex';
-                userNameSpan.textContent = user.displayName || user.email;
+                userNameSpan.textContent = displayName;
+                document.getElementById('dashboardLink').style.display = 'inline-block';
                 loadResumes(user.uid);
             } else {
                 window.location.href = 'login.html';
             }
+        }
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                updateUI(user);
+            } else {
+                window.location.href = 'login.html';
+            }
         });
+
+        // Logout from navbar or sidebar
         logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
+        sidebarLogout.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
 
         function loadResumes(uid) {
-            const listEl = document.getElementById('resumeList');
-            listEl.innerHTML = '<div class="resume-card"><p>Loading your resumes…</p></div>';
+            resumeTableBody.innerHTML = '<tr><td colspan="4">Loading…</td></tr>';
             db.collection('resumes')
                 .where('uid', '==', uid)
                 .orderBy('createdAt', 'desc')
                 .get()
                 .then(snapshot => {
                     if (snapshot.empty) {
-                        listEl.innerHTML = '<div class="resume-card"><p>No resumes yet. <a href="form.html">Create your first resume</a>.</p></div>';
+                        resumeTableBody.innerHTML = '';
+                        noResumesMsg.style.display = 'block';
                         return;
                     }
+                    noResumesMsg.style.display = 'none';
                     let html = '';
                     snapshot.forEach(doc => {
                         const resume = doc.data();
-                        const date = resume.createdAt ? resume.createdAt.toDate().toLocaleDateString() : '';
+                        const date = resume.createdAt ? resume.createdAt.toDate().toLocaleDateString() : 'N/A';
                         html += `
-                            <div class="resume-card">
-                                <h3>${resume.name || 'Unnamed'}</h3>
-                                <p>Template: ${resume.template} • Created: ${date}</p>
-                                <div class="card-actions">
-                                    <button class="cta-button small" onclick="alert('Download feature coming soon.')">Download PDF</button>
-                                </div>
-                            </div>
+                            <tr>
+                                <td>${resume.name || 'Unnamed'}</td>
+                                <td>${resume.template}</td>
+                                <td>${date}</td>
+                                <td><a href="#" class="action-link" onclick="alert('Download coming soon')">Download</a></td>
+                            </tr>
                         `;
                     });
-                    listEl.innerHTML = html;
+                    resumeTableBody.innerHTML = html;
                 })
                 .catch(err => {
-                    listEl.innerHTML = `<div class="resume-card"><p>Error: ${err.message}</p></div>`;
+                    resumeTableBody.innerHTML = `<tr><td colspan="4">Error: ${err.message}</td></tr>`;
                 });
         }
     </script>
