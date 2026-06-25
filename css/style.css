@@ -426,3 +426,81 @@ footer { text-align: center; padding: 1.5rem; background: var(--surface); border
     margin: 0 auto;
     width: 100%;
 }
+/* ========== MULTI-SELECT SKILLS DROPDOWN ========== */
+.multi-select-wrapper { position: relative; }
+.multi-select-display {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    min-height: 44px;
+    cursor: pointer;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    transition: var(--transition);
+}
+.multi-select-display:hover { border-color: var(--primary); }
+.placeholder-text { color: #999; font-size: 0.9rem; }
+.selected-skill-tag {
+    background: var(--primary);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.remove-skill { cursor: pointer; font-weight: bold; margin-left: 2px; }
+.remove-skill:hover { color: #ffdddd; }
+
+.multi-select-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    z-index: 20;
+    max-height: 320px;
+    overflow: hidden;
+}
+.multi-select-dropdown.open { display: block; }
+.dropdown-search { padding: 8px; border-bottom: 1px solid #eee; }
+.dropdown-search input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+.dropdown-list {
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 8px;
+}
+.checkbox-item {
+    display: block;
+    padding: 6px 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    border-radius: 4px;
+}
+.checkbox-item:hover { background: #f0f0ff; }
+.checkbox-item input { margin-right: 8px; }
+.dropdown-footer {
+    padding: 8px;
+    border-top: 1px solid #eee;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-light);
+    font-weight: bold;
+}
+
+/* Wider form */
+.form-container { max-width: 100% !important; padding: 0 20px; }
+.form-step { max-width: 1100px; margin: 0 auto; width: 100%; }
