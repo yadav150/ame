@@ -645,3 +645,6 @@ function buildResumeHTML(data, template) {
 </body>
 </html>`;
 }
+document.getElementById('hamburgerBtn').addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.toggle('show');
+});
