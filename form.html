@@ -6,7 +6,7 @@
     <title>Build Your Resume – Resume By Ame</title>
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
     <link rel="stylesheet" href="css/style.css">
-    <!-- Firebase SDK (compat) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -17,8 +17,9 @@
             <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
             <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
             <ul class="nav-links" id="navLinks">
-                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="index.html">Home</a></li>
                 <li><a href="templates.html">Templates</a></li>
+                <li><a href="form.html" class="active">Build Resume</a></li>
                 <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
                 <li id="authLink" style="display:none;"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
                 <li id="userDisplay" style="display:none;">
@@ -32,159 +33,203 @@
     <main class="form-container">
         <div class="step-indicator">
             <div class="step active" data-step="1"><span>1</span> Personal</div>
-            <div class="step" data-step="2"><span>2</span> Objective</div>
-            <div class="step" data-step="3"><span>3</span> Education</div>
-            <div class="step" data-step="4"><span>4</span> Experience</div>
+            <div class="step" data-step="2"><span>2</span> Education</div>
+            <div class="step" data-step="3"><span>3</span> Skills & Objectives</div>
+            <div class="step" data-step="4"><span>4</span> Experience & Other</div>
             <div class="step" data-step="5"><span>5</span> Finalize</div>
         </div>
 
         <form id="resumeForm" novalidate>
-            <!-- Step 1: Personal Profile -->
+            <!-- Step 1: Personal Details -->
             <section class="form-step active" id="step1">
-                <h2>Personal Profile</h2>
+                <div class="step-error" id="step1Error" style="display:none;"></div>
+                <h2>Personal Details</h2>
+                <div class="form-row">
+                    <div class="form-group"><label>Applicant's Name <span class="req">*</span></label><input type="text" id="applicantName" required></div>
+                    <div class="form-group"><label>Father's Name <span class="req">*</span></label><input type="text" id="fatherName" required></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Mother's Name <span class="req">*</span></label><input type="text" id="motherName" required></div>
+                    <div class="form-group"><label>Mobile Number <span class="req">*</span></label><input type="tel" id="mobile" required></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Email Address <span class="req">*</span></label><input type="email" id="email" required></div>
+                    <div class="form-group"><label>Date of Birth <span class="req">*</span></label><input type="date" id="dob" required></div>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Applicant's Name <span class="req">*</span></label>
-                        <input type="text" id="applicantName" required placeholder="Full name">
+                        <label>Gender <span class="req">*</span></label>
+                        <select id="gender" required>
+                            <option value="">-- Select Gender --</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label>Father's Name <span class="req">*</span></label>
-                        <input type="text" id="fatherName" required>
+                        <label>Category <span class="req">*</span></label>
+                        <select id="category" required>
+                            <option value="">-- Select Category --</option>
+                            <option value="General">General</option>
+                            <option value="OBC">OBC</option>
+                            <option value="SC">SC</option>
+                            <option value="ST">ST</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Date of Birth <span class="req">*</span></label>
-                        <input type="date" id="dob" required>
-                    </div>
-                    <div class="form-group">
                         <label>Marital Status <span class="req">*</span></label>
                         <select id="maritalStatus" required>
-                            <option value="">-- Select --</option>
-                            <option value="Single">Single</option>
+                            <option value="">-- Marital Status --</option>
+                            <option value="Unmarried">Unmarried</option>
                             <option value="Married">Married</option>
                             <option value="Divorced">Divorced</option>
                             <option value="Widowed">Widowed</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label>Known Languages <span class="req">*</span></label>
+                        <input type="text" id="languages" required placeholder="e.g., English, Hindi, Assamese">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Permanent Address <span class="req">*</span></label>
-                    <textarea id="permanentAddress" required placeholder="Full permanent address"></textarea>
+                    <label>Experience (overview) <span class="req">*</span></label>
+                    <input type="text" id="experience" required placeholder="e.g., 2 years in XYZ Company">
                 </div>
-                <div class="form-group">
-                    <label>Temporary Address <span class="req">*</span></label>
-                    <textarea id="temporaryAddress" required placeholder="Current address"></textarea>
+
+                <!-- Address fields -->
+                <h3>Address</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Village / Town <span class="req">*</span></label><input type="text" id="village" required></div>
+                    <div class="form-group"><label>Post Office (PO) <span class="req">*</span></label><input type="text" id="postOffice" required></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Email <span class="req">*</span></label>
-                        <input type="email" id="email" required placeholder="you@example.com">
-                    </div>
-                    <div class="form-group">
-                        <label>Phone <span class="req">*</span></label>
-                        <input type="tel" id="phone" required placeholder="+1234567890">
-                    </div>
+                    <div class="form-group"><label>Mouza <span class="req">*</span></label><input type="text" id="mouza" required></div>
+                    <div class="form-group"><label>District <span class="req">*</span></label><input type="text" id="district" required></div>
                 </div>
-                <div class="form-group">
-                    <label>Nationality <span class="req">*</span></label>
-                    <input type="text" id="nationality" required placeholder="e.g., Indian">
+                <div class="form-row">
+                    <div class="form-group"><label>State <span class="req">*</span></label><input type="text" id="state" required placeholder="e.g., Assam"></div>
+                    <div class="form-group"><label>PIN Code <span class="req">*</span></label><input type="text" id="pin" required></div>
                 </div>
+
                 <div class="btn-group">
                     <button type="button" class="btn-next" data-next="2">Next →</button>
                 </div>
             </section>
 
-            <!-- Step 2: Professional Objective -->
+            <!-- Step 2: Educational Qualifications -->
             <section class="form-step" id="step2">
-                <h2>Professional Objective</h2>
-                <div class="form-group">
-                    <label>Career Objective / Summary <span class="req">*</span></label>
-                    <textarea id="objective" required placeholder="Write 1‑2 paragraphs about your career goals..." rows="5"></textarea>
+                <div class="step-error" id="step2Error" style="display:none;"></div>
+                <h2>Educational Qualifications</h2>
+                <div id="educationContainer">
+                    <div class="education-entry">
+                        <div class="form-row">
+                            <div class="form-group"><label>Exam Name <span class="req">*</span></label><input type="text" class="examName" required></div>
+                            <div class="form-group"><label>Board/University <span class="req">*</span></label><input type="text" class="board" required></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Passing Year <span class="req">*</span></label><input type="text" class="passYear" required placeholder="YYYY"></div>
+                            <div class="form-group"><label>Percentage <span class="req">*</span></label><input type="text" class="percentage" required placeholder="85%"></div>
+                        </div>
+                        <div class="form-group"><label>Division <span class="req">*</span></label>
+                            <select class="division" required>
+                                <option value="">-- Division --</option>
+                                <option value="First">First</option>
+                                <option value="Second">Second</option>
+                                <option value="Third">Third</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
+                <button type="button" class="btn-add" id="addEducation">+ Add More Education</button>
                 <div class="btn-group">
                     <button type="button" class="btn-prev" data-prev="1">← Previous</button>
                     <button type="button" class="btn-next" data-next="3">Next →</button>
                 </div>
             </section>
 
-            <!-- Step 3: Education -->
+            <!-- Step 3: Skills & Objectives -->
             <section class="form-step" id="step3">
-                <h2>Academic Qualifications</h2>
-                <div id="educationContainer">
-                    <div class="education-entry">
-                        <div class="form-row">
-                            <div class="form-group"><label>Qualification <span class="req">*</span></label><input type="text" class="qualification" required placeholder="e.g., MBA"></div>
-                            <div class="form-group"><label>Year of Passing <span class="req">*</span></label><input type="text" class="passYear" required placeholder="YYYY"></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><label>Institute <span class="req">*</span></label><input type="text" class="institute" required></div>
-                            <div class="form-group"><label>Board / University <span class="req">*</span></label><input type="text" class="board" required></div>
-                        </div>
-                        <div class="form-group">
-                            <label>Percentage / CGPA <span class="req">*</span></label>
-                            <input type="text" class="percentage" required placeholder="e.g., 78% or 8.5 CGPA">
-                        </div>
+                <div class="step-error" id="step3Error" style="display:none;"></div>
+                <h2>Skills & Objectives</h2>
+
+                <!-- Objectives -->
+                <div class="form-group">
+                    <label>Career Objective <span class="req">*</span></label>
+                    <select id="objective" required>
+                        <option value="">-- Select an objective --</option>
+                        <option value="Seeking a challenging position in a reputable organization to expand my learnings, knowledge, and skills.">Seeking a challenging position in a reputable organization to expand my learnings, knowledge, and skills.</option>
+                        <option value="To obtain a responsible position that fully utilizes my skills and offers professional growth while being resourceful and innovative.">To obtain a responsible position that fully utilizes my skills and offers professional growth while being resourceful and innovative.</option>
+                        <option value="Looking for a stable career opportunity where I can contribute to the company's success through my dedication and hard work.">Looking for a stable career opportunity where I can contribute to the company's success through my dedication and hard work.</option>
+                        <option value="To secure a promising position in a dynamic organization that provides both a challenge and a chance to demonstrate my abilities.">To secure a promising position in a dynamic organization that provides both a challenge and a chance to demonstrate my abilities.</option>
+                        <option value="Aspiring to join an esteemed organization that encourages continuous learning and provides exposure to new ideas and personal development.">Aspiring to join an esteemed organization that encourages continuous learning and provides exposure to new ideas and personal development.</option>
+                    </select>
+                </div>
+
+                <!-- Skills multi-select -->
+                <div class="form-group">
+                    <label>Skills <span class="req">*</span> (click to add, click again to remove)</label>
+                    <div id="skillsContainer" class="skills-container">
+                        <div class="skills-selected" id="skillsSelected"></div>
+                        <div class="skills-list" id="skillsList"></div>
+                    </div>
+                    <input type="hidden" id="skillsHidden" required>
+                    <small class="skill-hint">Select at least one skill from the list or type your own and press Enter.</small>
+                    <div class="custom-skill-add">
+                        <input type="text" id="customSkillInput" placeholder="Add your own skill...">
+                        <button type="button" id="addCustomSkill" class="btn-add small">+ Add</button>
                     </div>
                 </div>
-                <button type="button" class="btn-add" id="addEducation">+ Add Another Qualification</button>
+
                 <div class="btn-group">
                     <button type="button" class="btn-prev" data-prev="2">← Previous</button>
                     <button type="button" class="btn-next" data-next="4">Next →</button>
                 </div>
             </section>
 
-            <!-- Step 4: Professional Experience -->
+            <!-- Step 4: Experience & Other Qualifications (Optional) -->
             <section class="form-step" id="step4">
-                <h2>Professional Experience</h2>
+                <h2>Professional Experience (Optional)</h2>
                 <div id="experienceContainer">
                     <div class="experience-entry">
                         <div class="form-row">
-                            <div class="form-group"><label>Job Title <span class="req">*</span></label><input type="text" class="jobTitle" required></div>
-                            <div class="form-group"><label>Company Name <span class="req">*</span></label><input type="text" class="company" required></div>
+                            <div class="form-group"><label>Job Title</label><input type="text" class="jobTitle"></div>
+                            <div class="form-group"><label>Company Name</label><input type="text" class="company"></div>
                         </div>
-                        <div class="form-group">
-                            <label>Duration <span class="req">*</span></label>
-                            <input type="text" class="duration" required placeholder="e.g., Nov 2011 – Present">
-                        </div>
-                        <div class="form-group">
-                            <label>Responsibilities <span class="req">*</span></label>
-                            <textarea class="responsibilities" required placeholder="• Responsibility 1&#10;• Responsibility 2&#10;• Responsibility 3" rows="4"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Achievements (optional)</label>
-                            <input type="text" class="achievements" placeholder="e.g., Increased sales by 20%">
-                        </div>
+                        <div class="form-group"><label>Duration</label><input type="text" class="duration" placeholder="e.g., Nov 2011 – Present"></div>
+                        <div class="form-group"><label>Responsibilities</label><textarea class="responsibilities" rows="3"></textarea></div>
+                        <div class="form-group"><label>Achievements</label><input type="text" class="achievements"></div>
                     </div>
                 </div>
                 <button type="button" class="btn-add" id="addExperience">+ Add Another Experience</button>
+
+                <hr>
+                <h2>Other Qualifications (Optional)</h2>
+                <div id="otherQualContainer">
+                    <div class="other-entry">
+                        <div class="form-row">
+                            <div class="form-group"><label>Qualification Name</label><input type="text" class="qualName"></div>
+                            <div class="form-group"><label>Institute/Organization</label><input type="text" class="institute"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Passing Year</label><input type="text" class="qualYear" placeholder="YYYY"></div>
+                            <div class="form-group"><label>Score/Grade</label><input type="text" class="score"></div>
+                        </div>
+                        <div class="form-group"><label>Duration</label><input type="text" class="oDuration" placeholder="6 months"></div>
+                    </div>
+                </div>
+                <button type="button" class="btn-add" id="addOtherQual">+ Add More</button>
+
                 <div class="btn-group">
                     <button type="button" class="btn-prev" data-prev="3">← Previous</button>
                     <button type="button" class="btn-next" data-next="5">Next →</button>
                 </div>
             </section>
 
-            <!-- Step 5: Additional Sections + Final -->
+            <!-- Step 5: Final Steps -->
             <section class="form-step" id="step5">
-                <h2>Additional Information (Optional)</h2>
-                <div class="form-row">
-                    <div class="form-group"><label>Skills</label><input type="text" id="skills" placeholder="e.g., Project Management, MS Office"></div>
-                    <div class="form-group"><label>Languages Known</label><input type="text" id="languages" placeholder="e.g., English, Hindi"></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label>Certifications</label><input type="text" id="certifications" placeholder="e.g., PMP, Six Sigma"></div>
-                    <div class="form-group"><label>Training / Workshops</label><input type="text" id="training" placeholder="e.g., Leadership Training"></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label>Projects</label><input type="text" id="projects" placeholder="e.g., ERP Implementation"></div>
-                    <div class="form-group"><label>Awards</label><input type="text" id="awards" placeholder="e.g., Best Employee 2022"></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label>References</label><input type="text" id="references" placeholder="Available upon request"></div>
-                    <div class="form-group"><label>Interests / Hobbies</label><input type="text" id="interests" placeholder="e.g., Reading, Traveling"></div>
-                </div>
-
-                <hr style="margin: 2rem 0;">
+                <div class="step-error" id="step5Error" style="display:none;"></div>
                 <h2>Final Steps</h2>
                 <div class="upload-section">
                     <label>Upload Passport Size Photo <span class="req">*</span> (Max 100KB)</label>
@@ -193,7 +238,7 @@
                 </div>
                 <div class="declaration">
                     <input type="checkbox" id="declarationCheck" required>
-                    <label for="declarationCheck">I declare that all the information provided is true and correct.</label>
+                    <label for="declarationCheck">I hereby declare that the above particulars of facts and information stated are true, correct and complete to the best of my belief and knowledge.</label>
                 </div>
                 <div class="form-group">
                     <label>Place:</label>
@@ -225,7 +270,6 @@
     </footer>
 
     <script src="js/form.js"></script>
-    <!-- PDF Generation Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
