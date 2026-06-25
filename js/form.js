@@ -1,17 +1,111 @@
 // form.js
 document.addEventListener('DOMContentLoaded', () => {
+    // ---------- Firebase Init ----------
+    const firebaseConfig = {
+        apiKey: "AIzaSyBLX-DBrAZZgi7OGRW3-oeno0PJsZ9hzEg",
+        authDomain: "its-me-ame.firebaseapp.com",
+        projectId: "its-me-ame",
+        storageBucket: "its-me-ame.firebasestorage.app",
+        messagingSenderId: "832380884001",
+        appId: "1:832380884001:web:0c9239588ceb8d8995bf60",
+        measurementId: "G-L12EEJG7L9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // ---------- Auth State & Navbar ----------
+    const authLink = document.getElementById('authLink');
+    const userDisplay = document.getElementById('userDisplay');
+    const userNameSpan = document.getElementById('userName');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            // Logged in
+            authLink.style.display = 'none';
+            userDisplay.style.display = 'flex';
+            userNameSpan.textContent = user.displayName || user.email;
+            // Pre-fill email if field exists and empty
+            const emailField = document.getElementById('email');
+            if (emailField && !emailField.value) {
+                emailField.value = user.email;
+            }
+        } else {
+            // Logged out
+            authLink.style.display = 'block';
+            userDisplay.style.display = 'none';
+        }
+    });
+
+    logoutBtn.addEventListener('click', () => {
+        auth.signOut().then(() => {
+            window.location.href = 'index.html';
+        });
+    });
+
+    // ---------- Step Navigation ----------
     const steps = document.querySelectorAll('.form-step');
     const stepIndicators = document.querySelectorAll('.step');
     let currentStep = 1;
-    const totalSteps = 4;
 
-    // Navigation buttons
-    const nextButtons = document.querySelectorAll('.btn-next');
-    const prevButtons = document.querySelectorAll('.btn-prev');
-    const generateBtn = document.getElementById('generateBtn');
-    const successMessage = document.getElementById('successMessage');
+    function showStep(stepNumber) {
+        steps.forEach(step => step.classList.remove('active'));
+        document.getElementById(`step${stepNumber}`).classList.add('active');
+        stepIndicators.forEach(ind => {
+            const num = parseInt(ind.dataset.step);
+            ind.classList.remove('active', 'completed');
+            if (num === stepNumber) ind.classList.add('active');
+            else if (num < stepNumber) ind.classList.add('completed');
+        });
+        currentStep = stepNumber;
+        if (stepNumber === 4) {
+            const today = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('dateAuto').value = today;
+        }
+    }
 
-    // Add dynamic education & qualification rows
+    function validateStep(stepNumber) {
+        const currentStepEl = document.getElementById(`step${stepNumber}`);
+        const requiredFields = currentStepEl.querySelectorAll('[required]');
+        let isValid = true;
+        requiredFields.forEach(field => {
+            if (field.type === 'checkbox' && !field.checked) {
+                field.classList.add('error');
+                isValid = false;
+            } else if (field.type === 'file' && field.files.length === 0) {
+                field.classList.add('error');
+                isValid = false;
+            } else if (!field.value.trim()) {
+                field.classList.add('error');
+                isValid = false;
+            } else {
+                field.classList.remove('error');
+            }
+        });
+        if (!isValid) {
+            const firstInvalid = currentStepEl.querySelector('.error');
+            if (firstInvalid) firstInvalid.focus();
+        }
+        return isValid;
+    }
+
+    // Next buttons
+    document.querySelectorAll('.btn-next').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const nextStep = parseInt(btn.dataset.next);
+            if (validateStep(currentStep)) showStep(nextStep);
+        });
+    });
+
+    // Previous buttons
+    document.querySelectorAll('.btn-prev').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const prevStep = parseInt(btn.dataset.prev);
+            showStep(prevStep);
+        });
+    });
+
+    // Add education
     document.getElementById('addEducation').addEventListener('click', () => {
         const container = document.getElementById('educationContainer');
         const newEntry = document.createElement('div');
@@ -37,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(newEntry);
     });
 
+    // Add other qualifications
     document.getElementById('addOtherQual').addEventListener('click', () => {
         const container = document.getElementById('otherQualContainer');
         const newEntry = document.createElement('div');
@@ -55,79 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(newEntry);
     });
 
-    // Show step
-    function showStep(stepNumber) {
-        steps.forEach(step => step.classList.remove('active'));
-        document.getElementById(`step${stepNumber}`).classList.add('active');
-        stepIndicators.forEach(ind => {
-            const num = parseInt(ind.dataset.step);
-            ind.classList.remove('active', 'completed');
-            if (num === stepNumber) ind.classList.add('active');
-            else if (num < stepNumber) ind.classList.add('completed');
-        });
-        currentStep = stepNumber;
-
-        // Auto-fill name and date on final step
-        if (stepNumber === 4) {
-            const applicantName = document.getElementById('applicantName')?.value || '';
-            document.getElementById('place').value = applicantName ? 'Guwahati' : '';
-            const today = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
-            document.getElementById('dateAuto').value = today;
-        }
-    }
-
-    // Validate current step's required fields
-    function validateStep(stepNumber) {
-        const currentStepEl = document.getElementById(`step${stepNumber}`);
-        const requiredFields = currentStepEl.querySelectorAll('[required]');
-        let isValid = true;
-        requiredFields.forEach(field => {
-            // Skip file input if it's the photo and we treat as optional for demo? We'll enforce required.
-            if (field.type === 'file' && field.files.length === 0) {
-                field.classList.add('error');
-                isValid = false;
-            } else if (!field.value.trim()) {
-                field.classList.add('error');
-                isValid = false;
-            } else {
-                field.classList.remove('error');
-            }
-        });
-        if (!isValid) {
-            // Focus first invalid field
-            const firstInvalid = currentStepEl.querySelector('.error');
-            if (firstInvalid) firstInvalid.focus();
-        }
-        return isValid;
-    }
-
-    // Next button click
-    nextButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const nextStep = parseInt(btn.dataset.next);
-            if (validateStep(currentStep)) {
-                showStep(nextStep);
-            }
-        });
-    });
-
-    // Previous button click
-    prevButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const prevStep = parseInt(btn.dataset.prev);
-            showStep(prevStep);
-        });
-    });
-
-    // Generate button
-    generateBtn.addEventListener('click', () => {
-        if (validateStep(4)) {
-            // Show success overlay
-            successMessage.style.display = 'flex';
-            // Optionally store form data to localStorage for later use
-        }
-    });
-
     // Photo upload feedback
     document.getElementById('photoUpload')?.addEventListener('change', function(e) {
         const file = e.target.files[0];
@@ -139,15 +161,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Read template parameter from URL
+    // ---------- Generate Button (Login required) ----------
+    document.getElementById('generateBtn').addEventListener('click', () => {
+        if (!validateStep(4)) return;
+
+        const user = auth.currentUser;
+        if (!user) {
+            // Redirect to login if not logged in
+            alert('Please log in first to download your resume.');
+            window.location.href = 'login.html';
+            return;
+        }
+        // User is logged in, show success
+        document.getElementById('successMessage').style.display = 'flex';
+    });
+
+    document.getElementById('closeSuccess').addEventListener('click', () => {
+        document.getElementById('successMessage').style.display = 'none';
+    });
+
+    // Read template from URL
     const urlParams = new URLSearchParams(window.location.search);
     const template = urlParams.get('template');
     if (template) {
-        console.log('Selected template:', template);
-        // Store it for future PDF generation (e.g., localStorage)
         localStorage.setItem('selectedTemplate', template);
     }
 
-    // Initialize first step
     showStep(1);
 });
