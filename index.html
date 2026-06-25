@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resume By Ame – Build Your Fantasy Resume</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -14,7 +17,12 @@
                 <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="templates.html">Templates</a></li>
                 <li><a href="form.html">Build Resume</a></li>
-                <li><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+                <li id="userDisplay" style="display:none;">
+                    <span id="userName"></span>
+                    <button id="logoutBtn" class="btn-logout">Logout</button>
+                </li>
             </ul>
         </div>
     </nav>
@@ -58,6 +66,38 @@
         <p>Made with ❤️ by Ame</p>
     </footer>
 
-    <script src="js/main.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLX-DBrAZZgi7OGRW3-oeno0PJsZ9hzEg",
+            authDomain: "its-me-ame.firebaseapp.com",
+            projectId: "its-me-ame",
+            storageBucket: "its-me-ame.firebasestorage.app",
+            messagingSenderId: "832380884001",
+            appId: "1:832380884001:web:0c9239588ceb8d8995bf60",
+            measurementId: "G-L12EEJG7L9"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        const authLink = document.getElementById('authLink');
+        const userDisplay = document.getElementById('userDisplay');
+        const userNameSpan = document.getElementById('userName');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                authLink.style.display = 'none';
+                userDisplay.style.display = 'flex';
+                userNameSpan.textContent = user.displayName || user.email;
+            } else {
+                authLink.style.display = 'block';
+                userDisplay.style.display = 'none';
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => window.location.href = 'index.html');
+        });
+    </script>
 </body>
 </html>
