@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // ---------- Auth State & Navbar ----------
+    // ---------- Auth State & Navbar (with dashboard toggle) ----------
     const authLink = document.getElementById('authLink');
     const userDisplay = document.getElementById('userDisplay');
     const userNameSpan = document.getElementById('userName');
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Logged out due to inactivity.');
                 window.location.href = 'index.html';
             });
-        }, 60000);
+        }, 60000); // 1 minute
     }
     ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(event => {
         document.addEventListener(event, resetInactivityTimer);
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Hamburger toggle
+    // ---------- Hamburger menu toggle ----------
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     if (hamburgerBtn) {
         hamburgerBtn.addEventListener('click', () => {
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function validateStep(stepNumber) {
-        if (stepNumber === 3) return true;
+        if (stepNumber === 3) return true; // optional
         const currentStepEl = document.getElementById(`step${stepNumber}`);
         const requiredFields = currentStepEl.querySelectorAll('[required]');
         let isValid = true;
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ---------- Generate PDF & Save ----------
+    // ---------- Generate PDF ----------
     document.getElementById('generateBtn').addEventListener('click', async () => {
         if (!validateStep(4)) return;
         const user = auth.currentUser;
@@ -404,34 +404,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             pdf.save(`${data.name.replace(/\s+/g, '_')}_Resume.pdf`);
             document.getElementById('successMessage').style.display = 'flex';
-            // Update success message text
-            document.querySelector('#successMessage .success-card h3').textContent = '✅ Resume Downloaded & Saved!';
-            document.querySelector('#successMessage .success-card p').textContent = 'Your resume has been saved to your dashboard.';
-
-            // Save to Firestore
             saveResumeToFirestore(user.uid, data, template);
         }).catch(err => {
             console.error('PDF generation error:', err);
             alert('Something went wrong while generating PDF.');
         });
     });
-
-    function saveResumeToFirestore(uid, data, template) {
-        const { photo, ...cleanData } = data;
-        db.collection('resumes').add({
-            uid,
-            name: data.name,
-            template,
-            data: cleanData,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(() => {
-            console.log('Resume saved to Firestore');
-            alert('Resume saved to your dashboard successfully!');
-        }).catch(err => {
-            console.error('Firestore save error:', err);
-            alert('Failed to save resume to cloud. Please try again.');
-        });
-    }
 
     document.getElementById('closeSuccess').addEventListener('click', () => {
         document.getElementById('successMessage').style.display = 'none';
@@ -446,13 +424,31 @@ document.addEventListener('DOMContentLoaded', () => {
     showStep(1);
 });
 
-// Helper functions (unchanged)
+// ---------- Helper Functions ----------
 function readFileAsDataURL(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
         reader.onerror = reject;
         reader.readAsDataURL(file);
+    });
+}
+
+function saveResumeToFirestore(uid, data, template) {
+    const db = firebase.firestore();
+    // Remove photo from data before saving (too large for Firestore)
+    const { photo, ...cleanData } = data;
+    db.collection('resumes').add({
+        uid,
+        name: data.name,
+        template,
+        data: cleanData,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        console.log('Resume saved to Firestore');
+    }).catch(err => {
+        console.error('Firestore save error:', err);
+        alert('Failed to save resume to cloud. Please try again.');
     });
 }
 
@@ -546,8 +542,13 @@ function buildResumeHTML(data, template) {
             background: ${t.bg};
             page-break-after: always;
         }
-        .resume-page:last-child { page-break-after: auto; }
-        .resume-header { text-align: center; margin-bottom: 15px; }
+        .resume-page:last-child {
+            page-break-after: auto;
+        }
+        .resume-header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
         .resume-header h1 {
             margin: 0;
             font-size: 2rem;
@@ -564,10 +565,19 @@ function buildResumeHTML(data, template) {
             margin-bottom: 15px;
             font-family: ${t.font};
         }
-        .photo-container { float: right; margin-left: 20px; }
-        .photo-container img { ${photoStyle} }
-        .section-heading { ${sectionHeadingStyle} }
-        table { ${tableStyle} }
+        .photo-container {
+            float: right;
+            margin-left: 20px;
+        }
+        .photo-container img {
+            ${photoStyle}
+        }
+        .section-heading {
+            ${sectionHeadingStyle}
+        }
+        table {
+            ${tableStyle}
+        }
         th, td {
             border: 1px solid #555;
             padding: 6px 8px;
@@ -575,16 +585,33 @@ function buildResumeHTML(data, template) {
             font-size: 0.85rem;
             font-family: ${t.font};
         }
-        th { background: ${t.headerBg}; }
-        .info-table td:first-child { font-weight: bold; width: 30%; }
-        .declaration { margin-top: 20px; font-size: 0.9rem; }
-        .signature { margin-top: 30px; text-align: right; }
-        .clearfix::after { content: ""; display: table; clear: both; }
+        th {
+            background: ${t.headerBg};
+        }
+        .info-table td:first-child {
+            font-weight: bold;
+            width: 30%;
+        }
+        .declaration {
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        .signature {
+            margin-top: 30px;
+            text-align: right;
+        }
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
     </style>
 </head>
 <body>
     <div class="resume-page">
-        <div class="resume-header"><h1>Resume</h1></div>
+        <div class="resume-header">
+            <h1>Resume</h1>
+        </div>
         <div class="applicant-name">${data.name || 'Your Name'}</div>
         <div class="clearfix">
             ${data.photo ? `<div class="photo-container"><img src="${data.photo}" alt="photo"/></div>` : ''}
@@ -613,7 +640,9 @@ function buildResumeHTML(data, template) {
             <tr><th>Qualification</th><th>Institute</th><th>Year</th><th>Score</th><th>Duration</th></tr>
             ${qualRows}
         </table>
-        <div class="declaration"><p>I declare that all information provided is true and correct.</p></div>
+        <div class="declaration">
+            <p>I declare that all information provided is true and correct.</p>
+        </div>
         <div class="signature">
             <p>Place: ${data.place || ''}</p>
             <p>Date: ${data.date || ''}</p>
