@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume By Ame – Build Your Fantasy Resume</title>
+    <title>Resume By Ame – Build Your Professional Resume</title>
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
+    <!-- External CSS (will be provided later) -->
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
 <body>
+    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
@@ -17,8 +17,9 @@
             <ul class="nav-links" id="navLinks">
                 <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="templates.html">Templates</a></li>
+                <li><a href="form.html">Build Resume</a></li>
                 <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
-                <li id="authLink" style="display:none;"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+                <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
                 <li id="userDisplay" style="display:none;">
                     <span id="userName"></span>
                     <button id="logoutBtn" class="btn-logout">Logout</button>
@@ -27,47 +28,93 @@
         </div>
     </nav>
 
-    <main>
-        <section class="hero fade-up">
-            <div class="hero-content">
-                <h1>Craft Your <span class="gradient-text">Fantasy Resume</span></h1>
-                <p>Choose from 9 magical templates – Elven, Dwarven, Fae, Dragon, Necromancer, Angel, Mermaid, Celestial & Modern Professional. Fill your details step‑by‑step and download a stunning bio‑data.</p>
-                <a href="templates.html" class="cta-button">✨ Build Resume Now</a>
+    <!-- Hero Section -->
+    <section class="hero fade-up">
+        <div class="hero-content">
+            <h1>Build a <span class="gradient-text">Professional Resume</span> in Minutes</h1>
+            <p>Choose from beautifully designed templates, fill in your details, and download a polished, ATS‑friendly PDF – all for free.</p>
+            <a href="templates.html" class="cta-button">✨ Start Building Now</a>
+        </div>
+        <div class="hero-illustration">
+            <div class="floating-shapes">
+                <span class="shape">📄</span>
+                <span class="shape">🎨</span>
+                <span class="shape">🚀</span>
+                <span class="shape">💼</span>
             </div>
-            <div class="hero-illustration">
-                <div class="floating-shapes">
-                    <span>🧝‍♀️</span> <span>⚒️</span> <span>🧚</span> <span>🐉</span> <span>💀</span>
-                    <span>👼</span> <span>🧜‍♀️</span> <span>🌙</span> <span>🧑‍💼</span>
-                </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="feature-card fade-up">
+            <div class="feature-icon">📝</div>
+            <h3>Easy Step‑by‑Step Form</h3>
+            <p>Complete your resume with guided sections – no confusion, just simple inputs and smart defaults.</p>
+        </div>
+        <div class="feature-card fade-up">
+            <div class="feature-icon">🎨</div>
+            <h3>Multiple Professional Templates</h3>
+            <p>Pick a design that matches your style. All templates are ATS‑friendly and print‑ready.</p>
+        </div>
+        <div class="feature-card fade-up">
+            <div class="feature-icon">⬇️</div>
+            <h3>Instant PDF Download</h3>
+            <p>Generate and download your resume instantly. Your data stays private and secure.</p>
+        </div>
+    </section>
+
+    <!-- Objectives Section -->
+    <section class="objectives fade-up">
+        <h2 class="section-title">Our Objective</h2>
+        <div class="objective-grid">
+            <div class="objective-card">
+                <p>To simplify resume creation for everyone – from fresh graduates to experienced professionals.</p>
             </div>
-        </section>
+            <div class="objective-card">
+                <p>To provide beautiful, modern templates that make your first impression count.</p>
+            </div>
+            <div class="objective-card">
+                <p>To ensure your data is safe and that you can update your resume anytime, anywhere.</p>
+            </div>
+        </div>
+    </section>
 
-        <section class="features">
-            <div class="feature-card fade-up"><div class="feature-icon">📝</div><h3>Step‑by‑Step Form</h3><p>Easy 5‑step process with validation and optional sections.</p></div>
-            <div class="feature-card fade-up"><div class="feature-icon">🎨</div><h3>9 Unique Themes</h3><p>Fantasy, soft, and modern – all with distinct visual styles.</p></div>
-            <div class="feature-card fade-up"><div class="feature-icon">⬇️</div><h3>Instant PDF Download</h3><p>Professional ATS‑friendly resumes ready in seconds.</p></div>
-        </section>
+    <!-- FAQ Section -->
+    <section class="faq fade-up">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div class="faq-grid">
+            <div class="faq-card">
+                <h3>Is the resume builder really free?</h3>
+                <p>Yes, absolutely! You can create, edit, and download as many resumes as you like without any cost.</p>
+            </div>
+            <div class="faq-card">
+                <h3>Do I need to create an account?</h3>
+                <p>You can fill the form without logging in, but you’ll need to log in to download the PDF and save your resumes.</p>
+            </div>
+            <div class="faq-card">
+                <h3>Can I upload my own photo?</h3>
+                <p>Of course! The form includes a photo upload field (max 100KB, JPG/PNG) so your resume looks complete.</p>
+            </div>
+            <div class="faq-card">
+                <h3>Will my resume be ATS‑friendly?</h3>
+                <p>Yes, all templates are designed with clean layouts, semantic structure, and simple fonts to pass ATS scans.</p>
+            </div>
+        </div>
+    </section>
 
-        <h2 class="section-title fade-in">Our Objective</h2>
-        <section class="objectives-section">
-            <div class="objective-card fade-up"><p>To provide a hassle‑free online bio‑data maker that lets anyone create a professional, fantasy‑themed resume in minutes.</p></div>
-            <div class="objective-card fade-up"><p>To offer unique, visually stunning templates that stand out in job applications and personal projects.</p></div>
-        </section>
-
-        <h2 class="section-title fade-in">Frequently Asked Questions</h2>
-        <section class="faq-section">
-            <div class="faq-card fade-up"><h3>Is the resume builder free?</h3><p>Yes, completely free! You can create and download resumes without any cost.</p></div>
-            <div class="faq-card fade-up"><h3>Do I need to log in?</h3><p>You can fill the form without logging in, but login is required to download the PDF and save your resumes.</p></div>
-            <div class="faq-card fade-up"><h3>Can I use my own photo?</h3><p>Yes, you can upload a passport‑size photo (max 100KB) to include in your resume.</p></div>
-        </section>
-    </main>
-
+    <!-- Footer -->
     <footer>
         <p>Made with ❤️ by Ame</p>
     </footer>
 
+    <!-- External JavaScript (will be provided later) -->
     <script src="js/animations.js"></script>
+    <!-- Firebase scripts for authentication (optional, can be included later) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script>
+        // Minimal Firebase config & auth state (kept inline until external js is ready)
         const firebaseConfig = {
             apiKey: "AIzaSyBLX-DBrAZZgi7OGRW3-oeno0PJsZ9hzEg",
             authDomain: "its-me-ame.firebaseapp.com",
@@ -78,7 +125,6 @@
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-
         const authLink = document.getElementById('authLink');
         const userDisplay = document.getElementById('userDisplay');
         const userNameSpan = document.getElementById('userName');
@@ -87,10 +133,7 @@
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const navLinks = document.getElementById('navLinks');
 
-        // Mobile menu toggle
-        hamburgerBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('show');
-        });
+        hamburgerBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
 
         auth.onAuthStateChanged(user => {
             if (user) {
@@ -104,7 +147,6 @@
                 dashboardLink.style.display = 'none';
             }
         });
-
         logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
     </script>
 </body>
