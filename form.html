@@ -5,242 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Build Your Resume – Resume By Ame</title>
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
-    <!-- Firebase & PDF libraries -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        /* Global form styling */
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f0f2f5;
-            margin: 0;
-            padding: 0;
-        }
-        .form-wrapper {
-            max-width: 1000px;
-            margin: 2rem auto;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-            padding: 2.5rem;
-        }
-        h1 {
-            text-align: center;
-            color: #1a1a2e;
-            margin-bottom: 2rem;
-        }
-        .section-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #2563eb;
-            margin: 1.8rem 0 0.8rem;
-            padding-bottom: 6px;
-            border-bottom: 2px solid #2563eb;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .form-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.2rem;
-            margin-bottom: 1rem;
-        }
-        .form-group {
-            flex: 1;
-            min-width: 220px;
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: #2d3748;
-            font-size: 0.9rem;
-        }
-        .req {
-            color: #e53e3e;
-        }
-        input, select, textarea {
-            padding: 10px 12px;
-            border: 1px solid #cbd5e0;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: 0.2s;
-            font-family: inherit;
-        }
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
-        }
-        .error {
-            border-color: #e53e3e !important;
-        }
-        .field-error {
-            color: #e53e3e;
-            font-size: 0.8rem;
-            margin-top: 3px;
-            min-height: 18px;
-        }
-
-        /* Multi‑select */
-        .multi-select-wrapper {
-            position: relative;
-        }
-        .multi-select-display {
-            border: 1px solid #cbd5e0;
-            border-radius: 8px;
-            padding: 10px;
-            min-height: 44px;
-            cursor: pointer;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            align-items: center;
-            background: white;
-        }
-        .multi-select-dropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #cbd5e0;
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-            z-index: 20;
-            max-height: 280px;
-            overflow-y: auto;
-        }
-        .multi-select-dropdown.open {
-            display: block;
-        }
-        .dropdown-search {
-            padding: 8px;
-            border-bottom: 1px solid #eee;
-        }
-        .dropdown-search input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-        }
-        .dropdown-list {
-            padding: 8px;
-        }
-        .checkbox-item {
-            display: block;
-            padding: 6px;
-            cursor: pointer;
-        }
-        .checkbox-item:hover {
-            background: #f0f4ff;
-        }
-        .checkbox-item input {
-            margin-right: 8px;
-        }
-        .selected-tag {
-            background: #2563eb;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .remove-tag {
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .placeholder-text {
-            color: #a0aec0;
-        }
-        .dropdown-footer {
-            padding: 6px;
-            text-align: center;
-            font-weight: 600;
-            background: #f7fafc;
-            border-top: 1px solid #edf2f7;
-        }
-
-        /* Buttons */
-        .btn-add {
-            background: transparent;
-            border: 2px dashed #2563eb;
-            color: #2563eb;
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            margin: 10px 0 15px;
-            display: inline-block;
-        }
-        .btn-generate {
-            background: #2563eb;
-            color: white;
-            padding: 0.9rem 3rem;
-            border: none;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            display: block;
-            margin: 2rem auto 0;
-            transition: 0.3s;
-        }
-        .btn-generate:hover {
-            background: #1d4ed8;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(37,99,235,0.3);
-        }
-        .btn-remove-edu, .btn-remove-exp {
-            background: #fc8181;
-            color: white;
-            border: none;
-            padding: 0.3rem 1rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        /* Spinner */
-        .spinner-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(4px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-        }
-        .spinner {
-            border: 4px solid #e2e8f0;
-            border-top: 4px solid #2563eb;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .declaration-check {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin: 1rem 0;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="form-wrapper">
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="templates.html">Templates</a></li>
+                <li><a href="form.html" class="active">Build Resume</a></li>
+                <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
+                <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+                <li id="userDisplay" style="display:none;">
+                    <span id="userName"></span>
+                    <button id="logoutBtn" class="btn-logout">Logout</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Form -->
+    <main class="form-wrapper">
         <h1>✨ Build Your Professional Resume</h1>
 
         <!-- BASIC INFORMATION -->
@@ -305,9 +93,7 @@
 
         <!-- EDUCATION (dynamic) -->
         <div class="section-title">Education</div>
-        <div id="educationContainer">
-            <!-- Dynamically filled -->
-        </div>
+        <div id="educationContainer"></div>
         <button type="button" class="btn-add" id="addEducation">+ Add Education</button>
 
         <!-- EXPERIENCE (dynamic) -->
@@ -415,19 +201,19 @@
             <input type="text" id="declarationPlace" required>
             <div class="field-error" id="declarationPlaceError"></div>
         </div>
-        <p id="declarationTextPreview" style="font-style:italic; background:#f7fafc; padding:12px; border-radius:8px; margin:10px 0;"></p>
+        <p id="declarationTextPreview" class="declaration-preview"></p>
         <input type="text" id="declarationDate" readonly hidden>
 
         <!-- PHOTO & CONFIRMATION -->
         <div class="section-title">Profile Photo & Confirm</div>
         <div class="form-row">
             <div class="form-group">
-                <label>Passport Size Photo <span class="req">*</span> (Max 100KB)</label>
-                <input type="file" id="photoUpload" accept="image/jpeg,image/png,image/webp" required>
+                <label>Passport Size Photo <span class="req">*</span></label>
+                <input type="file" id="photoUpload" accept="image/*" required>
                 <div class="field-error" id="photoError"></div>
             </div>
             <div class="form-group">
-                <img id="photoPreview" src="#" alt="Preview" style="display:none; width:100px; height:130px; object-fit:cover; border-radius:8px; margin-top:5px;">
+                <img id="photoPreview" src="#" alt="Preview" class="photo-preview">
             </div>
         </div>
         <div class="declaration-check">
@@ -440,24 +226,22 @@
         <!-- Spinner overlay -->
         <div id="spinnerOverlay" class="spinner-overlay" style="display:none;">
             <div class="spinner"></div>
-            <p style="margin-top:20px; font-weight:bold;">Generating your professional resume...</p>
+            <p class="spinner-text">Generating your professional resume...</p>
         </div>
-    </div>
+    </main>
 
-    <!-- Navbar (same as before, simplified) -->
-    <nav class="navbar" style="background:white; box-shadow:0 2px 10px rgba(0,0,0,0.05); padding:0.8rem 2rem;">
-        <div style="max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center;">
-            <a href="index.html" style="font-size:1.4rem; font-weight:700; color:#2563eb; text-decoration:none;">✨ Resume By Ame</a>
-            <ul style="display:flex; gap:1.5rem; list-style:none;">
-                <li><a href="index.html" style="text-decoration:none; color:#4a5568;">Home</a></li>
-                <li><a href="templates.html" style="text-decoration:none; color:#4a5568;">Templates</a></li>
-                <li id="dashboardLink" style="display:none;"><a href="dashboard.html" style="text-decoration:none; color:#4a5568;">Dashboard</a></li>
-                <li id="authLink" style="display:none;"><a href="login.html" class="btn-login" style="background:#2563eb; color:white; padding:0.4rem 1.2rem; border-radius:20px; text-decoration:none;">Login</a></li>
-                <li id="userDisplay" style="display:none;"><span id="userName"></span> <button id="logoutBtn" style="background:none; border:1px solid #2563eb; color:#2563eb; padding:0.3rem 1rem; border-radius:20px; cursor:pointer;">Logout</button></li>
-            </ul>
-        </div>
-    </nav>
+    <!-- Footer -->
+    <footer>
+        <p>Made with ❤️ by Ame</p>
+    </footer>
 
+    <!-- External libraries & scripts -->
+    <script src="js/animations.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="js/form.js"></script>
 </body>
 </html>
