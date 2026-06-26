@@ -6,20 +6,19 @@
     <title>Dashboard – Resume By Ame</title>
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
+    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
             <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
             <ul class="nav-links" id="navLinks">
-                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="index.html">Home</a></li>
                 <li><a href="templates.html">Templates</a></li>
-                <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
-                <li id="authLink" style="display:none;"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+                <li><a href="form.html">Build Resume</a></li>
+                <li id="dashboardLink" style="display:none;"><a href="dashboard.html" class="active">Dashboard</a></li>
+                <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
                 <li id="userDisplay" style="display:none;">
                     <span id="userName"></span>
                     <button id="logoutBtn" class="btn-logout">Logout</button>
@@ -28,8 +27,9 @@
         </div>
     </nav>
 
+    <!-- Dashboard Main Content -->
     <main class="dashboard-main">
-        <div class="dashboard-grid">
+        <div class="dashboard-grid fade-up">
             <!-- Profile Sidebar -->
             <aside class="profile-card">
                 <div class="avatar-circle" id="avatarLetter">?</div>
@@ -42,119 +42,26 @@
             <section class="resumes-area">
                 <div class="resumes-header">
                     <h2>Your Resumes</h2>
-                    <a href="templates.html" class="cta-button">+ Create New Resume</a>
+                    <a href="form.html" class="cta-button">+ Create New Resume</a>
                 </div>
                 <div id="resumeCards" class="resume-cards">
                     <!-- Dynamic resume cards will appear here -->
                 </div>
-                <p id="noResumesMsg" class="empty-state">No resumes yet. <a href="templates.html">Create your first resume</a>.</p>
+                <p id="noResumesMsg" class="empty-state">No resumes yet. <a href="form.html">Create your first resume</a>.</p>
             </section>
         </div>
     </main>
 
+    <!-- Footer -->
     <footer>
         <p>Made with ❤️ by Ame</p>
     </footer>
 
+    <!-- Scripts -->
     <script src="js/animations.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBLX-DBrAZZgi7OGRW3-oeno0PJsZ9hzEg",
-            authDomain: "its-me-ame.firebaseapp.com",
-            projectId: "its-me-ame",
-            storageBucket: "its-me-ame.firebasestorage.app",
-            messagingSenderId: "832380884001",
-            appId: "1:832380884001:web:0c9239588ceb8d8995bf60"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
-        const authLink = document.getElementById('authLink');
-        const userDisplay = document.getElementById('userDisplay');
-        const userNameSpan = document.getElementById('userName');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const sidebarLogout = document.getElementById('sidebarLogout');
-        const avatarLetter = document.getElementById('avatarLetter');
-        const welcomeName = document.getElementById('welcomeName');
-        const userEmailDisplay = document.getElementById('userEmailDisplay');
-        const resumeCards = document.getElementById('resumeCards');
-        const noResumesMsg = document.getElementById('noResumesMsg');
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
-        const navLinks = document.getElementById('navLinks');
-
-        // Hamburger menu
-        hamburgerBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
-
-        function updateUI(user) {
-            if (user) {
-                const displayName = user.displayName || user.email;
-                const firstName = displayName.split(' ')[0] || displayName;
-                const firstLetter = (user.displayName?.[0] || user.email[0]).toUpperCase();
-                avatarLetter.textContent = firstLetter;
-                welcomeName.textContent = `Welcome, ${firstName}`;
-                userEmailDisplay.textContent = user.email;
-
-                authLink.style.display = 'none';
-                userDisplay.style.display = 'flex';
-                userNameSpan.textContent = displayName;
-                document.getElementById('dashboardLink').style.display = 'inline-block';
-                loadResumes(user.uid);
-            } else {
-                window.location.href = 'login.html';
-            }
-        }
-
-        auth.onAuthStateChanged(user => {
-            if (user) updateUI(user);
-            else window.location.href = 'login.html';
-        });
-
-        logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
-        sidebarLogout.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
-
-        function loadResumes(uid) {
-            resumeCards.innerHTML = '<p class="loading-text">Loading your resumes…</p>';
-            db.collection('resumes')
-                .where('uid', '==', uid)
-                .get()
-                .then(snapshot => {
-                    if (snapshot.empty) {
-                        resumeCards.innerHTML = '';
-                        noResumesMsg.style.display = 'block';
-                        return;
-                    }
-                    noResumesMsg.style.display = 'none';
-                    let resumes = [];
-                    snapshot.forEach(doc => {
-                        const resume = doc.data();
-                        resume.id = doc.id;
-                        resumes.push(resume);
-                    });
-                    // Sort newest first
-                    resumes.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
-                    let html = '';
-                    resumes.forEach(resume => {
-                        const date = resume.createdAt ? resume.createdAt.toDate().toLocaleDateString() : 'N/A';
-                        html += `
-                            <div class="resume-card">
-                                <div class="card-top">
-                                    <h4>${resume.name || 'Unnamed'}</h4>
-                                    <span class="template-badge">Formal CV</span>
-                                </div>
-                                <p class="card-date">Created: ${date}</p>
-                                <div class="card-actions">
-                                    <button class="cta-button small" onclick="alert('Download coming soon')">Download PDF</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    resumeCards.innerHTML = html;
-                })
-                .catch(err => {
-                    resumeCards.innerHTML = `<p class="error-text">Error: ${err.message}</p>`;
-                });
-        }
-    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>
