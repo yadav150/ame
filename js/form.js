@@ -1,5 +1,6 @@
 // form.js
 document.addEventListener('DOMContentLoaded', () => {
+    // Firebase init
     const firebaseConfig = {
         apiKey: "AIzaSyBLX-DBrAZZgi7OGRW3-oeno0PJsZ9hzEg",
         authDomain: "its-me-ame.firebaseapp.com",
@@ -12,37 +13,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const auth = firebase.auth();
     const db = firebase.firestore();
 
+    // Navbar auth
     const authLink = document.getElementById('authLink');
     const userDisplay = document.getElementById('userDisplay');
     const userNameSpan = document.getElementById('userName');
     const logoutBtn = document.getElementById('logoutBtn');
     const dashboardLink = document.getElementById('dashboardLink');
-    let inactivityTimer;
-    function resetInactivityTimer() {
-        clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(() => {
-            auth.signOut().then(() => window.location.href = 'index.html');
-        }, 60000);
-    }
-    ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(e => document.addEventListener(e, resetInactivityTimer));
-    resetInactivityTimer();
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navLinks = document.getElementById('navLinks');
+
+    hamburgerBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
 
     auth.onAuthStateChanged(user => {
         if (user) {
             authLink.style.display = 'none';
             userDisplay.style.display = 'flex';
             userNameSpan.textContent = user.displayName || user.email;
-            if (dashboardLink) dashboardLink.style.display = 'inline-block';
+            dashboardLink.style.display = 'inline-block';
             const emailField = document.getElementById('email');
             if (emailField && !emailField.value) emailField.value = user.email || '';
         } else {
             authLink.style.display = 'block';
             userDisplay.style.display = 'none';
-            if (dashboardLink) dashboardLink.style.display = 'none';
+            dashboardLink.style.display = 'none';
         }
     });
     logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
-    document.getElementById('hamburgerBtn').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('show'));
 
     // ---------- Multi‑select helper ----------
     function createMultiSelect(wrapperId, displayId, dropdownId, searchId, listId, countId, hiddenId, options, maxSelect, minSelect = 0) {
@@ -107,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return { getSelected: () => selected, setSelected: (arr) => { selected = arr; updateDisplay(); render(); } };
     }
 
+    // Field validation helpers
     function showFieldError(fieldId, message) {
         const field = document.getElementById(fieldId);
         const errorDiv = document.getElementById(fieldId + 'Error');
@@ -135,21 +132,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
-    // ---------- Skills Multi‑Select ----------
+    // Skills multi-select
     const skillsOptions = ['Communication','Leadership','Teamwork','Problem Solving','Critical Thinking','Public Speaking','Research','Writing','MS Office','Excel','PowerPoint','Java','Python','C++','HTML','CSS','JavaScript','React','Node.js','SQL','Project Management','Teaching','Data Analysis','Time Management','Creativity'];
     const skillsMulti = createMultiSelect('skillsWrapper','skillsDisplay','skillsDropdown','skillSearch','skillsCheckboxList','skillCount','skillsHidden', skillsOptions, 5, 2);
 
-    // ---------- Languages Multi‑Select ----------
+    // Languages multi-select
     const languagesOptions = ['English','Hindi','Assamese','Bengali','Nepali','Bodo','Marathi','Gujarati','Punjabi','Tamil','Telugu','Kannada','Malayalam','Urdu','Sanskrit','Odia','Manipuri','Khasi','Garo','Mizo','Kokborok','Dogri','Kashmiri','Sindhi','Maithili','Bhojpuri','Rajasthani','Konkani','Tulu','Santhali','French','German','Spanish','Japanese','Chinese','Korean','Russian','Arabic','Persian','Portuguese'];
     const languagesMulti = createMultiSelect('langWrapper','langDisplay','langDropdown','langSearch','langCheckboxList','langCount','languagesHidden', languagesOptions, 3, 3);
 
-    // ---------- Dynamic Education Blocks ----------
+    // Dynamic Education
     const eduContainer = document.getElementById('educationContainer');
     let eduCount = 0;
     function createEducationBlock(index) {
         const block = document.createElement('div');
         block.className = 'education-entry';
-        block.dataset.index = index;
         block.innerHTML = `
             <h4>Education ${index + 1}</h4>
             <div class="form-row">
@@ -160,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="form-group"><label>Passing Year <span class="req">*</span></label><input type="text" class="eduYear" id="edu${index+1}Year" required></div>
                 <div class="form-group"><label>Score/Percentage/CGPA <span class="req">*</span></label><input type="text" class="eduScore" id="edu${index+1}Score" required></div>
             </div>
-            <button type="button" class="btn-remove-edu" style="background:#e74c3c;color:white;border:none;padding:0.3rem 1rem;border-radius:20px;cursor:pointer;">Remove</button>
+            <button type="button" class="btn-remove-edu">Remove</button>
             <hr>
         `;
         eduContainer.appendChild(block);
@@ -169,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateEducationIndices();
         });
     }
-
     function updateEducationIndices() {
         const blocks = eduContainer.querySelectorAll('.education-entry');
         eduCount = blocks.length;
@@ -181,23 +176,20 @@ document.addEventListener('DOMContentLoaded', () => {
             block.querySelector('.eduScore').id = `edu${idx+1}Score`;
         });
     }
-
     document.getElementById('addEducation').addEventListener('click', () => {
-        if (eduCount >= 4) { alert('Maximum 4 education entries allowed.'); return; }
+        if (eduCount >= 4) { alert('Maximum 4 education entries.'); return; }
         createEducationBlock(eduCount);
         eduCount++;
     });
-
     createEducationBlock(0);
     eduCount = 1;
 
-    // ---------- Dynamic Experience Blocks ----------
+    // Dynamic Experience
     const expContainer = document.getElementById('experienceContainer');
     let expCount = 0;
     function createExperienceBlock(index) {
         const block = document.createElement('div');
         block.className = 'experience-entry';
-        block.dataset.index = index;
         block.innerHTML = `
             <h4>Experience ${index + 1}</h4>
             <div class="form-group"><label>Job Title</label>
@@ -228,9 +220,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <option>Mentored junior staff and facilitated knowledge sharing.</option>
                     <option>Consistently exceeded performance targets.</option>
                 </select>
-                <textarea class="expDescEdit" rows="2" style="margin-top:5px;" placeholder="Or edit summary..."></textarea>
+                <textarea class="expDescEdit" rows="2" placeholder="Or edit summary..."></textarea>
             </div>
-            <button type="button" class="btn-remove-exp" style="background:#e74c3c;color:white;border:none;padding:0.3rem 1rem;border-radius:20px;cursor:pointer;">Remove</button>
+            <button type="button" class="btn-remove-exp">Remove</button>
             <hr>
         `;
         expContainer.appendChild(block);
@@ -239,7 +231,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateExperienceIndices();
         });
     }
-
     function updateExperienceIndices() {
         const blocks = expContainer.querySelectorAll('.experience-entry');
         expCount = blocks.length;
@@ -252,18 +243,19 @@ document.addEventListener('DOMContentLoaded', () => {
             block.querySelector('.expDescription').id = `exp${idx+1}Description`;
         });
     }
-
     document.getElementById('addExperience').addEventListener('click', () => {
-        if (expCount >= 4) { alert('Maximum 4 experience entries allowed.'); return; }
+        if (expCount >= 4) { alert('Maximum 4 experience entries.'); return; }
         createExperienceBlock(expCount);
         expCount++;
     });
 
+    // Professional summary edit toggle
     const summarySelect = document.getElementById('professionalSummary');
     const summaryEdit = document.getElementById('professionalSummaryEdit');
     summarySelect.addEventListener('change', () => { summaryEdit.value = ''; });
     summaryEdit.addEventListener('input', () => { if (summaryEdit.value.trim()) summarySelect.value = ''; });
 
+    // Declaration auto-fill
     function updateDeclarationPreview() {
         const name = document.getElementById('fullName').value.trim();
         const place = document.getElementById('declarationPlace').value.trim();
@@ -275,10 +267,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('fullName').addEventListener('input', updateDeclarationPreview);
     document.getElementById('declarationPlace').addEventListener('input', updateDeclarationPreview);
 
+    // Photo preview (no size limit)
     document.getElementById('photoUpload').addEventListener('change', function(e) {
         const file = e.target.files[0];
         const preview = document.getElementById('photoPreview');
-        if (file && file.size <= 102400) {
+        if (file) {
             const reader = new FileReader();
             reader.onload = (e) => { preview.src = e.target.result; preview.style.display = 'block'; };
             reader.readAsDataURL(file);
@@ -287,37 +280,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Generate PDF
     document.getElementById('generateBtn').addEventListener('click', async () => {
-        // Quick validation before proceeding
+        // Validate all required fields
         let isValid = true;
-        ['fullName','mobile','email','jobTitle','fatherName','gender','village','district','state','dob','nationality','maritalStatus','casteCategory','declarationPlace','photoUpload'].forEach(id => {
+        ['fullName','jobTitle','mobile','email','fatherName','gender','village','district','state','dob','nationality','maritalStatus','casteCategory','declarationPlace','photoUpload'].forEach(id => {
             if (!validateField(id)) isValid = false;
         });
-        if (summarySelect.value === '' && summaryEdit.value.trim() === '') {
+        // Professional summary
+        if (!summarySelect.value && !summaryEdit.value.trim()) {
             showFieldError('professionalSummary', 'Required');
             isValid = false;
         } else clearFieldError('professionalSummary');
+        // Skills
         if (skillsMulti.getSelected().length < 2) {
             document.getElementById('skillsError').textContent = 'Select at least 2 skills';
             isValid = false;
         } else document.getElementById('skillsError').textContent = '';
+        // Languages
         if (languagesMulti.getSelected().length !== 3) {
             document.getElementById('languagesError').textContent = 'Select exactly 3 languages';
             isValid = false;
         } else document.getElementById('languagesError').textContent = '';
-        const eduDegrees = document.querySelectorAll('.eduDegree');
-        if (eduDegrees.length === 0 || !eduDegrees[0].value.trim()) {
-            showFieldError('edu1Degree', 'At least one education entry is required');
+        // Education (at least first degree)
+        const firstDegree = document.getElementById('edu1Degree');
+        if (!firstDegree || !firstDegree.value.trim()) {
+            showFieldError('edu1Degree', 'At least one education entry required');
             isValid = false;
         } else clearFieldError('edu1Degree');
+        // Declaration checkbox
         if (!document.getElementById('declarationCheck').checked) {
             alert('Please confirm the declaration.');
             isValid = false;
         }
         if (!isValid) return;
 
-        document.getElementById('spinnerOverlay').style.display = 'flex';
-
+        // Gather data
         const fullName = document.getElementById('fullName').value.trim();
         const jobTitle = document.getElementById('jobTitle').value;
         const professionalSummary = summaryEdit.value.trim() || summarySelect.value;
@@ -339,13 +337,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const photoFile = document.getElementById('photoUpload').files[0];
         let profileImageDataUrl = '';
-        if (photoFile) {
-            profileImageDataUrl = await readFileAsDataURL(photoFile);
-        }
+        if (photoFile) profileImageDataUrl = await readFileAsDataURL(photoFile);
 
         const skills = skillsMulti.getSelected();
         const languages = languagesMulti.getSelected();
 
+        // Education data
         const education = [];
         for (let i = 1; i <= 4; i++) {
             const deg = document.getElementById(`edu${i}Degree`);
@@ -358,13 +355,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         }
-
+        // Experience data
         const experiences = [];
         for (let i = 1; i <= 4; i++) {
             const pos = document.getElementById(`exp${i}Position`);
             if (pos && pos.value) {
-                const start = document.getElementById(`exp${i}Start`).value;
-                const end = document.getElementById(`exp${i}End`).value;
+                const start = document.getElementById(`exp${i}Start`)?.value || '';
+                const end = document.getElementById(`exp${i}End`)?.value || '';
                 const yearRange = [start, end].filter(Boolean).join(' - ');
                 const descSelect = document.getElementById(`exp${i}Description`);
                 const descTextarea = document.querySelector(`#exp${i}Description + textarea`);
@@ -372,16 +369,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (descTextarea && descTextarea.value.trim()) desc = descTextarea.value;
                 experiences.push({
                     position: pos.value,
-                    company: document.getElementById(`exp${i}Company`).value,
+                    company: document.getElementById(`exp${i}Company`)?.value || '',
                     year: yearRange,
                     description: desc
                 });
             }
         }
 
+        // Show spinner
+        document.getElementById('spinnerOverlay').style.display = 'flex';
+
         try {
             const response = await fetch('/resume/pdf.html');
-            let templateHTML = await response.text();
+            const templateHTML = await response.text();
 
             const iframe = document.createElement('iframe');
             iframe.style.width = '794px';
@@ -394,97 +394,64 @@ document.addEventListener('DOMContentLoaded', () => {
             doc.write(templateHTML);
             doc.close();
 
-            const nameEl = doc.getElementById('fullName');
-            if (nameEl) nameEl.textContent = fullName;
-            const pdNameEl = doc.getElementById('pdName');
-            if (pdNameEl) pdNameEl.textContent = fullName;
-            const jobTitleEl = doc.getElementById('jobTitle');
-            if (jobTitleEl) jobTitleEl.textContent = jobTitle;
-            const summaryEl = doc.getElementById('professionalSummary');
-            if (summaryEl) summaryEl.textContent = professionalSummary;
-            const mobileEl = doc.getElementById('mobile');
-            if (mobileEl) mobileEl.innerHTML = `📞 ${mobile}`;
-            const emailEl = doc.getElementById('email');
-            if (emailEl) emailEl.innerHTML = `📧 ${email}`;
-
-            const fatherEl = doc.getElementById('fatherName');
-            if (fatherEl) fatherEl.textContent = fatherName;
-            const genderEl = doc.getElementById('gender');
-            if (genderEl) genderEl.textContent = gender;
-            const villageEl = doc.getElementById('village');
-            if (villageEl) villageEl.textContent = village;
-            const districtEl = doc.getElementById('district');
-            if (districtEl) districtEl.textContent = district;
-            const stateEl = doc.getElementById('state');
-            if (stateEl) stateEl.textContent = state;
-            const dobEl = doc.getElementById('dob');
-            if (dobEl) dobEl.textContent = dob;
-            const nationalityEl = doc.getElementById('nationality');
-            if (nationalityEl) nationalityEl.textContent = nationality;
-            const maritalEl = doc.getElementById('maritalStatus');
-            if (maritalEl) maritalEl.textContent = maritalStatus;
-            const hobbiesEl = doc.getElementById('hobbies');
-            if (hobbiesEl) hobbiesEl.textContent = casteCategory;
+            // Fill data
+            if (doc.getElementById('fullName')) doc.getElementById('fullName').textContent = fullName;
+            if (doc.getElementById('pdName')) doc.getElementById('pdName').textContent = fullName;
+            if (doc.getElementById('jobTitle')) doc.getElementById('jobTitle').textContent = jobTitle;
+            if (doc.getElementById('professionalSummary')) doc.getElementById('professionalSummary').textContent = professionalSummary;
+            if (doc.getElementById('mobile')) doc.getElementById('mobile').innerHTML = `📞 ${mobile}`;
+            if (doc.getElementById('email')) doc.getElementById('email').innerHTML = `📧 ${email}`;
+            if (doc.getElementById('fatherName')) doc.getElementById('fatherName').textContent = fatherName;
+            if (doc.getElementById('gender')) doc.getElementById('gender').textContent = gender;
+            if (doc.getElementById('village')) doc.getElementById('village').textContent = village;
+            if (doc.getElementById('district')) doc.getElementById('district').textContent = district;
+            if (doc.getElementById('state')) doc.getElementById('state').textContent = state;
+            if (doc.getElementById('dob')) doc.getElementById('dob').textContent = dob;
+            if (doc.getElementById('nationality')) doc.getElementById('nationality').textContent = nationality;
+            if (doc.getElementById('maritalStatus')) doc.getElementById('maritalStatus').textContent = maritalStatus;
+            if (doc.getElementById('hobbies')) doc.getElementById('hobbies').textContent = casteCategory;
+            if (doc.getElementById('declarationText')) doc.getElementById('declarationText').textContent = declarationText;
+            if (doc.getElementById('declarationDate')) doc.getElementById('declarationDate').textContent = declarationDate;
+            if (doc.getElementById('declarationPlace')) doc.getElementById('declarationPlace').textContent = declarationPlace;
+            if (doc.getElementById('declarationName')) doc.getElementById('declarationName').textContent = declarationName;
 
             const photoImg = doc.getElementById('profileImage');
-            if (photoImg && profileImageDataUrl) {
-                photoImg.src = profileImageDataUrl;
-            }
+            if (photoImg && profileImageDataUrl) photoImg.src = profileImageDataUrl;
 
+            // Education blocks
             for (let i = 1; i <= 4; i++) {
                 const eduItem = doc.getElementById(`education${i}`);
                 if (!eduItem) continue;
                 if (i <= education.length) {
                     eduItem.style.display = 'block';
-                    const degEl = doc.getElementById(`edu${i}Degree`);
-                    const instEl = doc.getElementById(`edu${i}Institute`);
-                    const yearEl = doc.getElementById(`edu${i}Year`);
-                    const scoreEl = doc.getElementById(`edu${i}Score`);
-                    if (degEl) degEl.textContent = education[i-1].degree;
-                    if (instEl) instEl.textContent = education[i-1].institute;
-                    if (yearEl) yearEl.textContent = education[i-1].year;
-                    if (scoreEl) scoreEl.textContent = education[i-1].score;
+                    if (doc.getElementById(`edu${i}Degree`)) doc.getElementById(`edu${i}Degree`).textContent = education[i-1].degree;
+                    if (doc.getElementById(`edu${i}Institute`)) doc.getElementById(`edu${i}Institute`).textContent = education[i-1].institute;
+                    if (doc.getElementById(`edu${i}Year`)) doc.getElementById(`edu${i}Year`).textContent = education[i-1].year;
+                    if (doc.getElementById(`edu${i}Score`)) doc.getElementById(`edu${i}Score`).textContent = education[i-1].score;
                 } else {
                     eduItem.style.display = 'none';
                 }
             }
 
+            // Skills
             const skillsContainer = doc.getElementById('skillsContainer');
-            if (skillsContainer) {
-                skillsContainer.innerHTML = skills.map(s => `<div class="skill">${s}</div>`).join('');
-            }
+            if (skillsContainer) skillsContainer.innerHTML = skills.map(s => `<div class="skill">${s}</div>`).join('');
 
+            // Experience
             const expContainerDoc = doc.getElementById('experienceContainer');
             if (expContainerDoc) {
                 expContainerDoc.innerHTML = '';
                 experiences.forEach(exp => {
-                    const item = document.createElement('div');
+                    const item = doc.createElement('div');
                     item.className = 'item';
-                    item.innerHTML = `
-                        <h3>${exp.position}</h3>
-                        <div class="meta">
-                            <span>${exp.company}</span> |
-                            <span>${exp.year}</span>
-                        </div>
-                        <p>${exp.description}</p>
-                    `;
+                    item.innerHTML = `<h3>${exp.position}</h3><div class="meta"><span>${exp.company}</span> | <span>${exp.year}</span></div><p>${exp.description}</p>`;
                     expContainerDoc.appendChild(item);
                 });
             }
 
+            // Languages
             const langContainer = doc.getElementById('languageContainer');
-            if (langContainer) {
-                langContainer.innerHTML = languages.map(l => `<div class="language-item">${l}</div>`).join('');
-            }
-
-            const declTextEl = doc.getElementById('declarationText');
-            if (declTextEl) declTextEl.textContent = declarationText;
-            const declDateEl = doc.getElementById('declarationDate');
-            if (declDateEl) declDateEl.textContent = declarationDate;
-            const declPlaceEl = doc.getElementById('declarationPlace');
-            if (declPlaceEl) declPlaceEl.textContent = declarationPlace;
-            const declNameEl = doc.getElementById('declarationName');
-            if (declNameEl) declNameEl.textContent = declarationName;
+            if (langContainer) langContainer.innerHTML = languages.map(l => `<div class="language-item">${l}</div>`).join('');
 
             await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -513,6 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('spinnerOverlay').style.display = 'none';
             alert('Resume generated successfully!');
 
+            // Save to Firestore if logged in
             if (auth.currentUser) {
                 const cleanData = { fullName, jobTitle, professionalSummary, mobile, email, fatherName, gender, village, district, state, skills: skills.join(', '), languages: languages.join(', '), dob, nationality, maritalStatus, casteCategory, declarationPlace, declarationDate, declarationName, declarationText };
                 db.collection('resumes').add({
