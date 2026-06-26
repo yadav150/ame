@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional A4 Resume</title>
+
+<style>
+
+@page{
+    size:A4 portrait;
+    margin:0;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#e5e7eb;
+    padding:0;
+}
+
+.resume{
+    width:210mm;
+    height:297mm;
+    background:#fff;
+    margin:auto;
+    padding:20px 28px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+}
+
+/* Decorative Background */
+
+.resume::before{
+    content:'';
+    position:absolute;
+    width:380px;
+    height:380px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#2563eb,#06b6d4);
+    top:-230px;
+    right:-180px;
+    opacity:.08;
+}
+
+.resume::after{
+    content:'';
+    position:absolute;
+    width:280px;
+    height:280px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#8b5cf6,#ec4899);
+    bottom:-150px;
+    left:-150px;
+    opacity:.08;
+}
+
+/* HEADER */
+
+.header{
+    text-align:center;
+    padding-top:10px;
+    position:relative;
+    z-index:2;
+}
+
+.profile-frame{
+    width:170px;
+    height:170px;
+    border-radius:50%;
+    margin:0 auto 15px;
+    border:8px solid #2563eb;
+    overflow:hidden;
+    background:#f3f4f6;
+    box-shadow:0 8px 20px rgba(37,99,235,.25);
+}
+
+.profile-frame img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.name{
+    font-size:28px;
+    font-weight:700;
+    color:#111827;
+}
+
+.title{
+    font-size:18px;
+    color:#2563eb;
+    font-weight:600;
+    margin-top:6px;
+}
+
+.contact{
+    margin-top:10px;
+    font-size:13px;
+    color:#4b5563;
+    line-height:1.7;
+}
+
+/* GENERAL */
+
+.section{
+    margin-top:16px;
+    position:relative;
+    z-index:2;
+}
+
+.section-title{
+    font-size:15px;
+    font-weight:700;
+    color:#2563eb;
+    border-bottom:2px solid #2563eb;
+    padding-bottom:4px;
+    margin-bottom:10px;
+    text-transform:uppercase;
+}
+
+.summary{
+    font-size:11.5px;
+    color:#374151;
+    line-height:1.7;
+    text-align:justify;
+}
+
+.two-column{
+    display:grid;
+    grid-template-columns:1.6fr 1fr;
+    gap:20px;
+}
+
+.card{
+    background:#f8fafc;
+    border-left:4px solid #2563eb;
+    border-radius:10px;
+    padding:12px;
+}
+
+.item{
+    margin-bottom:12px;
+}
+
+.item:last-child{
+    margin-bottom:0;
+}
+
+.item h3{
+    font-size:13px;
+    color:#111827;
+}
+
+.meta{
+    font-size:10.5px;
+    color:#6b7280;
+    margin:4px 0;
+}
+
+.item p{
+    font-size:11px;
+    color:#374151;
+    line-height:1.5;
+}
+
+.personal-row{
+    margin-bottom:8px;
+    font-size:11.5px;
+    color:#374151;
+}
+
+.personal-row strong{
+    color:#111827;
+}
+
+.skills{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.skill{
+    background:linear-gradient(135deg,#2563eb,#06b6d4);
+    color:#fff;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:10.5px;
+}
+
+ul{
+    padding-left:18px;
+}
+
+li{
+    margin-bottom:6px;
+    font-size:11.5px;
+    color:#374151;
+}
+
+/* EDUCATION GRID */
+
+.education-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px 20px;
+}
+
+.declaration{
+    font-size:11px;
+    line-height:1.6;
+    color:#374151;
+    text-align:justify;
+}
+
+@media print{
+
+    body{
+        background:none;
+    }
+
+    .resume{
+        box-shadow:none;
+        width:210mm;
+        height:297mm;
+    }
+
+}
+
+.language-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px 20px;
+}
+
+.language-item{
+    font-size:11.5px;
+    color:#374151;
+    padding-left:14px;
+    position:relative;
+}
+
+.language-item::before{
+    content:'•';
+    position:absolute;
+    left:0;
+    color:#2563eb;
+}
+.declaration-container{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:25px;
+}
+
+.declaration-text{
+    flex:1;
+    font-size:11px;
+    line-height:1.7;
+    color:#374151;
+    text-align:justify;
+}
+
+.declaration-signature{
+    min-width:180px;
+    text-align:right;
+    font-size:11px;
+    color:#374151;
+    line-height:1.8;
+}
+
+.declaration-signature #declarationName{
+    font-weight:700;
+    color:#111827;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="resume">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="profile-frame">
+            <img id="profileImage"
+                 src="https://via.placeholder.com/300"
+                 alt="Profile">
+        </div>
+
+        <div class="name" id="fullName">
+            JOHN ANDERSON
+        </div>
+
+        <div class="title" id="jobTitle">
+            Senior Software Engineer
+        </div>
+
+        <div class="contact">
+            <span id="mobile">📞 +91 9876543210</span> |
+            <span id="email">📧 john@example.com</span>
+        </div>
+
+    </div>
+
+    <!-- SUMMARY -->
+
+    <div class="section">
+
+        <div class="section-title">
+            Professional Summary
+        </div>
+
+        <div class="summary" id="professionalSummary">
+            Highly motivated professional with excellent communication,
+            leadership and analytical abilities. Passionate about
+            delivering quality work and adapting to dynamic environments.
+        </div>
+
+    </div>
+
+    <!-- EDUCATION + PERSONAL DETAILS -->
+
+    <div class="section">
+
+        <div class="two-column">
+
+            <!-- EDUCATION -->
+
+            <div>
+
+                <div class="section-title">
+                    Education
+                </div>
+
+                <div class="card">
+
+                    <div class="education-grid">
+
+                        <div class="item" id="education1">
+                            <h3 id="edu1Degree">B.A. English Honours</h3>
+                            <div class="meta">
+                                <span id="edu1Institute">Gauhati University</span> |
+                                <span id="edu1Year">2023</span>
+                            </div>
+                            <p id="edu1Score">CGPA : 8.5 / 10</p>
+                        </div>
+
+                        <div class="item" id="education2">
+                            <h3 id="edu2Degree">Higher Secondary</h3>
+                            <div class="meta">
+                                <span id="edu2Institute">XYZ School</span> |
+                                <span id="edu2Year">2020</span>
+                            </div>
+                            <p id="edu2Score">Percentage : 88%</p>
+                        </div>
+
+                        <div class="item" id="education3">
+                            <h3 id="edu3Degree">Diploma</h3>
+                            <div class="meta">
+                                <span id="edu3Institute">ABC Institute</span> |
+                                <span id="edu3Year">2018</span>
+                            </div>
+                            <p id="edu3Score">Grade : A</p>
+                        </div>
+
+                        <div class="item" id="education4">
+                            <h3 id="edu4Degree">Matriculation</h3>
+                            <div class="meta">
+                                <span id="edu4Institute">DEF School</span> |
+                                <span id="edu4Year">2016</span>
+                            </div>
+                            <p id="edu4Score">Percentage : 92%</p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- PERSONAL DETAILS -->
+
+            <div>
+
+                <div class="section-title">
+                    Personal Details
+                </div>
+
+                <div class="card">
+
+                    <div class="personal-row">
+                        <strong>Name:</strong>
+                        <span id="pdName">John Anderson</span>
+                    </div>
+
+                    <div class="personal-row">
+                        <strong>Father Name:</strong>
+                        <span id="fatherName">Michael Anderson</span>
+                    </div>
+
+                    <div class="personal-row">
+                        <strong>Gender:</strong>
+                        <span id="gender">Male</span>
+                    </div>
+
+                    <div class="personal-row">
+                        <strong>Village:</strong>
+                        <span id="village">Green Valley</span>
+                    </div>
+
+                    <div class="personal-row">
+                        <strong>District:</strong>
+                        <span id="district">Mumbai</span>
+                    </div>
+
+                    <div class="personal-row">
+                        <strong>State:</strong>
+                        <span id="state">Maharashtra</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SKILLS -->
+
+    <div class="section">
+
+        <div class="section-title">
+            Skills
+        </div>
+
+        <div class="skills" id="skillsContainer">
+
+            <div class="skill">Communication</div>
+            <div class="skill">Leadership</div>
+            <div class="skill">Research</div>
+            <div class="skill">MS Office</div>
+            <div class="skill">Teamwork</div>
+            <div class="skill">English</div>
+
+        </div>
+
+    </div>
+
+    <!-- EXPERIENCE + LANGUAGE + OTHER DETAILS -->
+
+    <div class="section">
+
+        <div class="two-column">
+
+            <!-- EXPERIENCE -->
+
+            <div>
+
+                <div class="section-title">
+                    Experience
+                </div>
+
+                <div class="card" id="experienceContainer">
+
+                    <div class="item">
+
+                        <h3 id="exp1Position">
+                            Content Writer
+                        </h3>
+
+                        <div class="meta">
+                            <span id="exp1Company">ABC Organization</span> |
+                            <span id="exp1Year">2022 - Present</span>
+                        </div>
+
+                        <p id="exp1Description">
+                            Prepared reports, coordinated activities
+                            and contributed to organizational growth.
+                        </p>
+
+                    </div>
+
+                    <div class="item">
+
+                        <h3 id="exp2Position">
+                            Volunteer
+                        </h3>
+
+                        <div class="meta">
+                            <span id="exp2Company">XYZ NGO</span> |
+                            <span id="exp2Year">2021 - 2022</span>
+                        </div>
+
+                        <p id="exp2Description">
+                            Assisted in planning and documentation activities.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT SIDE -->
+
+            <div>
+
+                <div class="section-title">
+                    Languages Known
+                </div>
+
+                <div class="card">
+
+                    <div class="language-grid" id="languageContainer">
+
+    <div class="language-item" id="language1">
+        English
+    </div>
+
+    <div class="language-item" id="language2">
+        Hindi
+    </div>
+
+    <div class="language-item" id="language3">
+        Nepali
+    </div>
+
+    <div class="language-item" id="language4">
+        Assamese
+    </div>
+
+</div>
+
+                </div>
+
+                <div style="height:12px"></div>
+
+                <div class="section-title">
+                    Other Details
+                </div>
+
+                <div class="card">
+
+                    <div class="personal-row">
+                        <strong>DOB:</strong>
+                        <span id="dob">01 Jan 2000</span>
+                    </div>
+
+                    <div class="personal-row">
+                        <strong>Nationality:</strong>
+                        <span id="nationality">Indian</span>
+                    </div>
+
+                    <div class="personal-row">
+                        <strong>Marital Status:</strong>
+                        <span id="maritalStatus">Single</span>
+                    </div>
+
+                    <div class="personal-row">
+                        <strong>Caste Category:</strong>
+                        <span id="hobbies">
+                            OBC/MOBC
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- DECLARATION -->
+
+    <!-- DECLARATION -->
+
+<div class="section">
+
+    <div class="section-title">
+        Declaration
+    </div>
+
+    <div class="card">
+
+        <div class="declaration-container">
+
+            <div class="declaration-text"
+                 id="declarationText">
+
+                I hereby declare that all the information furnished
+                above is true and correct to the best of my knowledge
+                and belief. I take full responsibility for the
+                authenticity of the information provided in this resume.
+
+            </div>
+
+            <div class="declaration-signature">
+
+                <span>
+                    <strong>Date & Place:</strong>
+
+                    <span id="declarationDate">
+                        11/11/2011
+                    </span>,
+
+                    <span id="declarationPlace">
+                        Mumbai
+                    </span>
+                </span>
+
+                <br>
+
+                <span>
+                    <strong>Name:</strong>
+
+                    <span id="declarationName">
+                        JOHN ANDERSON
+                    </span>
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
