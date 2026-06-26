@@ -6,19 +6,19 @@
     <title>Choose Template – Resume By Ame</title>
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
 <body>
+    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
             <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
             <ul class="nav-links" id="navLinks">
-                <li><a href="index.html" class="active">Home</a></li>
-                <li><a href="templates.html">Templates</a></li>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="templates.html" class="active">Templates</a></li>
+                <li><a href="form.html">Build Resume</a></li>
                 <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
-                <li id="authLink" style="display:none;"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
+                <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
                 <li id="userDisplay" style="display:none;">
                     <span id="userName"></span>
                     <button id="logoutBtn" class="btn-logout">Logout</button>
@@ -27,28 +27,43 @@
         </div>
     </nav>
 
-    <main class="templates-container">
-        <h2>Select Your Resume Template</h2>
-        <p class="subtitle">Currently available – formal government‑style CV. More coming soon!</p>
+    <!-- Template Selection Section -->
+    <main class="templates-container fade-up">
+        <h2>Choose Your Resume Template</h2>
+        <p class="template-subtitle">Start with a professionally designed layout. More templates coming soon!</p>
+
         <div class="template-grid">
-            <!-- Only one template: Formal CV -->
-            <a href="form.html?template=formal" class="template-card">
+            <!-- Formal CV Template -->
+            <a href="form.html" class="template-card">
                 <div class="template-preview formal-preview">
-                    <div class="mini-resume">
-                        <div class="mini-header formal-header">📄 Formal CV</div>
-                        <div class="mini-details">Government Style · Clean · Professional</div>
+                    <div class="preview-content">
+                        <div class="preview-header">Curriculum Vitae</div>
+                        <div class="preview-line"></div>
+                        <div class="preview-line short"></div>
+                        <div class="preview-line"></div>
+                        <div class="preview-line short"></div>
+                        <div class="preview-line"></div>
                     </div>
                 </div>
-                <div class="template-name">John Doe</div>
+                <div class="template-name">Formal CV</div>
+                <span class="template-badge">Government Style</span>
             </a>
+
+            <!-- Additional placeholder templates can be added here in the future -->
         </div>
     </main>
 
+    <!-- Footer -->
     <footer>
         <p>Made with ❤️ by Ame</p>
     </footer>
 
+    <!-- External JavaScript -->
     <script src="js/animations.js"></script>
+
+    <!-- Firebase & Auth (minimal inline to keep navbar working) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBLX-DBrAZZgi7OGRW3-oeno0PJsZ9hzEg",
