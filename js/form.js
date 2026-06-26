@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('spinnerOverlay').style.display = 'flex';
 
         try {
-            const response = await fetch('/resume/pdf.html');
+            const response = await fetch('resume/pdf.html');
             const templateHTML = await response.text();
 
             const iframe = document.createElement('iframe');
