@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Resume By Dav ♥️ Ame</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-logo">Resume By Dav ♥️ Ame</span>
+            <button class="sidebar-close" id="sidebarClose">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="sidebar-link">🏠 Home</a>
+            <a href="index.html#templates" class="sidebar-link">📄 Templates</a>
+            <a href="contact.html" class="sidebar-link active">📧 Contact</a>
+            <a href="login.html" class="sidebar-link" id="sidebarLoginLink">🔑 Login</a>
+            <a href="signup.html" class="sidebar-link" id="sidebarSignupLink">📝 Signup</a>
+            <a href="dashboard.html" class="sidebar-link" id="sidebarDashboardLink" style="display:none;">📊 Dashboard</a>
+            <a href="#" class="sidebar-link" id="sidebarLogoutLink" style="display:none;">🚪 Logout</a>
+        </nav>
+    </aside>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="index.html" class="nav-logo">Resume By Dav ♥️ Ame</a>
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="index.html#templates">Templates</a>
+                <a href="contact.html">Contact</a>
+                <a href="login.html" id="navLogin">Login</a>
+                <a href="signup.html" id="navSignup">Signup</a>
+                <a href="dashboard.html" id="navDashboard" style="display:none;">Dashboard</a>
+                <a href="#" id="navLogout" style="display:none;">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="contact-page">
+        <section class="contact-section fade-in">
+            <div class="section-header fade-in">
+                <span class="section-badge">📧 Get In Touch</span>
+                <h2>Contact Us</h2>
+                <p>Have questions or feedback? We'd love to hear from you.</p>
+            </div>
+
+            <div class="contact-content fade-in">
+                <!-- Contact Info -->
+                <div class="contact-info">
+                    <div class="contact-card">
+                        <div class="contact-icon">✉️</div>
+                        <h3>Email</h3>
+                        <p><a href="mailto:yadavsubba2003@gnail.com">yadavsubba2003@gnail.com</a></p>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-icon">📱</div>
+                        <h3>Phone</h3>
+                        <p>+91 9876543210</p>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-icon">📍</div>
+                        <h3>Location</h3>
+                        <p>Kathmandu, Nepal</p>
+                    </div>
+                </div>
+
+                <!-- Contact Form (UI only) -->
+                <div class="contact-form-card fade-in">
+                    <h3>Send a Message</h3>
+                    <form id="contactForm" class="contact-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contactName">Your Name</label>
+                                <input type="text" id="contactName" placeholder="Full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contactEmail">Your Email</label>
+                                <input type="email" id="contactEmail" placeholder="you@example.com" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactMessage">Message</label>
+                            <textarea id="contactMessage" rows="5" placeholder="Write your message here..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+                        <p class="form-note">This form is for demonstration only. For real inquiries, please email us directly.</p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Resume By Dav ♥️ Ame</h3>
+                <p>Free online resume builder — create beautiful, professional resumes in minutes.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="index.html#templates">Templates</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="footer-links">
+                <h4>Account</h4>
+                <a href="login.html">Login</a>
+                <a href="signup.html">Sign Up</a>
+                <a href="dashboard.html">Dashboard</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>Made with ♥️ by Dav & Ame — © 2026 All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="js/firebase-init.js"></script>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            initSidebar();
+            initScrollAnimations();
+            updateAuthUI();
+
+            // Prevent form submission (UI only)
+            document.getElementById('contactForm')?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('This is a demo form. Please email us directly at yadavsubba2003@gnail.com');
+            });
+        });
+    </script>
+</body>
+</html>
