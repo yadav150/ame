@@ -11,31 +11,39 @@
 <body>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <aside class="mobile-sidebar" id="mobileSidebar">
-        <div class="sidebar-header">
-            <span class="sidebar-logo">Resume By Dav ♥️ Ame</span>
-            <button class="sidebar-close" id="sidebarClose">✕</button>
-        </div>
-        <nav class="sidebar-nav">
-            <a href="index.html" class="sidebar-link">🏠 Home</a>
-            <a href="index.html#templates" class="sidebar-link">📄 Templates</a>
-            <a href="dashboard.html" class="sidebar-link">📊 Dashboard</a>
-            <a href="#" class="sidebar-link" id="sidebarLogoutForm">🚪 Logout</a>
-        </nav>
-    </aside>
+    <div class="sidebar-header">
+        <span class="sidebar-logo">Resume By Dav ♥️ Ame</span>
+        <button class="sidebar-close" id="sidebarClose">✕</button>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="index.html" class="sidebar-link active">🏠 Home</a>
+        <a href="index.html#templates" class="sidebar-link">📄 Templates</a>
+        <a href="contact.html" class="sidebar-link">📧 Contact</a>
+        <a href="login.html" class="sidebar-link" id="sidebarLoginLink">🔑 Login</a>
+        <a href="signup.html" class="sidebar-link" id="sidebarSignupLink">📝 Signup</a>
+        <a href="dashboard.html" class="sidebar-link" id="sidebarDashboardLink" style="display:none;">📊 Dashboard</a>
+        <a href="#" class="sidebar-link" id="sidebarLogoutLink" style="display:none;">🚪 Logout</a>
+    </nav>
+</aside>
 
-    <header class="navbar">
-        <div class="nav-container">
-            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-                <span></span><span></span><span></span>
-            </button>
-            <a href="index.html" class="nav-logo">Resume By Dav ♥️ Ame</a>
-            <nav class="nav-links" id="navLinks">
-                <a href="index.html">Home</a>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="#" id="navLogoutForm">Logout</a>
-            </nav>
-        </div>
-    </header>
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-container">
+        <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <a href="index.html" class="nav-logo">Resume By Dav ♥️ Ame</a>
+        <nav class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="index.html#templates">Templates</a>
+            <a href="contact.html">Contact</a>
+            <a href="login.html" id="navLogin">Login</a>
+            <a href="signup.html" id="navSignup">Signup</a>
+            <a href="dashboard.html" id="navDashboard" style="display:none;">Dashboard</a>
+            <a href="#" id="navLogout" style="display:none;">Logout</a>
+        </nav>
+    </div>
+</header>
 
     <main class="form-page">
 
