@@ -44,19 +44,15 @@
     </header>
 
     <main class="contact-page">
-        <!-- WHO WE ARE (shorter paragraph) -->
+        <!-- WHO WE ARE -->
         <section class="contact-section fade-in">
             <div class="section-header">
                 <span class="section-badge">👥 Who We Are</span>
                 <h2>About Resume By Dav ♥️ Ame</h2>
                 <p>
-                    Founded by <strong style="color:#0f172a;">Yadav Subba</strong>, we are a small team
-                    dedicated to providing a completely free, ATS‑friendly resume builder.
-                </p>
-                <p>
-                    Every feature — from the multi‑step form to the instant PDF download — is built
-                    with care. We believe a great resume shouldn’t cost anything, and we’re proud
-                    to deliver a tool that actually works.
+                    We are a small team led by <strong>Yadav Subba</strong>, dedicated to making resume building
+                    completely free and accessible. Our mission is to help job seekers create professional,
+                    ATS‑friendly resumes in seconds — with no paywalls or watermarks.
                 </p>
             </div>
         </section>
@@ -91,8 +87,8 @@
             </div>
         </section>
 
-        <!-- WHO IS BEHIND (team table with bold names) -->
-        <section class="contact-section fade-in">
+        <!-- WHO IS BEHIND -->
+        <section class="contact-section">
             <div class="section-header">
                 <span class="section-badge">💖 Who is Behind</span>
                 <h2>Who is Behind Resume By Dav ♥️ Ame?</h2>
@@ -111,16 +107,16 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td data-label="Name"><strong style="color:#0f172a;">Yadav Subba</strong></td>
-                            <td data-label="Role">Chief Technology Officer (CTO) &amp; Managing Director</td>
+                            <td data-label="Name"><strong>Yadav Subba</strong></td>
+                            <td data-label="Role"><strong>Chief Technology Officer (CTO) &amp; Managing Director</strong></td>
                         </tr>
                         <tr>
-                            <td data-label="Name"><strong style="color:#0f172a;">Parben Biswas</strong></td>
-                            <td data-label="Role">Chief Executive Officer (CEO) &amp; Co-Founder</td>
+                            <td data-label="Name"><strong>Parben Biswas</strong></td>
+                            <td data-label="Role"><strong>Chief Executive Officer (CEO) &amp; Co-Founder</strong></td>
                         </tr>
                         <tr>
-                            <td data-label="Name"><strong style="color:#0f172a;">Ruhit Biswas</strong></td>
-                            <td data-label="Role">Chief Product Officer (CPO) &amp; Head of UX</td>
+                            <td data-label="Name"><strong>Ruhit Biswas</strong></td>
+                            <td data-label="Role"><strong>Chief Product Officer (CPO) &amp; Head of UX</strong></td>
                         </tr>
                     </tbody>
                 </table>
@@ -134,7 +130,7 @@
                 <h2>We’re Here to Help</h2>
                 <p>
                     Whether you have a question, need support, or want to share feedback, the best way to reach us
-                    is via email. Our owner, <strong style="color:#0f172a;">Yadav Subba</strong>, personally handles every message.
+                    is via email. Our owner, <strong>Yadav Subba</strong>, personally handles every message.
                 </p>
             </div>
 
@@ -157,7 +153,7 @@
             </div>
         </section>
 
-        <!-- SEND A MESSAGE (with subject dropdown) -->
+        <!-- SEND A MESSAGE -->
         <section class="contact-section fade-in">
             <div class="section-header">
                 <span class="section-badge">💬 Send a Message</span>
@@ -180,14 +176,18 @@
                     <div class="form-group">
                         <label for="contactSubject">Subject</label>
                         <select id="contactSubject" required>
-                            <option value="">-- Select a subject --</option>
+                            <option value="">-- Select Subject --</option>
                             <option value="General Inquiry">General Inquiry</option>
                             <option value="Technical Support">Technical Support</option>
-                            <option value="Feedback / Suggestions">Feedback / Suggestions</option>
-                            <option value="Partnership / Collaboration">Partnership / Collaboration</option>
+                            <option value="Partnership Opportunity">Partnership Opportunity</option>
+                            <option value="Feedback / Suggestion">Feedback / Suggestion</option>
                             <option value="Report a Bug">Report a Bug</option>
-                            <option value="Other">Other</option>
+                            <option value="Custom">Other (Custom)</option>
                         </select>
+                    </div>
+                    <div class="form-group" id="customSubjectGroup" style="display:none;">
+                        <label for="customSubject">Your Custom Subject</label>
+                        <input type="text" id="customSubject" placeholder="Type your subject here...">
                     </div>
                     <div class="form-group">
                         <label for="contactMessage">Message</label>
@@ -238,6 +238,20 @@
             initScrollAnimations();
             updateAuthUI();
 
+            // Custom subject toggle
+            const subjectSelect = document.getElementById('contactSubject');
+            const customSubjectGroup = document.getElementById('customSubjectGroup');
+            if (subjectSelect && customSubjectGroup) {
+                subjectSelect.addEventListener('change', function () {
+                    if (this.value === 'Custom') {
+                        customSubjectGroup.style.display = 'block';
+                    } else {
+                        customSubjectGroup.style.display = 'none';
+                    }
+                });
+            }
+
+            // Demo form submission
             document.getElementById('contactForm')?.addEventListener('submit', (e) => {
                 e.preventDefault();
                 alert('This is a demo form. Please email us directly at yadavsubba2003@gnail.com');
