@@ -295,18 +295,21 @@
         </div>
     </footer>
 
-    <script src="js/main.js"></script>
-    <script src="js/auth.js"></script>
-    <script>
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', () => {
-            initNavigation();
-            initSidebar();
-            initFAQ();
-            initTemplateSelection();
-            updateAuthUI();
-            initScrollAnimations();
-        });
-    </script>
+      <!-- Firebase SDKs (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="js/firebase-init.js"></script>
+
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initNavigation();
+      initSidebar();
+      initFAQ();
+      initTemplateSelection();
+      initScrollAnimations();
+      updateAuthUI();   // now uses real Firebase auth listener
+    });
+  </script>
 </body>
-</html>
