@@ -44,19 +44,19 @@
     </header>
 
     <main class="contact-page">
-        <!-- WHO WE ARE -->
+        <!-- WHO WE ARE (shorter paragraph) -->
         <section class="contact-section fade-in">
             <div class="section-header">
                 <span class="section-badge">👥 Who We Are</span>
                 <h2>About Resume By Dav ♥️ Ame</h2>
                 <p>
-                    We are a small, passionate team led by <strong>Yadav Subba</strong>, dedicated to making resume building
-                    completely free and accessible to everyone. Our mission is to help job seekers create professional,
-                    ATS‑friendly resumes in seconds — without any paywalls, sign‑up tricks, or watermarks.
+                    Founded by <strong style="color:#0f172a;">Yadav Subba</strong>, we are a small team
+                    dedicated to providing a completely free, ATS‑friendly resume builder.
                 </p>
                 <p>
-                    Every feature, from the multi‑step form to the instant PDF download, is hand‑crafted with care.
-                    We believe a great resume shouldn’t cost a rupee, and we’re proud to offer a tool that actually works.
+                    Every feature — from the multi‑step form to the instant PDF download — is built
+                    with care. We believe a great resume shouldn’t cost anything, and we’re proud
+                    to deliver a tool that actually works.
                 </p>
             </div>
         </section>
@@ -91,41 +91,42 @@
             </div>
         </section>
 
-        <!-- WHO IS BEHIND -->
-<section class="contact-section">
-    <div class="section-header">
-        <span class="section-badge">💖 Who is Behind</span>
-        <h2>Who is Behind Resume By Dav ♥️ Ame?</h2>
-        <p>
-            Our platform is built and guided by a passionate team committed to making
-            professional resume building free and effortless for everyone.
-        </p>
-    </div>
-    <div class="team-table-wrapper">
-        <table class="team-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Role</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td data-label="Name">Yadav Subba</td>
-                    <td data-label="Role">Chief Technology Officer (CTO) &amp; Managing Director</td>
-                </tr>
-                <tr>
-                    <td data-label="Name">Parben Biswas</td>
-                    <td data-label="Role">Chief Executive Officer (CEO) &amp; Co-Founder</td>
-                </tr>
-                <tr>
-                    <td data-label="Name">Ruhit Biswas</td>
-                    <td data-label="Role">Chief Product Officer (CPO) &amp; Head of UX</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</section>
+        <!-- WHO IS BEHIND (team table with bold names) -->
+        <section class="contact-section fade-in">
+            <div class="section-header">
+                <span class="section-badge">💖 Who is Behind</span>
+                <h2>Who is Behind Resume By Dav ♥️ Ame?</h2>
+                <p>
+                    Our platform is built and guided by a passionate team committed to making
+                    professional resume building free and effortless for everyone.
+                </p>
+            </div>
+            <div class="team-table-wrapper">
+                <table class="team-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Name"><strong style="color:#0f172a;">Yadav Subba</strong></td>
+                            <td data-label="Role">Chief Technology Officer (CTO) &amp; Managing Director</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Name"><strong style="color:#0f172a;">Parben Biswas</strong></td>
+                            <td data-label="Role">Chief Executive Officer (CEO) &amp; Co-Founder</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Name"><strong style="color:#0f172a;">Ruhit Biswas</strong></td>
+                            <td data-label="Role">Chief Product Officer (CPO) &amp; Head of UX</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
         <!-- HOW TO GET IN TOUCH -->
         <section class="contact-section fade-in">
             <div class="section-header">
@@ -133,7 +134,7 @@
                 <h2>We’re Here to Help</h2>
                 <p>
                     Whether you have a question, need support, or want to share feedback, the best way to reach us
-                    is via email. Our owner, <strong>Yadav Subba</strong>, personally handles every message.
+                    is via email. Our owner, <strong style="color:#0f172a;">Yadav Subba</strong>, personally handles every message.
                 </p>
             </div>
 
@@ -156,7 +157,7 @@
             </div>
         </section>
 
-        <!-- SEND A MESSAGE -->
+        <!-- SEND A MESSAGE (with subject dropdown) -->
         <section class="contact-section fade-in">
             <div class="section-header">
                 <span class="section-badge">💬 Send a Message</span>
@@ -178,7 +179,15 @@
                     </div>
                     <div class="form-group">
                         <label for="contactSubject">Subject</label>
-                        <input type="text" id="contactSubject" placeholder="What's this about?">
+                        <select id="contactSubject" required>
+                            <option value="">-- Select a subject --</option>
+                            <option value="General Inquiry">General Inquiry</option>
+                            <option value="Technical Support">Technical Support</option>
+                            <option value="Feedback / Suggestions">Feedback / Suggestions</option>
+                            <option value="Partnership / Collaboration">Partnership / Collaboration</option>
+                            <option value="Report a Bug">Report a Bug</option>
+                            <option value="Other">Other</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="contactMessage">Message</label>
