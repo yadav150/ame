@@ -75,16 +75,21 @@
         </div>
     </footer>
 
-    <script src="js/main.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/dashboard.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            initNavigation();
-            initSidebar();
-            initDashboard();
-            updateAuthUI();
-        });
-    </script>
+      <!-- Firebase SDKs (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="js/firebase-init.js"></script>
+
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initNavigation();
+      initSidebar();
+      updateAuthUI();
+      initDashboard();   // order doesn't matter – dashboard listens to auth.onAuthStateChanged
+    });
+  </script>
 </body>
 </html>
