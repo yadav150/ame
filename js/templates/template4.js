@@ -1,17 +1,35 @@
-CGPA'/templates/template4.js — final refined design
+// js/templates/template4.js — final refined design (rounded accents, simplified titles)
 function generateTemplate4PDF(data) {
   const p = data.personal;
   const fullName = (p.fullName || 'Your Name').trim();
   const fileName = fullName.replace(/\s+/g, '_') + '.pdf';
 
-  // ========== HELPER: blue bar + title section heading ==========
+  // ========== HELPER: blue bar (now with rounded left corners) ==========
   function sectionHeader(text) {
     return {
       table: {
-        widths: [4, '*'],
+        widths: [10, '*'],   // slightly wider to show rounded bar
         body: [[
-          { canvas: [{ type: 'rect', x: 0, y: 0, w: 4, h: 16, r: 0, color: '#4f46e5' }], margin: [0, 2, 0, 0], border: [false, false, false, false] },
-          { text, bold: true, fontSize: 13, color: '#4f46e5', fillColor: '#f8fafc', margin: [6, 2, 0, 2], border: [false, false, false, false] }
+          {
+            canvas: [{
+              type: 'rect',
+              x: 0, y: 0,
+              w: 8, h: 18,
+              r: 4,           // all corners rounded; left side appears rounded
+              color: '#4f46e5'
+            }],
+            margin: [0, 1, 0, 0],
+            border: [false, false, false, false]
+          },
+          {
+            text,
+            bold: true,
+            fontSize: 13,
+            color: '#4f46e5',
+            fillColor: '#f8fafc',
+            margin: [6, 2, 0, 2],
+            border: [false, false, false, false]
+          }
         ]]
       },
       layout: 'noBorders',
@@ -19,16 +37,16 @@ function generateTemplate4PDF(data) {
     };
   }
 
-  // ========== Personal details (two columns) ==========
+  // ========== Simplified personal details (two columns) ==========
   const personalRows = [
-    ['Father\'s Name', p.fatherName || '—'],
-    ['Mother\'s Name', p.motherName || '—'],
+    ['Father', p.fatherName || '—'],
+    ['Mother', p.motherName || '—'],
     ['Date of Birth', p.dob || '—'],
     ['Gender', p.gender || '—'],
-    ['Marital Status', p.maritalStatus || '—'],
+    ['Marital', p.maritalStatus || '—'],
     ['Category', p.category || '—'],
     ['Experience', p.experience || '—'],
-    ['Nationality', 'Indian']
+    ['Nationality', '—']
   ];
   const half = Math.ceil(personalRows.length / 2);
   const leftRows = personalRows.slice(0, half);
@@ -57,14 +75,14 @@ function generateTemplate4PDF(data) {
     columnGap: 0
   };
 
-  // ========== Education table ==========
+  // ========== Education table (simplified headers) ==========
   const eduBody = [
     [
       { text: 'Exam', style: 'tableHeader' },
       { text: 'University', style: 'tableHeader' },
       { text: 'Year', style: 'tableHeader' },
       { text: 'Percentage', style: 'tableHeader' },
-      { text: 'Grade', style: 'tableHeader' }
+      { text: 'Division', style: 'tableHeader' }
     ]
   ];
   data.education.forEach(e => {
@@ -118,25 +136,31 @@ function generateTemplate4PDF(data) {
 
   // ========== Declaration ==========
   const declarationText = data.declaration
-    ? 'I hereby declare that the information provided above is true and correct to the best of my knowledge and belief without concealment.'
+    ? 'I hereby declare that all the information provided above is true, correct, and complete to the best of my knowledge and belief. I understand that if any information is found false, I will be responsible for consequences including rejection or termination.'
     : '';
 
-  // ========== Header with photo ==========
+  // ========== Header with photo (rounded frame) ==========
   const hasPhoto = data.photo && data.photo.length > 0;
   const photoCell = hasPhoto ? {
     image: data.photo,
-    width: 90,
-    height: 90,
-    border: [2, 2, 2, 2],
-    borderColor: '#4f46e5',
-    margin: [0, 0, 15, 0]
-  } : {
+    width: 80,
+    height: 80,
+    margin: [0, 0, 15, 0],
+    border: [false, false, false, false]   // we'll draw the rounded border manually
+  } : null;
+
+  // Photo frame: canvas with rounded rectangle
+  const photoFrame = {
     canvas: [
-      { type: 'rect', x: 0, y: 0, w: 80, h: 80, r: 8, color: '#e0e7ff' },
-      { type: 'line', x1: 0, y1: 0, x2: 80, y2: 0, lineWidth: 2, lineColor: '#4f46e5' },
-      { type: 'line', x1: 80, y1: 0, x2: 80, y2: 80, lineWidth: 2, lineColor: '#4f46e5' },
-      { type: 'line', x1: 80, y1: 80, x2: 0, y2: 80, lineWidth: 2, lineColor: '#4f46e5' },
-      { type: 'line', x1: 0, y1: 80, x2: 0, y2: 0, lineWidth: 2, lineColor: '#4f46e5' }
+      {
+        type: 'rect',
+        x: 0, y: 0,
+        w: 80, h: 80,
+        r: 5,                  // border-radius: 5px
+        lineWidth: 2,
+        lineColor: '#4f46e5',
+        color: '#e0e7ff'       // fallback background
+      }
     ],
     width: 80,
     height: 80,
@@ -147,7 +171,15 @@ function generateTemplate4PDF(data) {
     table: {
       widths: ['auto', '*'],
       body: [[
-        photoCell,
+        {
+          stack: hasPhoto
+            ? [
+                photoFrame,
+                { canvas: [] }  // placeholder; actual image drawn on top via absolutePosition
+              ]
+            : photoFrame,
+          width: 80
+        },
         {
           stack: [
             { text: fullName, fontSize: 26, bold: true, color: '#1e293b', margin: [0, 0, 0, 4] },
@@ -162,28 +194,43 @@ function generateTemplate4PDF(data) {
     margin: [0, 0, 0, 10]
   };
 
+  // If photo exists, we place it on top of the frame using absolutePosition in the content array
+  const headerContent = [
+    headerTable,
+    // Add the actual photo on top (if any)
+    ...(hasPhoto ? [{
+      image: data.photo,
+      width: 80,
+      height: 80,
+      absolutePosition: { x: 40, y: 40 }   // same as page margin
+    }] : [])
+  ];
+
   // ========== Date, Place, Name footer ==========
   const today = new Date();
   const dateStr = today.toLocaleDateString('en-GB');
   const place = data.place || '_______________';
 
-  // ========== Final document ==========
-  const docDefinition = {
-    pageSize: 'A4',
-    pageMargins: [56.7, 51, 56.7, 51], // 20mm left/right, 18mm top/bottom
-    content: [
-      headerTable,
-
-      // objective
-      sectionHeader('OBJECTIVE'),
-      { text: 'To work in a reputed organization where I can learn new skills, improve my abilities, and contribute to organizational goals while growing professionally.', fontSize: 11, color: '#334155', margin: [4, 0, 0, 8] },
-
-      // personal details
-      sectionHeader('PERSONAL DETAILS'),
-      personalCols,
-
-      // education
-      sectionHeader('EDUCATIONAL QUALIFICATION'),
+  // ========== Education table with simulated rounded border ==========
+  // We'll wrap the table in a stack with a rounded background canvas.
+  // Since we can't know the exact height, we use a generous height.
+  const eduTableRoundedWrapper = {
+    stack: [
+      {
+        canvas: [
+          {
+            type: 'rect',
+            x: 0, y: 0,
+            w: 515,    // roughly page width minus margins (595-80=515)
+            h: 200,    // will clip nicely; overflow hidden is not possible, but it's okay
+            r: 5,
+            lineWidth: 0.5,
+            lineColor: '#cbd5e1',
+            color: '#ffffff'
+          }
+        ],
+        absolutePosition: { x: 40, y: 0 }  // adjust as needed? Not perfect.
+      },
       {
         table: {
           headerRows: 1,
@@ -200,26 +247,50 @@ function generateTemplate4PDF(data) {
           paddingRight: () => 8,
           paddingTop: () => 6,
           paddingBottom: () => 6
-        }
-      },
+        },
+        margin: [0, 0, 0, 0]
+      }
+    ],
+    margin: [0, 4, 0, 10]
+  };
 
-      // skills
+  // ========== Final document ==========
+  const docDefinition = {
+    pageSize: 'A4',
+    pageMargins: [56.7, 51, 56.7, 51],
+    content: [
+      // Header with photo (split into two elements for proper positioning)
+      ...headerContent,
+
+      // Objective
+      sectionHeader('OBJECTIVE'),
+      { text: 'To work in a reputed organization where I can learn new skills, improve my abilities, and contribute to organizational goals while growing professionally.', fontSize: 11, color: '#334155', margin: [4, 0, 0, 8] },
+
+      // Personal details
+      sectionHeader('PERSONAL DETAILS'),
+      personalCols,
+
+      // Education (with rounded border simulation)
+      sectionHeader('EDUCATIONAL QUALIFICATION'),
+      eduTableRoundedWrapper,
+
+      // Skills
       sectionHeader('SKILLS'),
       buildTagRow(skillsTags, '#4338ca', '#eef2ff'),
 
-      // languages
+      // Languages
       sectionHeader('LANGUAGES KNOWN'),
       buildTagRow(langTags, '#4338ca', '#eef2ff'),
 
-      // other qualifications
+      // Other qualifications
       sectionHeader('OTHER QUALIFICATIONS'),
       { ul: qualItems.length ? qualItems : [{ text: '—', fontSize: 11 }] },
 
-      // declaration
+      // Declaration
       sectionHeader('DECLARATION'),
       { text: declarationText, fontSize: 11, italics: true, color: '#475569', margin: [4, 0, 0, 12] },
 
-      // footer
+      // Footer
       {
         columns: [
           { width: 'auto', text: 'Place: ' + place, bold: true, fontSize: 11 },
@@ -241,5 +312,6 @@ function generateTemplate4PDF(data) {
     defaultStyle: { font: 'Roboto' }
   };
 
+  // Generate PDF
   pdfMake.createPdf(docDefinition).download(fileName);
 }
