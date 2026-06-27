@@ -1,153 +1,312 @@
 <!DOCTYPE html>
+<!-- index.html - Home Page -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume By Ame – Build Your Professional Resume</title>
-    <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
-    <!-- External CSS (will be provided later) -->
+    <title>Resume By Dav ♥️ Ame - Home</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- LEFT SIDEBAR (Mobile) -->
+    <aside class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-logo">Resume By Dav ♥️ Ame</span>
+            <button class="sidebar-close" id="sidebarClose">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="sidebar-link active">🏠 Home</a>
+            <a href="index.html#templates" class="sidebar-link">📄 Templates</a>
+            <a href="index.html#contact" class="sidebar-link">📧 Contact</a>
+            <a href="login.html" class="sidebar-link" id="sidebarLoginLink">🔑 Login</a>
+            <a href="signup.html" class="sidebar-link" id="sidebarSignupLink">📝 Signup</a>
+            <a href="dashboard.html" class="sidebar-link" id="sidebarDashboardLink" style="display:none;">📊 Dashboard</a>
+            <a href="#" class="sidebar-link" id="sidebarLogoutLink" style="display:none;">🚪 Logout</a>
+        </nav>
+    </aside>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
-            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="index.html" class="active">Home</a></li>
-                <li><a href="templates.html">Templates</a></li>
-                <li><a href="form.html">Build Resume</a></li>
-                <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
-                <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
-                <li id="userDisplay" style="display:none;">
-                    <span id="userName"></span>
-                    <button id="logoutBtn" class="btn-logout">Logout</button>
-                </li>
-            </ul>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="index.html" class="nav-logo">Resume By Dav ♥️ Ame</a>
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="index.html#templates">Templates</a>
+                <a href="index.html#contact">Contact</a>
+                <a href="login.html" id="navLogin">Login</a>
+                <a href="signup.html" id="navSignup">Signup</a>
+                <a href="dashboard.html" id="navDashboard" style="display:none;">Dashboard</a>
+                <a href="#" id="navLogout" style="display:none;">Logout</a>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <!-- Hero Section -->
-    <section class="hero fade-up">
-        <div class="hero-content">
-            <h1>Build a <span class="gradient-text">Professional Resume</span> in Minutes</h1>
-            <p>Choose from beautifully designed templates, fill in your details, and download a polished, ATS‑friendly PDF – all for free.</p>
-            <a href="templates.html" class="cta-button">✨ Start Building Now</a>
-        </div>
-        <div class="hero-illustration">
-            <div class="floating-shapes">
-                <span class="shape">📄</span>
-                <span class="shape">🎨</span>
-                <span class="shape">🚀</span>
-                <span class="shape">💼</span>
+    <main>
+        <!-- HERO SECTION -->
+        <section class="hero" id="home">
+            <div class="hero-content fade-in">
+                <span class="hero-badge">✨ Free Resume Builder</span>
+                <h1 class="hero-title">Create Attractive Resume <span class="highlight">in Seconds</span></h1>
+                <p class="hero-subtitle">
+                    Build professional, ATS-friendly resumes with our easy-to-use builder. Choose from beautiful templates, fill in your details, and get a stunning resume ready in minutes.
+                </p>
+                <div class="hero-buttons">
+                    <a href="index.html#templates" class="btn btn-primary btn-lg">
+                        Builder Now 🚀
+                    </a>
+                    <a href="index.html#templates" class="btn btn-outline btn-lg">
+                        Explore Templates
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item"><span class="stat-number">3+</span><span class="stat-label">Templates</span></div>
+                    <div class="stat-item"><span class="stat-number">100%</span><span class="stat-label">Free</span></div>
+                    <div class="stat-item"><span class="stat-number">ATS</span><span class="stat-label">Friendly</span></div>
+                </div>
             </div>
-        </div>
-    </section>
+            <div class="hero-visual fade-in">
+                <div class="hero-card-preview">
+                    <div class="preview-card preview-card-1"></div>
+                    <div class="preview-card preview-card-2"></div>
+                    <div class="preview-card preview-card-3"></div>
+                </div>
+            </div>
+        </section>
 
-    <!-- Features Section -->
-    <section class="features">
-        <div class="feature-card fade-up">
-            <div class="feature-icon">📝</div>
-            <h3>Easy Step‑by‑Step Form</h3>
-            <p>Complete your resume with guided sections – no confusion, just simple inputs and smart defaults.</p>
-        </div>
-        <div class="feature-card fade-up">
-            <div class="feature-icon">🎨</div>
-            <h3>Multiple Professional Templates</h3>
-            <p>Pick a design that matches your style. All templates are ATS‑friendly and print‑ready.</p>
-        </div>
-        <div class="feature-card fade-up">
-            <div class="feature-icon">⬇️</div>
-            <h3>Instant PDF Download</h3>
-            <p>Generate and download your resume instantly. Your data stays private and secure.</p>
-        </div>
-    </section>
+        <!-- TEMPLATES SECTION -->
+        <section class="templates-section" id="templates">
+            <div class="section-header fade-in">
+                <span class="section-badge">📄 Templates</span>
+                <h2>Choose Your Perfect Resume Template</h2>
+                <p>Professionally designed templates to make your resume stand out</p>
+            </div>
+            <div class="template-cards fade-in">
+                <!-- Template 1: Classic Professional -->
+                <div class="template-card" data-template="1">
+                    <div class="template-preview template-preview-1">
+                        <div class="tp-header-classic"></div>
+                        <div class="tp-body-classic">
+                            <div class="tp-line"></div>
+                            <div class="tp-line short"></div>
+                            <div class="tp-line"></div>
+                            <div class="tp-line short"></div>
+                        </div>
+                    </div>
+                    <div class="template-info">
+                        <h3>Classic Professional</h3>
+                        <p>Traditional layout perfect for corporate roles</p>
+                        <button class="btn btn-primary btn-sm select-template-btn" data-template="1">
+                            Use Template →
+                        </button>
+                    </div>
+                </div>
 
-    <!-- Objectives Section -->
-    <section class="objectives fade-up">
-        <h2 class="section-title">Our Objective</h2>
-        <div class="objective-grid">
-            <div class="objective-card">
-                <p>To simplify resume creation for everyone – from fresh graduates to experienced professionals.</p>
+                <!-- Template 2: Modern Creative -->
+                <div class="template-card" data-template="2">
+                    <div class="template-preview template-preview-2">
+                        <div class="tp-sidebar-modern"></div>
+                        <div class="tp-main-modern">
+                            <div class="tp-line accent"></div>
+                            <div class="tp-line"></div>
+                            <div class="tp-line short accent"></div>
+                        </div>
+                    </div>
+                    <div class="template-info">
+                        <h3>Modern Creative</h3>
+                        <p>Sidebar design for creative professionals</p>
+                        <button class="btn btn-primary btn-sm select-template-btn" data-template="2">
+                            Use Template →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Template 3: Minimal Clean -->
+                <div class="template-card" data-template="3">
+                    <div class="template-preview template-preview-3">
+                        <div class="tp-topbar-minimal"></div>
+                        <div class="tp-body-minimal">
+                            <div class="tp-grid-line"></div>
+                            <div class="tp-grid-line"></div>
+                            <div class="tp-grid-line"></div>
+                        </div>
+                    </div>
+                    <div class="template-info">
+                        <h3>Minimal Clean</h3>
+                        <p>Clean and elegant for any industry</p>
+                        <button class="btn btn-primary btn-sm select-template-btn" data-template="3">
+                            Use Template →
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="objective-card">
-                <p>To provide beautiful, modern templates that make your first impression count.</p>
+            <div class="center-btn fade-in">
+                <a href="index.html#templates" class="btn btn-outline">Explore All Templates</a>
             </div>
-            <div class="objective-card">
-                <p>To ensure your data is safe and that you can update your resume anytime, anywhere.</p>
+        </section>
+
+        <!-- SERVICES SECTION -->
+        <section class="services-section" id="services">
+            <div class="section-header fade-in">
+                <span class="section-badge">⚡ Services</span>
+                <h2>Everything You Need</h2>
+                <p>Powerful features to build your perfect resume</p>
+            </div>
+            <div class="services-grid fade-in">
+                <div class="service-card">
+                    <div class="service-icon">📝</div>
+                    <h3>Resume Builder</h3>
+                    <p>Step-by-step guided form to create your resume effortlessly. Just fill in your details and we handle the formatting.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🤖</div>
+                    <h3>ATS Friendly Templates</h3>
+                    <p>All templates are designed to pass Applicant Tracking Systems. Get your resume seen by real recruiters.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📄</div>
+                    <h3>PDF Ready UI</h3>
+                    <p>Resumes are formatted and ready to be saved as PDF. Clean print-ready layouts that look great on paper.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📱</div>
+                    <h3>Mobile Friendly</h3>
+                    <p>Create and edit your resume on any device. Fully responsive design works on desktop, tablet, and mobile.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHY CHOOSE US -->
+        <section class="why-us-section" id="why-us">
+            <div class="section-header fade-in">
+                <span class="section-badge">💡 Why Us</span>
+                <h2>Why Choose Resume By Dav ♥️ Ame</h2>
+            </div>
+            <div class="why-grid fade-in">
+                <div class="why-card">
+                    <div class="why-icon">🆓</div>
+                    <h3>Free to Use</h3>
+                    <p>No hidden charges, no premium plans. 100% free resume builder for everyone.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">⚡</div>
+                    <h3>Fast Resume Creation</h3>
+                    <p>Create a professional resume in under 5 minutes with our streamlined form.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">📱</div>
+                    <h3>Mobile Friendly</h3>
+                    <p>Build your resume on the go. Fully optimized for all screen sizes.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">🎨</div>
+                    <h3>Easy UI</h3>
+                    <p>Intuitive interface designed for simplicity. No learning curve required.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ SECTION -->
+        <section class="faq-section" id="faq">
+            <div class="section-header fade-in">
+                <span class="section-badge">❓ FAQ</span>
+                <h2>Frequently Asked Questions</h2>
+            </div>
+            <div class="faq-list fade-in">
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Is it really free?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! Resume By Dav ♥️ Ame is 100% free to use. There are no hidden charges, no premium tiers, and no subscription fees. We believe everyone deserves access to a professional resume builder.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Can I download my resume?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely! Once you generate your resume, you can use your browser's print function (Ctrl+P or Cmd+P) and select "Save as PDF" to download your resume as a PDF file. The resume is designed to be print-ready.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Do I need to login?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>You can create a resume without logging in! However, logging in allows you to save your resumes to your dashboard and access them later. Without login, your resume won't be saved after you leave the page.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Are the templates ATS-friendly?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! All our templates are designed with ATS (Applicant Tracking Systems) in mind. They use clean formatting, proper heading structures, and standard layouts that are easily parsed by recruitment software.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT / CTA SECTION -->
+        <section class="cta-section" id="contact">
+            <div class="cta-card fade-in">
+                <h2>Ready to Build Your Resume?</h2>
+                <p>Join thousands of happy users who created their professional resumes with us.</p>
+                <a href="index.html#templates" class="btn btn-primary btn-lg">Get Started Now 🚀</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Resume By Dav ♥️ Ame</h3>
+                <p>Free online resume builder — create beautiful, professional resumes in minutes.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="index.html#templates">Templates</a>
+                <a href="index.html#faq">FAQ</a>
+                <a href="index.html#contact">Contact</a>
+            </div>
+            <div class="footer-links">
+                <h4>Account</h4>
+                <a href="login.html">Login</a>
+                <a href="signup.html">Sign Up</a>
+                <a href="dashboard.html">Dashboard</a>
             </div>
         </div>
-    </section>
-
-    <!-- FAQ Section -->
-    <section class="faq fade-up">
-        <h2 class="section-title">Frequently Asked Questions</h2>
-        <div class="faq-grid">
-            <div class="faq-card">
-                <h3>Is the resume builder really free?</h3>
-                <p>Yes, absolutely! You can create, edit, and download as many resumes as you like without any cost.</p>
-            </div>
-            <div class="faq-card">
-                <h3>Do I need to create an account?</h3>
-                <p>You can fill the form without logging in, but you’ll need to log in to download the PDF and save your resumes.</p>
-            </div>
-            <div class="faq-card">
-                <h3>Can I upload my own photo?</h3>
-                <p>Of course! The form includes a photo upload field (max 100KB, JPG/PNG) so your resume looks complete.</p>
-            </div>
-            <div class="faq-card">
-                <h3>Will my resume be ATS‑friendly?</h3>
-                <p>Yes, all templates are designed with clean layouts, semantic structure, and simple fonts to pass ATS scans.</p>
-            </div>
+        <div class="footer-bottom">
+            <p>Made with ♥️ by Dav & Ame — © 2026 All Rights Reserved</p>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <p>Made with ❤️ by Ame</p>
     </footer>
 
-    <!-- External JavaScript (will be provided later) -->
-    <script src="js/animations.js"></script>
-    <!-- Firebase scripts for authentication (optional, can be included later) -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
     <script>
-        // Minimal Firebase config & auth state (kept inline until external js is ready)
-        const firebaseConfig = {
-            apiKey: "AIzaSyBLX-DBrAZZgi7OGRW3-oeno0PJsZ9hzEg",
-            authDomain: "its-me-ame.firebaseapp.com",
-            projectId: "its-me-ame",
-            storageBucket: "its-me-ame.firebasestorage.app",
-            messagingSenderId: "832380884001",
-            appId: "1:832380884001:web:0c9239588ceb8d8995bf60"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const authLink = document.getElementById('authLink');
-        const userDisplay = document.getElementById('userDisplay');
-        const userNameSpan = document.getElementById('userName');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const dashboardLink = document.getElementById('dashboardLink');
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
-        const navLinks = document.getElementById('navLinks');
-
-        hamburgerBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
-
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                authLink.style.display = 'none';
-                userDisplay.style.display = 'flex';
-                userNameSpan.textContent = user.displayName || user.email;
-                dashboardLink.style.display = 'inline-block';
-            } else {
-                authLink.style.display = 'block';
-                userDisplay.style.display = 'none';
-                dashboardLink.style.display = 'none';
-            }
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            initSidebar();
+            initFAQ();
+            initTemplateSelection();
+            updateAuthUI();
+            initScrollAnimations();
         });
-        logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
     </script>
 </body>
 </html>
