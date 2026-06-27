@@ -1,247 +1,319 @@
 <!DOCTYPE html>
+<!-- form.html - Multi-Step Resume Form -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Build Your Resume – Resume By Ame</title>
-    <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
+    <title>Build Resume - Resume By Dav ♥️ Ame</title>
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-logo">Resume By Dav ♥️ Ame</span>
+            <button class="sidebar-close" id="sidebarClose">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="sidebar-link">🏠 Home</a>
+            <a href="index.html#templates" class="sidebar-link">📄 Templates</a>
+            <a href="dashboard.html" class="sidebar-link">📊 Dashboard</a>
+            <a href="#" class="sidebar-link" id="sidebarLogoutForm">🚪 Logout</a>
+        </nav>
+    </aside>
+
+    <header class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
-            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="templates.html">Templates</a></li>
-                <li><a href="form.html" class="active">Build Resume</a></li>
-                <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
-                <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
-                <li id="userDisplay" style="display:none;">
-                    <span id="userName"></span>
-                    <button id="logoutBtn" class="btn-logout">Logout</button>
-                </li>
-            </ul>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="index.html" class="nav-logo">Resume By Dav ♥️ Ame</a>
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="#" id="navLogoutForm">Logout</a>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <!-- Main Form -->
-    <main class="form-wrapper">
-        <h1>✨ Build Your Professional Resume</h1>
-
-        <!-- BASIC INFORMATION -->
-        <div class="section-title">Basic Information</div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Full Name <span class="req">*</span></label>
-                <input type="text" id="fullName" required>
-                <div class="field-error" id="fullNameError"></div>
+    <main class="form-page">
+        <!-- Step Indicator -->
+        <div class="step-indicator fade-in" id="stepIndicator">
+            <div class="step active" data-step="1">
+                <div class="step-circle">1</div>
+                <span>Personal</span>
             </div>
-            <div class="form-group">
-                <label>Professional Job Title <span class="req">*</span></label>
-                <select id="jobTitle" required>
-                    <option value="">-- Select --</option>
-                    <option>Software Engineer</option><option>Web Developer</option><option>Frontend Developer</option>
-                    <option>Backend Developer</option><option>Full Stack Developer</option><option>Data Analyst</option>
-                    <option>Data Scientist</option><option>Graphic Designer</option><option>UI/UX Designer</option>
-                    <option>Digital Marketer</option><option>Content Writer</option><option>Teacher</option>
-                    <option>Lecturer</option><option>Accountant</option><option>Civil Engineer</option>
-                    <option>Mechanical Engineer</option><option>Electrical Engineer</option><option>Human Resource Manager</option>
-                    <option>Business Analyst</option><option>Project Manager</option>
-                </select>
-                <div class="field-error" id="jobTitleError"></div>
+            <div class="step-line"></div>
+            <div class="step" data-step="2">
+                <div class="step-circle">2</div>
+                <span>Education</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step" data-step="3">
+                <div class="step-circle">3</div>
+                <span>Qualifications</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step" data-step="4">
+                <div class="step-circle">4</div>
+                <span>Final</span>
             </div>
         </div>
 
-        <!-- PROFESSIONAL SUMMARY -->
-        <div class="section-title">Professional Summary</div>
-        <div class="form-group">
-            <label>Select or write your summary <span class="req">*</span></label>
-            <select id="professionalSummary" required>
-                <option value="">-- Choose a pre‑written summary --</option>
-                <option>Career growth oriented professional seeking to leverage my skills.</option>
-                <option>Job seeking a challenging position to contribute and learn.</option>
-                <option>Leadership driven individual with proven team management abilities.</option>
-                <option>Fresh graduate eager to apply knowledge in a real‑world setting.</option>
-                <option>Team collaboration oriented with excellent communication skills.</option>
-                <option>Customer satisfaction focused with a track record of success.</option>
-                <option>Result driven professional dedicated to achieving goals.</option>
-                <option>Research oriented with strong analytical and problem‑solving skills.</option>
-                <option>Creative professional with innovative design and marketing ideas.</option>
-                <option>Management professional skilled in operations and strategy.</option>
-            </select>
-            <textarea id="professionalSummaryEdit" rows="2" placeholder="Or edit your summary here..."></textarea>
-            <div class="field-error" id="professionalSummaryError"></div>
+        <!-- Form Container -->
+        <div class="form-container fade-in" id="formContainer">
+            <form id="resumeForm" novalidate>
+                <!-- STEP 1: Personal Details -->
+                <div class="form-step active" id="step1">
+                    <h3 class="step-title">👤 Personal Details</h3>
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label>Full Name</label>
+                            <input type="text" name="fullName" placeholder="Your full name" data-required="true">
+                            <span class="error-msg"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Father's Name</label>
+                            <input type="text" name="fatherName" placeholder="Father's full name">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mother's Name</label>
+                            <input type="text" name="motherName" placeholder="Mother's full name">
+                        </div>
+                        <div class="form-group required">
+                            <label>Mobile Number</label>
+                            <input type="tel" name="mobile" placeholder="+91 9876543210" data-required="true">
+                            <span class="error-msg"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label>Email</label>
+                            <input type="email" name="email" placeholder="you@example.com" data-required="true">
+                            <span class="error-msg"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Date of Birth</label>
+                            <input type="date" name="dob">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <select name="gender">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Languages</label>
+                            <input type="text" name="languages" placeholder="English, Hindi, etc.">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Address</label>
+                            <textarea name="address" rows="2" placeholder="Your full address"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select name="category">
+                                <option value="">Select Category</option>
+                                <option value="General">General</option>
+                                <option value="OBC">OBC</option>
+                                <option value="SC">SC</option>
+                                <option value="ST">ST</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Marital Status</label>
+                            <select name="maritalStatus">
+                                <option value="">Select Status</option>
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Experience</label>
+                            <input type="text" name="experience" placeholder="e.g., 2 years, Fresher">
+                        </div>
+                    </div>
+                    <div class="step-buttons">
+                        <button type="button" class="btn btn-primary next-step" data-next="2">Next →</button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Education -->
+                <div class="form-step" id="step2">
+                    <h3 class="step-title">🎓 Education Details</h3>
+                    <div id="educationContainer">
+                        <div class="education-entry" data-index="0">
+                            <h4 class="entry-label">Education #1</h4>
+                            <div class="form-row">
+                                <div class="form-group required">
+                                    <label>Exam Name</label>
+                                    <input type="text" name="eduExam_0" placeholder="e.g., B.Tech, 12th, 10th" data-required="true">
+                                    <span class="error-msg"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Board / University</label>
+                                    <input type="text" name="eduBoard_0" placeholder="e.g., Delhi University">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Year</label>
+                                    <input type="text" name="eduYear_0" placeholder="e.g., 2024">
+                                </div>
+                                <div class="form-group">
+                                    <label>Percentage / CGPA</label>
+                                    <input type="text" name="eduPercent_0" placeholder="e.g., 85% or 8.5 CGPA">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Division</label>
+                                    <select name="eduDivision_0">
+                                        <option value="">Select Division</option>
+                                        <option value="First">First Division</option>
+                                        <option value="Second">Second Division</option>
+                                        <option value="Third">Third Division</option>
+                                        <option value="Distinction">Distinction</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline remove-edu" style="display:none;">Remove</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline btn-sm add-more-btn" id="addMoreEducation">
+                        + Add More Education
+                    </button>
+                    <div class="step-buttons">
+                        <button type="button" class="btn btn-outline prev-step" data-prev="1">← Back</button>
+                        <button type="button" class="btn btn-primary next-step" data-next="3">Next →</button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Other Qualifications -->
+                <div class="form-step" id="step3">
+                    <h3 class="step-title">📜 Other Qualifications</h3>
+                    <div id="qualificationsContainer">
+                        <div class="qualification-entry" data-index="0">
+                            <h4 class="entry-label">Qualification #1</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Qualification Name</label>
+                                    <input type="text" name="qualName_0" placeholder="e.g., Web Development Certificate">
+                                </div>
+                                <div class="form-group">
+                                    <label>Institute</label>
+                                    <input type="text" name="qualInstitute_0" placeholder="Institute name">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Year</label>
+                                    <input type="text" name="qualYear_0" placeholder="e.g., 2025">
+                                </div>
+                                <div class="form-group">
+                                    <label>Grade / Score</label>
+                                    <input type="text" name="qualGrade_0" placeholder="e.g., A+ or 92%">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Duration</label>
+                                    <input type="text" name="qualDuration_0" placeholder="e.g., 6 months">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline remove-qual" style="display:none;">Remove</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline btn-sm add-more-btn" id="addMoreQualification">
+                        + Add More Qualification
+                    </button>
+                    <div class="step-buttons">
+                        <button type="button" class="btn btn-outline prev-step" data-prev="2">← Back</button>
+                        <button type="button" class="btn btn-primary next-step" data-next="4">Next →</button>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Final -->
+                <div class="form-step" id="step4">
+                    <h3 class="step-title">✅ Final Step</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Upload Photo (UI only)</label>
+                            <div class="photo-upload-area" id="photoUploadArea">
+                                <span class="upload-placeholder">📷 Click to upload photo</span>
+                                <input type="file" accept="image/*" id="photoInput" style="display:none;">
+                                <img id="photoPreview" src="" alt="Preview" style="display:none;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group declaration-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="declaration" name="declaration">
+                                <span>I hereby declare that all information provided above is true and correct to the best of my knowledge.</span>
+                            </label>
+                            <span class="error-msg" id="declarationError"></span>
+                        </div>
+                    </div>
+                    <div class="step-buttons">
+                        <button type="button" class="btn btn-outline prev-step" data-prev="3">← Back</button>
+                        <button type="submit" class="btn btn-success btn-lg" id="generateBtn">
+                            ✨ Generate My Resume
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
 
-        <!-- CONTACT DETAILS -->
-        <div class="section-title">Contact Details</div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Mobile Number <span class="req">*</span></label>
-                <input type="tel" id="mobile" required>
-                <div class="field-error" id="mobileError"></div>
+        <!-- Resume Preview Section -->
+        <div class="resume-preview-section fade-in" id="resumePreviewSection" style="display:none;">
+            <div class="preview-header-bar">
+                <h3>📄 Your Generated Resume</h3>
+                <div class="preview-actions">
+                    <button class="btn btn-outline btn-sm" id="editResumeBtn">✏️ Edit</button>
+                    <button class="btn btn-primary btn-sm" id="printResumeBtn">🖨️ Print / Save PDF</button>
+                    <button class="btn btn-success btn-sm" id="saveResumeBtn">💾 Save to Dashboard</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Email Address <span class="req">*</span></label>
-                <input type="email" id="email" required>
-                <div class="field-error" id="emailError"></div>
+            <div class="resume-preview-content" id="resumePreviewContent">
+                <!-- Template will be rendered here -->
             </div>
-        </div>
-
-        <!-- EDUCATION (dynamic) -->
-        <div class="section-title">Education</div>
-        <div id="educationContainer"></div>
-        <button type="button" class="btn-add" id="addEducation">+ Add Education</button>
-
-        <!-- EXPERIENCE (dynamic) -->
-        <div class="section-title">Work Experience</div>
-        <div id="experienceContainer"></div>
-        <button type="button" class="btn-add" id="addExperience">+ Add Experience</button>
-
-        <!-- SKILLS -->
-        <div class="section-title">Skills</div>
-        <div class="multi-select-wrapper" id="skillsWrapper">
-            <div class="multi-select-display" id="skillsDisplay"><span class="placeholder-text">Click to select skills...</span></div>
-            <div class="multi-select-dropdown" id="skillsDropdown">
-                <div class="dropdown-search"><input type="text" id="skillSearch" placeholder="Search skills..."></div>
-                <div class="dropdown-list" id="skillsCheckboxList"></div>
-                <div class="dropdown-footer"><span id="skillCount">0 selected</span></div>
-            </div>
-        </div>
-        <div class="field-error" id="skillsError"></div>
-        <input type="hidden" id="skillsHidden" required>
-
-        <!-- LANGUAGES -->
-        <div class="section-title">Languages Known</div>
-        <div class="multi-select-wrapper" id="langWrapper">
-            <div class="multi-select-display" id="langDisplay"><span class="placeholder-text">Click to select languages...</span></div>
-            <div class="multi-select-dropdown" id="langDropdown">
-                <div class="dropdown-search"><input type="text" id="langSearch" placeholder="Search languages..."></div>
-                <div class="dropdown-list" id="langCheckboxList"></div>
-                <div class="dropdown-footer"><span id="langCount">0 selected</span></div>
-            </div>
-        </div>
-        <div class="field-error" id="languagesError"></div>
-        <input type="hidden" id="languagesHidden" required>
-
-        <!-- PERSONAL DETAILS -->
-        <div class="section-title">Personal Details</div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Father's Name <span class="req">*</span></label>
-                <input type="text" id="fatherName" required>
-                <div class="field-error" id="fatherNameError"></div>
-            </div>
-            <div class="form-group">
-                <label>Gender <span class="req">*</span></label>
-                <select id="gender" required>
-                    <option value="">-- Select --</option><option>Male</option><option>Female</option><option>Other</option>
-                </select>
-                <div class="field-error" id="genderError"></div>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Village/Town <span class="req">*</span></label>
-                <input type="text" id="village" required>
-                <div class="field-error" id="villageError"></div>
-            </div>
-            <div class="form-group">
-                <label>District <span class="req">*</span></label>
-                <input type="text" id="district" required>
-                <div class="field-error" id="districtError"></div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label>State <span class="req">*</span></label>
-            <input type="text" id="state" required>
-            <div class="field-error" id="stateError"></div>
-        </div>
-
-        <!-- OTHER DETAILS -->
-        <div class="section-title">Other Information</div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Date of Birth <span class="req">*</span></label>
-                <input type="date" id="dob" required>
-                <div class="field-error" id="dobError"></div>
-            </div>
-            <div class="form-group">
-                <label>Nationality <span class="req">*</span></label>
-                <input type="text" id="nationality" required value="Indian">
-                <div class="field-error" id="nationalityError"></div>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Marital Status <span class="req">*</span></label>
-                <select id="maritalStatus" required>
-                    <option value="">-- Select --</option><option>Single</option><option>Married</option><option>Divorced</option><option>Widowed</option>
-                </select>
-                <div class="field-error" id="maritalStatusError"></div>
-            </div>
-            <div class="form-group">
-                <label>Caste Category <span class="req">*</span></label>
-                <select id="casteCategory" required>
-                    <option value="">-- Select --</option>
-                    <option>General</option><option>OBC</option><option>MOBC</option>
-                    <option>SC</option><option>ST</option><option>ST(P)</option><option>STH</option><option>EWS</option><option>OTHERS</option>
-                </select>
-                <div class="field-error" id="casteCategoryError"></div>
-            </div>
-        </div>
-
-        <!-- DECLARATION -->
-        <div class="section-title">Declaration</div>
-        <div class="form-group">
-            <label>Place <span class="req">*</span></label>
-            <input type="text" id="declarationPlace" required>
-            <div class="field-error" id="declarationPlaceError"></div>
-        </div>
-        <p id="declarationTextPreview" class="declaration-preview"></p>
-        <input type="text" id="declarationDate" readonly hidden>
-
-        <!-- PHOTO & CONFIRMATION -->
-        <div class="section-title">Profile Photo & Confirm</div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Passport Size Photo <span class="req">*</span></label>
-                <input type="file" id="photoUpload" accept="image/*" required>
-                <div class="field-error" id="photoError"></div>
-            </div>
-            <div class="form-group">
-                <img id="photoPreview" src="#" alt="Preview" class="photo-preview">
-            </div>
-        </div>
-        <div class="declaration-check">
-            <input type="checkbox" id="declarationCheck" required>
-            <label for="declarationCheck">I confirm that all information is true and correct.</label>
-        </div>
-
-        <button type="button" class="btn-generate" id="generateBtn">✨ Generate Resume</button>
-
-        <!-- Spinner overlay -->
-        <div id="spinnerOverlay" class="spinner-overlay" style="display:none;">
-            <div class="spinner"></div>
-            <p class="spinner-text">Generating your professional resume...</p>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <p>Made with ❤️ by Ame</p>
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>Made with ♥️ by Dav & Ame — © 2026</p>
+        </div>
     </footer>
 
-    <!-- External libraries & scripts -->
-    <script src="js/animations.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/form.js"></script>
+    <script src="js/templates/template1.js"></script>
+    <script src="js/templates/template2.js"></script>
+    <script src="js/templates/template3.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            initSidebar();
+            initFormPage();
+            updateAuthUI();
+        });
+    </script>
 </body>
 </html>
