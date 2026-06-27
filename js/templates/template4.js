@@ -1,4 +1,4 @@
-// js/templates/template4.js — final refined design
+CGPA'/templates/template4.js — final refined design
 function generateTemplate4PDF(data) {
   const p = data.personal;
   const fullName = (p.fullName || 'Your Name').trim();
@@ -61,10 +61,10 @@ function generateTemplate4PDF(data) {
   const eduBody = [
     [
       { text: 'Exam', style: 'tableHeader' },
-      { text: 'Board/University', style: 'tableHeader' },
+      { text: 'University', style: 'tableHeader' },
       { text: 'Year', style: 'tableHeader' },
-      { text: 'Percentage/CGPA', style: 'tableHeader' },
-      { text: 'Division', style: 'tableHeader' }
+      { text: 'Percentage', style: 'tableHeader' },
+      { text: 'Grade', style: 'tableHeader' }
     ]
   ];
   data.education.forEach(e => {
@@ -125,8 +125,8 @@ function generateTemplate4PDF(data) {
   const hasPhoto = data.photo && data.photo.length > 0;
   const photoCell = hasPhoto ? {
     image: data.photo,
-    width: 80,
-    height: 80,
+    width: 90,
+    height: 90,
     border: [2, 2, 2, 2],
     borderColor: '#4f46e5',
     margin: [0, 0, 15, 0]
