@@ -1,67 +1,90 @@
 <!DOCTYPE html>
+<!-- dashboard.html - User Dashboard -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard – Resume By Ame</title>
-    <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
+    <title>Dashboard - Resume By Dav ♥️ Ame</title>
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-logo">Resume By Dav ♥️ Ame</span>
+            <button class="sidebar-close" id="sidebarClose">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="sidebar-link">🏠 Home</a>
+            <a href="index.html#templates" class="sidebar-link">📄 Templates</a>
+            <a href="dashboard.html" class="sidebar-link active">📊 Dashboard</a>
+            <a href="#" class="sidebar-link" id="sidebarLogoutDash">🚪 Logout</a>
+        </nav>
+    </aside>
+
+    <header class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
-            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="templates.html">Templates</a></li>
-                <li><a href="form.html">Build Resume</a></li>
-                <li id="dashboardLink" style="display:none;"><a href="dashboard.html" class="active">Dashboard</a></li>
-                <li id="authLink"><a href="login.html" class="btn-login">Login / Sign Up</a></li>
-                <li id="userDisplay" style="display:none;">
-                    <span id="userName"></span>
-                    <button id="logoutBtn" class="btn-logout">Logout</button>
-                </li>
-            </ul>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="index.html" class="nav-logo">Resume By Dav ♥️ Ame</a>
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="index.html#templates">Templates</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="#" id="navLogoutDash">Logout</a>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <!-- Dashboard Main Content -->
-    <main class="dashboard-main">
-        <div class="dashboard-grid fade-up">
-            <!-- Profile Sidebar -->
-            <aside class="profile-card">
-                <div class="avatar-circle" id="avatarLetter">?</div>
-                <h3 id="welcomeName">Welcome</h3>
-                <p class="user-email" id="userEmailDisplay">user@example.com</p>
-                <button class="logout-btn-side" id="sidebarLogout">Logout</button>
-            </aside>
+    <main class="dashboard-page">
+        <!-- Profile Section -->
+        <section class="dashboard-profile fade-in">
+            <div class="profile-card">
+                <div class="profile-avatar" id="profileAvatar">U</div>
+                <div class="profile-info">
+                    <h2 id="welcomeMessage">Welcome, User</h2>
+                    <p id="profileEmail">user@example.com</p>
+                </div>
+                <button class="btn btn-outline btn-sm" id="dashboardLogoutBtn">🚪 Logout</button>
+            </div>
+        </section>
 
-            <!-- Resumes Section -->
-            <section class="resumes-area">
-                <div class="resumes-header">
-                    <h2>Your Resumes</h2>
-                    <a href="form.html" class="cta-button">+ Create New Resume</a>
+        <!-- Resumes Section -->
+        <section class="dashboard-resumes fade-in">
+            <div class="section-header">
+                <h2>📄 My Resumes</h2>
+                <a href="index.html#templates" class="btn btn-primary">+ Create New Resume</a>
+            </div>
+            <div class="resumes-grid" id="resumesGrid">
+                <!-- Saved resumes will be displayed here -->
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-icon">📭</div>
+                    <h3>No resumes yet</h3>
+                    <p>Create your first resume to see it here!</p>
+                    <a href="index.html#templates" class="btn btn-primary">Create Resume</a>
                 </div>
-                <div id="resumeCards" class="resume-cards">
-                    <!-- Dynamic resume cards will appear here -->
-                </div>
-                <p id="noResumesMsg" class="empty-state">No resumes yet. <a href="form.html">Create your first resume</a>.</p>
-            </section>
-        </div>
+            </div>
+        </section>
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <p>Made with ❤️ by Ame</p>
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>Made with ♥️ by Dav & Ame — © 2026</p>
+        </div>
     </footer>
 
-    <!-- Scripts -->
-    <script src="js/animations.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            initSidebar();
+            initDashboard();
+            updateAuthUI();
+        });
+    </script>
 </body>
 </html>
