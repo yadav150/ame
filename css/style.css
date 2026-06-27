@@ -1119,3 +1119,36 @@ section {
         grid-template-columns: 1fr;
     }
 }
+/* Google button */
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: white;
+  border: 2px solid #e2e8f0;
+  color: #333;
+  font-weight: 500;
+}
+.google-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.social-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.2rem 0;
+  color: #94a3b8;
+}
+.social-divider::before,
+.social-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e2e8f0;
+}
+.social-divider span {
+  padding: 0 1rem;
+  font-size: 0.85rem;
+}
