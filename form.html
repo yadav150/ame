@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- form.html - Multi-Step Resume Form -->
+<!-- form.html - Multi-Step Resume Form (with PDF auto-download) -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -38,6 +38,18 @@
     </header>
 
     <main class="form-page">
+
+        <!-- LOADING SPINNER OVERLAY -->
+        <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.85); z-index:9999; align-items:center; justify-content:center;">
+            <div style="text-align:center;">
+                <div class="spinner" style="width:60px; height:60px; border:6px solid #e2e8f0; border-top-color:#4f46e5; border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto;"></div>
+                <p style="margin-top:16px; font-weight:600; color:#4f46e5;">Generating PDF...</p>
+            </div>
+        </div>
+        <style>
+            @keyframes spin { to { transform: rotate(360deg); } }
+        </style>
+
         <!-- Step Indicator -->
         <div class="step-indicator fade-in" id="stepIndicator">
             <div class="step active" data-step="1">
@@ -57,6 +69,11 @@
             <div class="step-line"></div>
             <div class="step" data-step="4">
                 <div class="step-circle">4</div>
+                <span>Skills</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step" data-step="5">
+                <div class="step-circle">5</div>
                 <span>Final</span>
             </div>
         </div>
@@ -66,7 +83,7 @@
             <form id="resumeForm" novalidate>
                 <!-- STEP 1: Personal Details -->
                 <div class="form-step active" id="step1">
-                    <h3 class="step-title">👤 Personal Details</h3>
+                    <h3 class="step-title">Personal Details</h3>
                     <div class="form-row">
                         <div class="form-group required">
                             <label>Full Name</label>
@@ -111,8 +128,8 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Languages</label>
-                            <input type="text" name="languages" placeholder="English, Hindi, etc.">
+                            <label>Languages Known (communication)</label>
+                            <input type="text" name="languages" placeholder="e.g., English, Hindi">
                         </div>
                     </div>
                     <div class="form-row">
@@ -154,14 +171,14 @@
 
                 <!-- STEP 2: Education -->
                 <div class="form-step" id="step2">
-                    <h3 class="step-title">🎓 Education Details</h3>
+                    <h3 class="step-title">Education Details</h3>
                     <div id="educationContainer">
                         <div class="education-entry" data-index="0">
                             <h4 class="entry-label">Education #1</h4>
                             <div class="form-row">
                                 <div class="form-group required">
                                     <label>Exam Name</label>
-                                    <input type="text" name="eduExam_0" placeholder="e.g., B.Tech, 12th, 10th" data-required="true">
+                                    <input type="text" name="eduExam_0" placeholder="e.g., B.Tech" data-required="true">
                                     <span class="error-msg"></span>
                                 </div>
                                 <div class="form-group">
@@ -172,11 +189,11 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Year</label>
-                                    <input type="text" name="eduYear_0" placeholder="e.g., 2024">
+                                    <input type="text" name="eduYear_0" placeholder="2024">
                                 </div>
                                 <div class="form-group">
                                     <label>Percentage / CGPA</label>
-                                    <input type="text" name="eduPercent_0" placeholder="e.g., 85% or 8.5 CGPA">
+                                    <input type="text" name="eduPercent_0" placeholder="85% or 8.5">
                                 </div>
                             </div>
                             <div class="form-row">
@@ -184,9 +201,9 @@
                                     <label>Division</label>
                                     <select name="eduDivision_0">
                                         <option value="">Select Division</option>
-                                        <option value="First">First Division</option>
-                                        <option value="Second">Second Division</option>
-                                        <option value="Third">Third Division</option>
+                                        <option value="First">First</option>
+                                        <option value="Second">Second</option>
+                                        <option value="Third">Third</option>
                                         <option value="Distinction">Distinction</option>
                                     </select>
                                 </div>
@@ -194,9 +211,7 @@
                             <button type="button" class="btn btn-sm btn-outline remove-edu" style="display:none;">Remove</button>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline btn-sm add-more-btn" id="addMoreEducation">
-                        + Add More Education
-                    </button>
+                    <button type="button" class="btn btn-outline btn-sm add-more-btn" id="addMoreEducation">+ Add More Education</button>
                     <div class="step-buttons">
                         <button type="button" class="btn btn-outline prev-step" data-prev="1">← Back</button>
                         <button type="button" class="btn btn-primary next-step" data-next="3">Next →</button>
@@ -205,7 +220,7 @@
 
                 <!-- STEP 3: Other Qualifications -->
                 <div class="form-step" id="step3">
-                    <h3 class="step-title">📜 Other Qualifications</h3>
+                    <h3 class="step-title">Other Qualifications</h3>
                     <div id="qualificationsContainer">
                         <div class="qualification-entry" data-index="0">
                             <h4 class="entry-label">Qualification #1</h4>
@@ -222,76 +237,90 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Year</label>
-                                    <input type="text" name="qualYear_0" placeholder="e.g., 2025">
+                                    <input type="text" name="qualYear_0" placeholder="2025">
                                 </div>
                                 <div class="form-group">
                                     <label>Grade / Score</label>
-                                    <input type="text" name="qualGrade_0" placeholder="e.g., A+ or 92%">
+                                    <input type="text" name="qualGrade_0" placeholder="A+ or 92%">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Duration</label>
-                                    <input type="text" name="qualDuration_0" placeholder="e.g., 6 months">
+                                    <input type="text" name="qualDuration_0" placeholder="6 months">
                                 </div>
                             </div>
                             <button type="button" class="btn btn-sm btn-outline remove-qual" style="display:none;">Remove</button>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline btn-sm add-more-btn" id="addMoreQualification">
-                        + Add More Qualification
-                    </button>
+                    <button type="button" class="btn btn-outline btn-sm add-more-btn" id="addMoreQualification">+ Add More Qualification</button>
                     <div class="step-buttons">
                         <button type="button" class="btn btn-outline prev-step" data-prev="2">← Back</button>
                         <button type="button" class="btn btn-primary next-step" data-next="4">Next →</button>
                     </div>
                 </div>
 
-                <!-- STEP 4: Final -->
+                <!-- STEP 4: Skills & Languages (multi-select, max 5) -->
                 <div class="form-step" id="step4">
-                    <h3 class="step-title">✅ Final Step</h3>
+                    <h3 class="step-title">Skills & Languages</h3>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Upload Photo (UI only)</label>
+                            <label>Skills (max 5)</label>
+                            <div class="multi-select-container" id="skillsContainer">
+                                <!-- Options will be injected by JS -->
+                            </div>
+                            <span class="error-msg" id="skillsError"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Languages Known (max 5)</label>
+                            <div class="multi-select-container" id="languagesContainer">
+                                <!-- Options injected by JS -->
+                            </div>
+                            <span class="error-msg" id="languagesError"></span>
+                        </div>
+                    </div>
+                    <div class="step-buttons">
+                        <button type="button" class="btn btn-outline prev-step" data-prev="3">← Back</button>
+                        <button type="button" class="btn btn-primary next-step" data-next="5">Next →</button>
+                    </div>
+                </div>
+
+                <!-- STEP 5: Final Step -->
+                <div class="form-step" id="step5">
+                    <h3 class="step-title">Final Step</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Upload Photo</label>
                             <div class="photo-upload-area" id="photoUploadArea">
-                                <span class="upload-placeholder">📷 Click to upload photo</span>
+                                <span class="upload-placeholder">Click to upload photo</span>
                                 <input type="file" accept="image/*" id="photoInput" style="display:none;">
                                 <img id="photoPreview" src="" alt="Preview" style="display:none;">
                             </div>
                         </div>
                     </div>
                     <div class="form-row">
+                        <div class="form-group">
+                            <label>Place</label>
+                            <input type="text" id="placeInput" placeholder="e.g., Kathmandu">
+                        </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group declaration-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="declaration" name="declaration">
-                                <span>I hereby declare that all information provided above is true and correct to the best of my knowledge.</span>
+                                <span>I hereby declare that all information provided above is true and correct.</span>
                             </label>
                             <span class="error-msg" id="declarationError"></span>
                         </div>
                     </div>
                     <div class="step-buttons">
-                        <button type="button" class="btn btn-outline prev-step" data-prev="3">← Back</button>
-                        <button type="submit" class="btn btn-success btn-lg" id="generateBtn">
-                            ✨ Generate My Resume
-                        </button>
+                        <button type="button" class="btn btn-outline prev-step" data-prev="4">← Back</button>
+                        <button type="submit" class="btn btn-success btn-lg" id="generateBtn">Generate My Resume</button>
                     </div>
                 </div>
             </form>
-        </div>
-
-        <!-- Resume Preview Section -->
-        <div class="resume-preview-section fade-in" id="resumePreviewSection" style="display:none;">
-            <div class="preview-header-bar">
-                <h3>📄 Your Generated Resume</h3>
-                <div class="preview-actions">
-                    <button class="btn btn-outline btn-sm" id="editResumeBtn">✏️ Edit</button>
-                    <button class="btn btn-primary btn-sm" id="printResumeBtn">🖨️ Print / Save PDF</button>
-                    <button class="btn btn-success btn-sm" id="saveResumeBtn">💾 Save to Dashboard</button>
-                </div>
-            </div>
-            <div class="resume-preview-content" id="resumePreviewContent">
-                <!-- Template will be rendered here -->
-            </div>
         </div>
     </main>
 
@@ -301,25 +330,28 @@
         </div>
     </footer>
 
-      <!-- Firebase SDKs (compat) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="js/firebase-init.js"></script>
+    <!-- pdfmake CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
-  <script src="js/main.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/form.js"></script>
-  <script src="js/templates/template1.js"></script>
-  <script src="js/templates/template2.js"></script>
-  <script src="js/templates/template3.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      initNavigation();
-      initSidebar();
-      initScrollAnimations();
-      initFormPage();
-      updateAuthUI();   // reactive navbar update
-    });
-  </script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="js/firebase-init.js"></script>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/form.js"></script>
+    <!-- template4.js will be included separately -->
+    <script src="js/templates/template4.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            initSidebar();
+            initScrollAnimations();
+            initFormPage();
+            updateAuthUI();
+        });
+    </script>
 </body>
 </html>
