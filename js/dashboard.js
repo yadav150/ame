@@ -1,103 +1,63 @@
-// dashboard.js
-const firebaseConfig = {
-    apiKey: "AIzaSyBLX-DBrAZZgi7OGRW3-oeno0PJsZ9hzEg",
-    authDomain: "its-me-ame.firebaseapp.com",
-    projectId: "its-me-ame",
-    storageBucket: "its-me-ame.firebasestorage.app",
-    messagingSenderId: "832380884001",
-    appId: "1:832380884001:web:0c9239588ceb8d8995bf60"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+// dashboard.js - Load user profile and saved resumes
 
-// Navbar elements
-const authLink = document.getElementById('authLink');
-const userDisplay = document.getElementById('userDisplay');
-const userNameSpan = document.getElementById('userName');
-const logoutBtn = document.getElementById('logoutBtn');
-const dashboardLink = document.getElementById('dashboardLink');
-const hamburgerBtn = document.getElementById('hamburgerBtn');
-const navLinks = document.getElementById('navLinks');
-
-hamburgerBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
-
-// Dashboard elements
-const sidebarLogout = document.getElementById('sidebarLogout');
-const avatarLetter = document.getElementById('avatarLetter');
-const welcomeName = document.getElementById('welcomeName');
-const userEmailDisplay = document.getElementById('userEmailDisplay');
-const resumeCards = document.getElementById('resumeCards');
-const noResumesMsg = document.getElementById('noResumesMsg');
-
-function updateUI(user) {
-    if (user) {
-        const displayName = user.displayName || user.email;
-        const firstName = displayName.split(' ')[0] || displayName;
-        const firstLetter = (user.displayName?.[0] || user.email[0]).toUpperCase();
-        avatarLetter.textContent = firstLetter;
-        welcomeName.textContent = `Welcome, ${firstName}`;
-        userEmailDisplay.textContent = user.email;
-
-        authLink.style.display = 'none';
-        userDisplay.style.display = 'flex';
-        userNameSpan.textContent = displayName;
-        dashboardLink.style.display = 'inline-block';
-        loadResumes(user.uid);
-    } else {
-        // Redirect to login if not authenticated
+function initDashboard() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    if (!isLoggedIn) {
         window.location.href = 'login.html';
+        return;
     }
-}
 
-auth.onAuthStateChanged(user => {
-    if (user) updateUI(user);
-    else window.location.href = 'login.html';
-});
+    const userEmail = localStorage.getItem('userEmail');
+    const userName = localStorage.getItem('userName') || userEmail.split('@')[0];
 
-// Logout from navbar or sidebar
-logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
-sidebarLogout.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
+    // Profile
+    document.getElementById('profileAvatar').textContent = userEmail.charAt(0).toUpperCase();
+    document.getElementById('welcomeMessage').textContent = `Welcome, ${userName}`;
+    document.getElementById('profileEmail').textContent = userEmail;
 
-function loadResumes(uid) {
-    resumeCards.innerHTML = '<p class="loading-text">Loading your resumes…</p>';
-    db.collection('resumes')
-        .where('uid', '==', uid)
-        .get()
-        .then(snapshot => {
-            if (snapshot.empty) {
-                resumeCards.innerHTML = '';
-                noResumesMsg.style.display = 'block';
-                return;
-            }
-            noResumesMsg.style.display = 'none';
-            let resumes = [];
-            snapshot.forEach(doc => {
-                const resume = doc.data();
-                resume.id = doc.id;
-                resumes.push(resume);
+    // Load resumes
+    const key = `resumes_${userEmail}`;
+    const resumes = JSON.parse(localStorage.getItem(key) || '[]');
+    const grid = document.getElementById('resumesGrid');
+    const emptyState = document.getElementById('emptyState');
+
+    if (resumes.length === 0) {
+        if (emptyState) emptyState.style.display = 'block';
+    } else {
+        if (emptyState) emptyState.style.display = 'none';
+        grid.innerHTML = resumes.map((resume, idx) => `
+            <div class="template-card resume-saved-card">
+                <div class="template-preview" style="height:150px; background:#f1f5f9; display:flex; align-items:center; justify-content:center;">
+                    <span style="font-size:2rem;">📄</span>
+                </div>
+                <div class="template-info">
+                    <h3>Resume ${idx + 1}</h3>
+                    <p>Template ${resume.template} • ${new Date(resume.created).toLocaleDateString()}</p>
+                    <button class="btn btn-outline btn-sm view-saved-btn" data-id="${resume.id}">👁️ View</button>
+                </div>
+            </div>
+        `).join('');
+
+        // Attach view events
+        document.querySelectorAll('.view-saved-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = parseInt(btn.dataset.id);
+                const resume = resumes.find(r => r.id === id);
+                if (resume) {
+                    let html = '';
+                    switch (resume.template) {
+                        case '1': html = renderTemplate1(resume.data); break;
+                        case '2': html = renderTemplate2(resume.data); break;
+                        case '3': html = renderTemplate3(resume.data); break;
+                    }
+                    const win = window.open('', '_blank');
+                    win.document.write(html);
+                    win.document.close();
+                }
             });
-            // Sort newest first
-            resumes.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
-            let html = '';
-            resumes.forEach(resume => {
-                const date = resume.createdAt ? resume.createdAt.toDate().toLocaleDateString() : 'N/A';
-                html += `
-                    <div class="resume-card">
-                        <div class="card-top">
-                            <h4>${resume.name || 'Unnamed'}</h4>
-                            <span class="template-badge">Formal CV</span>
-                        </div>
-                        <p class="card-date">Created: ${date}</p>
-                        <div class="card-actions">
-                            <button class="cta-button small" onclick="alert('Download coming soon')">Download PDF</button>
-                        </div>
-                    </div>
-                `;
-            });
-            resumeCards.innerHTML = html;
-        })
-        .catch(err => {
-            resumeCards.innerHTML = `<p class="error-text">Error: ${err.message}</p>`;
         });
+    }
+
+    // Logout
+    document.getElementById('dashboardLogoutBtn')?.addEventListener('click', logout);
 }
