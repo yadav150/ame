@@ -28,7 +28,7 @@ function generateTemplate4PDF(data) {
     ['Marital Status', p.maritalStatus || '—'],
     ['Category', p.category || '—'],
     ['Experience', p.experience || '—'],
-    ['Nationality', '—']
+    ['Nationality', 'Indian']
   ];
   const half = Math.ceil(personalRows.length / 2);
   const leftRows = personalRows.slice(0, half);
@@ -118,7 +118,7 @@ function generateTemplate4PDF(data) {
 
   // ========== Declaration ==========
   const declarationText = data.declaration
-    ? 'I hereby declare that all the information provided above is true, correct, and complete to the best of my knowledge and belief. I understand that if any information is found false, I will be responsible for consequences including rejection or termination.'
+    ? 'I hereby declare that the information provided above is true and correct to the best of my knowledge and belief without concealment.'
     : '';
 
   // ========== Header with photo ==========
