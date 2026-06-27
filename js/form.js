@@ -310,15 +310,15 @@ function handleSubmit(e) {
         printWindow.print();
     });
 
-    // Save button
+    // --- Save button (UPDATED with Firebase auth) ---
     document.getElementById('saveResumeBtn')?.addEventListener('click', () => {
-        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-        if (!isLoggedIn) {
+        const user = auth.currentUser;   // Firebase Auth instance
+        if (!user) {
             alert('Please login to save your resume.');
             window.location.href = 'login.html';
             return;
         }
-        const userEmail = localStorage.getItem('userEmail');
+        const userEmail = user.email;
         const key = `resumes_${userEmail}`;
         let resumes = JSON.parse(localStorage.getItem(key) || '[]');
         resumes.push({
