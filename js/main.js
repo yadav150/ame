@@ -1,4 +1,4 @@
-// main.js - Core UI functions
+// main.js - Core UI functions (NO auth logic – that's in auth.js)
 
 // Scroll animation observer
 function initScrollAnimations() {
@@ -81,75 +81,4 @@ function initTemplateSelection() {
             window.location.href = 'form.html';
         });
     });
-}
-
-// Update UI based on auth state
-function updateAuthUI() {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    const userName = localStorage.getItem('userName') || '';
-
-    // Navbar links
-    const navLogin = document.getElementById('navLogin');
-    const navSignup = document.getElementById('navSignup');
-    const navDashboard = document.getElementById('navDashboard');
-    const navLogout = document.getElementById('navLogout');
-    const navLogoutForm = document.getElementById('navLogoutForm');
-    const navLogoutDash = document.getElementById('navLogoutDash');
-
-    // Sidebar links
-    const sidebarLogin = document.getElementById('sidebarLoginLink');
-    const sidebarSignup = document.getElementById('sidebarSignupLink');
-    const sidebarDashboard = document.getElementById('sidebarDashboardLink');
-    const sidebarLogout = document.getElementById('sidebarLogoutLink');
-    const sidebarLogoutForm = document.getElementById('sidebarLogoutForm');
-    const sidebarLogoutDash = document.getElementById('sidebarLogoutDash');
-
-    if (isLoggedIn) {
-        if (navLogin) navLogin.style.display = 'none';
-        if (navSignup) navSignup.style.display = 'none';
-        if (navDashboard) navDashboard.style.display = 'inline-block';
-        if (navLogout) navLogout.style.display = 'inline-block';
-        if (navLogoutForm) navLogoutForm.style.display = 'inline-block';
-        if (navLogoutDash) navLogoutDash.style.display = 'inline-block';
-
-        if (sidebarLogin) sidebarLogin.style.display = 'none';
-        if (sidebarSignup) sidebarSignup.style.display = 'none';
-        if (sidebarDashboard) sidebarDashboard.style.display = 'block';
-        if (sidebarLogout) sidebarLogout.style.display = 'block';
-        if (sidebarLogoutForm) sidebarLogoutForm.style.display = 'block';
-        if (sidebarLogoutDash) sidebarLogoutDash.style.display = 'block';
-    } else {
-        if (navLogin) navLogin.style.display = 'inline-block';
-        if (navSignup) navSignup.style.display = 'inline-block';
-        if (navDashboard) navDashboard.style.display = 'none';
-        if (navLogout) navLogout.style.display = 'none';
-        if (navLogoutForm) navLogoutForm.style.display = 'none';
-        if (navLogoutDash) navLogoutDash.style.display = 'none';
-
-        if (sidebarLogin) sidebarLogin.style.display = 'block';
-        if (sidebarSignup) sidebarSignup.style.display = 'block';
-        if (sidebarDashboard) sidebarDashboard.style.display = 'none';
-        if (sidebarLogout) sidebarLogout.style.display = 'none';
-        if (sidebarLogoutForm) sidebarLogoutForm.style.display = 'none';
-        if (sidebarLogoutDash) sidebarLogoutDash.style.display = 'none';
-    }
-
-    // Set up logout buttons
-    document.querySelectorAll('#navLogout, #navLogoutForm, #navLogoutDash, #sidebarLogoutLink, #sidebarLogoutForm, #sidebarLogoutDash')
-        .forEach(btn => {
-            if (btn) {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    logout();
-                });
-            }
-        });
-}
-
-// Logout function
-function logout() {
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('isLoggedIn');
-    window.location.href = 'login.html';
 }
