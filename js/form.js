@@ -1,6 +1,6 @@
 // form.js
 document.addEventListener('DOMContentLoaded', () => {
-    // Firebase init
+    // ---------- Firebase Init ----------
     const firebaseConfig = {
         apiKey: "AIzaSyBLX-DBrAZZgi7OGRW3-oeno0PJsZ9hzEg",
         authDomain: "its-me-ame.firebaseapp.com",
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // Navbar auth
+    // ---------- Auth & Navbar ----------
     const authLink = document.getElementById('authLink');
     const userDisplay = document.getElementById('userDisplay');
     const userNameSpan = document.getElementById('userName');
@@ -23,6 +23,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.getElementById('navLinks');
 
     hamburgerBtn.addEventListener('click', () => navLinks.classList.toggle('show'));
+
+    let inactivityTimer;
+    function resetInactivityTimer() {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => {
+            auth.signOut().then(() => window.location.href = 'index.html');
+        }, 60000);
+    }
+    ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(e => document.addEventListener(e, resetInactivityTimer));
+    resetInactivityTimer();
 
     auth.onAuthStateChanged(user => {
         if (user) {
@@ -40,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
 
-    // ---------- Multi‑select helper ----------
+    // ---------- Multi‑select Helper ----------
     function createMultiSelect(wrapperId, displayId, dropdownId, searchId, listId, countId, hiddenId, options, maxSelect, minSelect = 0) {
         const display = document.getElementById(displayId);
         const dropdown = document.getElementById(dropdownId);
@@ -103,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return { getSelected: () => selected, setSelected: (arr) => { selected = arr; updateDisplay(); render(); } };
     }
 
-    // Field validation helpers
+    // ---------- Field Validation ----------
     function showFieldError(fieldId, message) {
         const field = document.getElementById(fieldId);
         const errorDiv = document.getElementById(fieldId + 'Error');
@@ -132,15 +142,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
-    // Skills multi-select
+    // ---------- Skills & Languages Multi‑Selects ----------
     const skillsOptions = ['Communication','Leadership','Teamwork','Problem Solving','Critical Thinking','Public Speaking','Research','Writing','MS Office','Excel','PowerPoint','Java','Python','C++','HTML','CSS','JavaScript','React','Node.js','SQL','Project Management','Teaching','Data Analysis','Time Management','Creativity'];
     const skillsMulti = createMultiSelect('skillsWrapper','skillsDisplay','skillsDropdown','skillSearch','skillsCheckboxList','skillCount','skillsHidden', skillsOptions, 5, 2);
 
-    // Languages multi-select
     const languagesOptions = ['English','Hindi','Assamese','Bengali','Nepali','Bodo','Marathi','Gujarati','Punjabi','Tamil','Telugu','Kannada','Malayalam','Urdu','Sanskrit','Odia','Manipuri','Khasi','Garo','Mizo','Kokborok','Dogri','Kashmiri','Sindhi','Maithili','Bhojpuri','Rajasthani','Konkani','Tulu','Santhali','French','German','Spanish','Japanese','Chinese','Korean','Russian','Arabic','Persian','Portuguese'];
     const languagesMulti = createMultiSelect('langWrapper','langDisplay','langDropdown','langSearch','langCheckboxList','langCount','languagesHidden', languagesOptions, 3, 3);
 
-    // Dynamic Education
+    // ---------- Dynamic Education ----------
     const eduContainer = document.getElementById('educationContainer');
     let eduCount = 0;
     function createEducationBlock(index) {
@@ -184,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
     createEducationBlock(0);
     eduCount = 1;
 
-    // Dynamic Experience
+    // ---------- Dynamic Experience ----------
     const expContainer = document.getElementById('experienceContainer');
     let expCount = 0;
     function createExperienceBlock(index) {
@@ -249,13 +258,13 @@ document.addEventListener('DOMContentLoaded', () => {
         expCount++;
     });
 
-    // Professional summary edit toggle
+    // ---------- Professional Summary Editable ----------
     const summarySelect = document.getElementById('professionalSummary');
     const summaryEdit = document.getElementById('professionalSummaryEdit');
     summarySelect.addEventListener('change', () => { summaryEdit.value = ''; });
     summaryEdit.addEventListener('input', () => { if (summaryEdit.value.trim()) summarySelect.value = ''; });
 
-    // Declaration auto-fill
+    // ---------- Declaration Auto‑Generation ----------
     function updateDeclarationPreview() {
         const name = document.getElementById('fullName').value.trim();
         const place = document.getElementById('declarationPlace').value.trim();
@@ -267,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('fullName').addEventListener('input', updateDeclarationPreview);
     document.getElementById('declarationPlace').addEventListener('input', updateDeclarationPreview);
 
-    // Photo preview (no size limit)
+    // ---------- Photo Preview (no size limit) ----------
     document.getElementById('photoUpload').addEventListener('change', function(e) {
         const file = e.target.files[0];
         const preview = document.getElementById('photoPreview');
@@ -280,35 +289,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Generate PDF
+    // ---------- GENERATE TYPED PDF (print) ----------
     document.getElementById('generateBtn').addEventListener('click', async () => {
         // Validate all required fields
         let isValid = true;
         ['fullName','jobTitle','mobile','email','fatherName','gender','village','district','state','dob','nationality','maritalStatus','casteCategory','declarationPlace','photoUpload'].forEach(id => {
             if (!validateField(id)) isValid = false;
         });
-        // Professional summary
         if (!summarySelect.value && !summaryEdit.value.trim()) {
             showFieldError('professionalSummary', 'Required');
             isValid = false;
         } else clearFieldError('professionalSummary');
-        // Skills
         if (skillsMulti.getSelected().length < 2) {
             document.getElementById('skillsError').textContent = 'Select at least 2 skills';
             isValid = false;
         } else document.getElementById('skillsError').textContent = '';
-        // Languages
         if (languagesMulti.getSelected().length !== 3) {
             document.getElementById('languagesError').textContent = 'Select exactly 3 languages';
             isValid = false;
         } else document.getElementById('languagesError').textContent = '';
-        // Education (at least first degree)
         const firstDegree = document.getElementById('edu1Degree');
         if (!firstDegree || !firstDegree.value.trim()) {
             showFieldError('edu1Degree', 'At least one education entry required');
             isValid = false;
         } else clearFieldError('edu1Degree');
-        // Declaration checkbox
         if (!document.getElementById('declarationCheck').checked) {
             alert('Please confirm the declaration.');
             isValid = false;
@@ -342,7 +346,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const skills = skillsMulti.getSelected();
         const languages = languagesMulti.getSelected();
 
-        // Education data
         const education = [];
         for (let i = 1; i <= 4; i++) {
             const deg = document.getElementById(`edu${i}Degree`);
@@ -355,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         }
-        // Experience data
+
         const experiences = [];
         for (let i = 1; i <= 4; i++) {
             const pos = document.getElementById(`exp${i}Position`);
@@ -379,125 +382,50 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show spinner
         document.getElementById('spinnerOverlay').style.display = 'flex';
 
-        try {
-            const response = await fetch('resume/pdf.html');
-            const templateHTML = await response.text();
+        // Build filled resume HTML
+        const filledHTML = buildFilledResumeHTML({
+            fullName, jobTitle, professionalSummary, mobile, email,
+            fatherName, gender, village, district, state, dob, nationality,
+            maritalStatus, casteCategory, declarationPlace, declarationDate,
+            declarationName, declarationText, profileImageDataUrl,
+            education, experiences, skills, languages
+        });
 
-            const iframe = document.createElement('iframe');
-            iframe.style.width = '794px';
-            iframe.style.height = '1123px';
-            iframe.style.position = 'absolute';
-            iframe.style.left = '-9999px';
-            document.body.appendChild(iframe);
-            const doc = iframe.contentDocument || iframe.contentWindow.document;
-            doc.open();
-            doc.write(templateHTML);
-            doc.close();
-
-            // Fill data
-            if (doc.getElementById('fullName')) doc.getElementById('fullName').textContent = fullName;
-            if (doc.getElementById('pdName')) doc.getElementById('pdName').textContent = fullName;
-            if (doc.getElementById('jobTitle')) doc.getElementById('jobTitle').textContent = jobTitle;
-            if (doc.getElementById('professionalSummary')) doc.getElementById('professionalSummary').textContent = professionalSummary;
-            if (doc.getElementById('mobile')) doc.getElementById('mobile').innerHTML = `📞 ${mobile}`;
-            if (doc.getElementById('email')) doc.getElementById('email').innerHTML = `📧 ${email}`;
-            if (doc.getElementById('fatherName')) doc.getElementById('fatherName').textContent = fatherName;
-            if (doc.getElementById('gender')) doc.getElementById('gender').textContent = gender;
-            if (doc.getElementById('village')) doc.getElementById('village').textContent = village;
-            if (doc.getElementById('district')) doc.getElementById('district').textContent = district;
-            if (doc.getElementById('state')) doc.getElementById('state').textContent = state;
-            if (doc.getElementById('dob')) doc.getElementById('dob').textContent = dob;
-            if (doc.getElementById('nationality')) doc.getElementById('nationality').textContent = nationality;
-            if (doc.getElementById('maritalStatus')) doc.getElementById('maritalStatus').textContent = maritalStatus;
-            if (doc.getElementById('hobbies')) doc.getElementById('hobbies').textContent = casteCategory;
-            if (doc.getElementById('declarationText')) doc.getElementById('declarationText').textContent = declarationText;
-            if (doc.getElementById('declarationDate')) doc.getElementById('declarationDate').textContent = declarationDate;
-            if (doc.getElementById('declarationPlace')) doc.getElementById('declarationPlace').textContent = declarationPlace;
-            if (doc.getElementById('declarationName')) doc.getElementById('declarationName').textContent = declarationName;
-
-            const photoImg = doc.getElementById('profileImage');
-            if (photoImg && profileImageDataUrl) photoImg.src = profileImageDataUrl;
-
-            // Education blocks
-            for (let i = 1; i <= 4; i++) {
-                const eduItem = doc.getElementById(`education${i}`);
-                if (!eduItem) continue;
-                if (i <= education.length) {
-                    eduItem.style.display = 'block';
-                    if (doc.getElementById(`edu${i}Degree`)) doc.getElementById(`edu${i}Degree`).textContent = education[i-1].degree;
-                    if (doc.getElementById(`edu${i}Institute`)) doc.getElementById(`edu${i}Institute`).textContent = education[i-1].institute;
-                    if (doc.getElementById(`edu${i}Year`)) doc.getElementById(`edu${i}Year`).textContent = education[i-1].year;
-                    if (doc.getElementById(`edu${i}Score`)) doc.getElementById(`edu${i}Score`).textContent = education[i-1].score;
-                } else {
-                    eduItem.style.display = 'none';
-                }
-            }
-
-            // Skills
-            const skillsContainer = doc.getElementById('skillsContainer');
-            if (skillsContainer) skillsContainer.innerHTML = skills.map(s => `<div class="skill">${s}</div>`).join('');
-
-            // Experience
-            const expContainerDoc = doc.getElementById('experienceContainer');
-            if (expContainerDoc) {
-                expContainerDoc.innerHTML = '';
-                experiences.forEach(exp => {
-                    const item = doc.createElement('div');
-                    item.className = 'item';
-                    item.innerHTML = `<h3>${exp.position}</h3><div class="meta"><span>${exp.company}</span> | <span>${exp.year}</span></div><p>${exp.description}</p>`;
-                    expContainerDoc.appendChild(item);
-                });
-            }
-
-            // Languages
-            const langContainer = doc.getElementById('languageContainer');
-            if (langContainer) langContainer.innerHTML = languages.map(l => `<div class="language-item">${l}</div>`).join('');
-
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            const canvas = await html2canvas(doc.body, { scale: 2, useCORS: true });
-            document.body.removeChild(iframe);
-
-            const imgData = canvas.toDataURL('image/png');
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgWidth = 210;
-            const pageHeight = 297;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            let heightLeft = imgHeight;
-            let position = 0;
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-            while (heightLeft > 0) {
-                position -= pageHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-            }
-            const filename = (fullName || 'Resume').replace(/\s+/g, '_') + '.pdf';
-            pdf.save(filename);
-
+        // Open new window and print
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+            alert('Please allow pop‑ups to print the resume.');
             document.getElementById('spinnerOverlay').style.display = 'none';
-            alert('Resume generated successfully!');
+            return;
+        }
+        printWindow.document.write(filledHTML);
+        printWindow.document.close();
 
-            // Save to Firestore if logged in
-            if (auth.currentUser) {
-                const cleanData = { fullName, jobTitle, professionalSummary, mobile, email, fatherName, gender, village, district, state, skills: skills.join(', '), languages: languages.join(', '), dob, nationality, maritalStatus, casteCategory, declarationPlace, declarationDate, declarationName, declarationText };
-                db.collection('resumes').add({
-                    uid: auth.currentUser.uid,
-                    name: fullName,
-                    template: 'formal',
-                    data: cleanData,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                }).catch(err => console.error('Firestore save error:', err));
-            }
-        } catch (err) {
-            console.error('PDF generation error:', err);
-            document.getElementById('spinnerOverlay').style.display = 'none';
-            alert('Something went wrong. Please try again.');
+        printWindow.onload = function() {
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.onafterprint = function() {
+                    printWindow.close();
+                };
+                document.getElementById('spinnerOverlay').style.display = 'none';
+                alert('Your resume is ready! Use the print dialog to save as PDF.');
+            }, 800);
+        };
+
+        // Save to Firestore (if logged in)
+        if (auth.currentUser) {
+            const cleanData = { fullName, jobTitle, professionalSummary, mobile, email, fatherName, gender, village, district, state, skills: skills.join(', '), languages: languages.join(', '), dob, nationality, maritalStatus, casteCategory, declarationPlace, declarationDate, declarationName, declarationText };
+            db.collection('resumes').add({
+                uid: auth.currentUser.uid,
+                name: fullName,
+                template: 'formal',
+                data: cleanData,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).catch(err => console.error('Firestore save error:', err));
         }
     });
 
+    // Helper to read file as Data URL
     function readFileAsDataURL(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -509,3 +437,159 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateDeclarationPreview();
 });
+
+// ---------- Build Filled Resume HTML (typed, printable) ----------
+function buildFilledResumeHTML(data) {
+    const css = `
+        <style>
+            @page { size: A4 portrait; margin: 0; }
+            * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+            body { background: #e5e7eb; padding: 0; }
+            .resume { width: 210mm; height: 297mm; background: #fff; margin: auto; padding: 20px 28px; overflow: hidden; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,.12); }
+            .resume::before { content: ''; position: absolute; width: 380px; height: 380px; border-radius: 50%; background: linear-gradient(135deg,#2563eb,#06b6d4); top: -230px; right: -180px; opacity: .08; }
+            .resume::after { content: ''; position: absolute; width: 280px; height: 280px; border-radius: 50%; background: linear-gradient(135deg,#8b5cf6,#ec4899); bottom: -150px; left: -150px; opacity: .08; }
+            .header { text-align: center; padding-top: 10px; position: relative; z-index: 2; }
+            .profile-frame { width: 170px; height: 170px; border-radius: 50%; margin: 0 auto 15px; border: 8px solid #2563eb; overflow: hidden; background: #f3f4f6; box-shadow: 0 8px 20px rgba(37,99,235,.25); }
+            .profile-frame img { width: 100%; height: 100%; object-fit: cover; }
+            .name { font-size: 28px; font-weight: 700; color: #111827; }
+            .title { font-size: 18px; color: #2563eb; font-weight: 600; margin-top: 6px; }
+            .contact { margin-top: 10px; font-size: 13px; color: #4b5563; line-height: 1.7; }
+            .section { margin-top: 16px; position: relative; z-index: 2; }
+            .section-title { font-size: 15px; font-weight: 700; color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 4px; margin-bottom: 10px; text-transform: uppercase; }
+            .summary { font-size: 11.5px; color: #374151; line-height: 1.7; text-align: justify; }
+            .two-column { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; }
+            .card { background: #f8fafc; border-left: 4px solid #2563eb; border-radius: 10px; padding: 12px; }
+            .item { margin-bottom: 12px; }
+            .item h3 { font-size: 13px; color: #111827; }
+            .meta { font-size: 10.5px; color: #6b7280; margin: 4px 0; }
+            .item p { font-size: 11px; color: #374151; line-height: 1.5; }
+            .personal-row { margin-bottom: 8px; font-size: 11.5px; color: #374151; }
+            .personal-row strong { color: #111827; }
+            .skills { display: flex; flex-wrap: wrap; gap: 8px; }
+            .skill { background: linear-gradient(135deg,#2563eb,#06b6d4); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 10.5px; }
+            .education-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+            .language-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
+            .language-item { font-size: 11.5px; color: #374151; padding-left: 14px; position: relative; }
+            .language-item::before { content: '•'; position: absolute; left: 0; color: #2563eb; }
+            .declaration-container { display: flex; justify-content: space-between; align-items: flex-end; gap: 25px; }
+            .declaration-text { flex: 1; font-size: 11px; line-height: 1.7; color: #374151; text-align: justify; }
+            .declaration-signature { min-width: 180px; text-align: right; font-size: 11px; color: #374151; line-height: 1.8; }
+            .declaration-signature strong { font-weight: 700; color: #111827; }
+            @media print { body { background: none; } .resume { box-shadow: none; } }
+        </style>
+    `;
+
+    let eduHTML = '';
+    data.education.forEach((edu, i) => {
+        if (!edu.degree) return;
+        eduHTML += `
+            <div class="item">
+                <h3>${edu.degree}</h3>
+                <div class="meta">
+                    <span>${edu.institute}</span> |
+                    <span>${edu.year}</span>
+                </div>
+                <p>${edu.score}</p>
+            </div>`;
+    });
+
+    let expHTML = '';
+    data.experiences.forEach(exp => {
+        if (!exp.position) return;
+        expHTML += `
+            <div class="item">
+                <h3>${exp.position}</h3>
+                <div class="meta">
+                    <span>${exp.company}</span> |
+                    <span>${exp.year}</span>
+                </div>
+                <p>${exp.description}</p>
+            </div>`;
+    });
+
+    const skillsHTML = data.skills.map(s => `<div class="skill">${s}</div>`).join('');
+    const languagesHTML = data.languages.map(l => `<div class="language-item">${l}</div>`).join('');
+
+    return `<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>${data.fullName} Resume</title>${css}</head>
+<body>
+<div class="resume">
+    <div class="header">
+        <div class="profile-frame">
+            <img src="${data.profileImageDataUrl || 'https://via.placeholder.com/300'}" alt="Profile">
+        </div>
+        <div class="name">${data.fullName}</div>
+        <div class="title">${data.jobTitle}</div>
+        <div class="contact">
+            <span>📞 ${data.mobile}</span> |
+            <span>📧 ${data.email}</span>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title">Professional Summary</div>
+        <div class="summary">${data.professionalSummary}</div>
+    </div>
+    <div class="section">
+        <div class="two-column">
+            <div>
+                <div class="section-title">Education</div>
+                <div class="card">
+                    <div class="education-grid">${eduHTML}</div>
+                </div>
+            </div>
+            <div>
+                <div class="section-title">Personal Details</div>
+                <div class="card">
+                    <div class="personal-row"><strong>Name:</strong> ${data.fullName}</div>
+                    <div class="personal-row"><strong>Father Name:</strong> ${data.fatherName}</div>
+                    <div class="personal-row"><strong>Gender:</strong> ${data.gender}</div>
+                    <div class="personal-row"><strong>Village:</strong> ${data.village}</div>
+                    <div class="personal-row"><strong>District:</strong> ${data.district}</div>
+                    <div class="personal-row"><strong>State:</strong> ${data.state}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title">Skills</div>
+        <div class="skills">${skillsHTML}</div>
+    </div>
+    <div class="section">
+        <div class="two-column">
+            <div>
+                <div class="section-title">Experience</div>
+                <div class="card">${expHTML}</div>
+            </div>
+            <div>
+                <div class="section-title">Languages Known</div>
+                <div class="card">
+                    <div class="language-grid">${languagesHTML}</div>
+                </div>
+                <div style="height:12px"></div>
+                <div class="section-title">Other Details</div>
+                <div class="card">
+                    <div class="personal-row"><strong>DOB:</strong> ${data.dob}</div>
+                    <div class="personal-row"><strong>Nationality:</strong> ${data.nationality}</div>
+                    <div class="personal-row"><strong>Marital Status:</strong> ${data.maritalStatus}</div>
+                    <div class="personal-row"><strong>Caste Category:</strong> ${data.casteCategory}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title">Declaration</div>
+        <div class="card">
+            <div class="declaration-container">
+                <div class="declaration-text">${data.declarationText}</div>
+                <div class="declaration-signature">
+                    <span><strong>Date & Place:</strong> ${data.declarationDate}, ${data.declarationPlace}</span><br>
+                    <span><strong>Name:</strong> ${data.declarationName}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>`;
+}
