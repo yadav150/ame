@@ -8,8 +8,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- ... sidebar and navbar identical to previous ... -->
-  <!-- Keep sidebar and navbar exactly as before, I'll just show the main changes -->
+  <!-- Overlay for mobile sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- LEFT SIDEBAR (Mobile) -->
+  <aside class="mobile-sidebar" id="mobileSidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo">Resume By Dav ♥️ Ame</span>
+      <button class="sidebar-close" id="sidebarClose">✕</button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="index.html" class="sidebar-link">🏠 Home</a>
+      <a href="index.html#templates" class="sidebar-link">📄 Templates</a>
+      <a href="login.html" class="sidebar-link active">🔑 Login</a>
+      <a href="signup.html" class="sidebar-link">📝 Signup</a>
+    </nav>
+  </aside>
+
+  <!-- NAVBAR -->
   <header class="navbar">
     <div class="nav-container">
       <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
