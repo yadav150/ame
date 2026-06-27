@@ -1,66 +1,87 @@
 <!DOCTYPE html>
+<!-- login.html - Login Page -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login – Resume By Ame</title>
-    <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/SRTd6c43/A-minimalistic-favicon-for-a-202606251237.jpg">
+    <title>Login - Resume By Dav ♥️ Ame</title>
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">✨ Resume By Ame</a>
-            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="templates.html">Templates</a></li>
-                <li><a href="form.html">Build Resume</a></li>
-                <li id="dashboardLink" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
-                <li id="authLink"><a href="login.html" class="btn-login active">Login / Sign Up</a></li>
-                <li id="userDisplay" style="display:none;">
-                    <span id="userName"></span>
-                    <button id="logoutBtn" class="btn-logout">Logout</button>
-                </li>
-            </ul>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-logo">Resume By Dav ♥️ Ame</span>
+            <button class="sidebar-close" id="sidebarClose">✕</button>
         </div>
-    </nav>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="sidebar-link">🏠 Home</a>
+            <a href="index.html#templates" class="sidebar-link">📄 Templates</a>
+            <a href="login.html" class="sidebar-link active">🔑 Login</a>
+            <a href="signup.html" class="sidebar-link">📝 Signup</a>
+        </nav>
+    </aside>
 
-    <main class="auth-container">
-        <div class="auth-card fade-up">
-            <h2>Welcome Back</h2>
-            <div id="authError" class="auth-error" style="display:none;"></div>
-
-            <form id="loginForm">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="loginEmail" required placeholder="you@example.com">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPassword" required placeholder="••••••••" minlength="6">
-                </div>
-                <button type="submit" class="cta-button full-width">Log In</button>
-            </form>
-
-            <div class="divider"><span>or</span></div>
-
-            <button class="google-btn full-width" id="googleLoginBtn">
-                <span class="google-icon">G</span> Sign in with Google
+    <header class="navbar">
+        <div class="nav-container">
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                <span></span><span></span><span></span>
             </button>
+            <a href="index.html" class="nav-logo">Resume By Dav ♥️ Ame</a>
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="index.html#templates">Templates</a>
+                <a href="login.html">Login</a>
+                <a href="signup.html">Signup</a>
+            </nav>
+        </div>
+    </header>
 
-            <p class="auth-switch">Don't have an account? <a href="signup.html">Sign Up</a></p>
-            <p class="auth-switch"><a href="index.html">← Back to Home</a></p>
+    <main class="auth-page">
+        <div class="auth-card fade-in">
+            <div class="auth-header">
+                <div class="auth-avatar">🔑</div>
+                <h2>Welcome Back</h2>
+                <p>Login to access your saved resumes</p>
+            </div>
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="you@example.com" required autocomplete="email">
+                    <span class="error-msg" id="loginEmailError"></span>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
+                    <span class="error-msg" id="loginPasswordError"></span>
+                </div>
+                <div class="form-group remember-me">
+                    <label><input type="checkbox" id="rememberMe"> Remember me</label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Login 🔓</button>
+            </form>
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="signup.html">Sign up here</a></p>
+                <p class="demo-hint">💡 Demo: Use any email & password (min 6 chars)</p>
+            </div>
         </div>
     </main>
 
-    <footer>
-        <p>Made with ❤️ by Ame</p>
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>Made with ♥️ by Dav & Ame — © 2026</p>
+        </div>
     </footer>
 
-    <script src="js/animations.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="js/login.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            initSidebar();
+            initLoginForm();
+        });
+    </script>
 </body>
 </html>
