@@ -1192,5 +1192,6 @@ section {
 .form-note{margin-top:.8rem;font-size:.8rem;color:#94a3b8;text-align:center}
 @media(max-width:768px){.contact-content{grid-template-columns:1fr}}
 
-/* ===== UNIVERSAL NO-WRAP (Responsive Safe) ===== */
-h1,h2,h3,h4,h5,h6,p,span,a,li,td,th,.section-title,.details-grid div,.contact-card p,.team-table td,.contact-line,.label,.value,.edu-table td,.edu-table th{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block}a,span,.label,.value,.contact-line{display:inline-block;max-width:100%;vertical-align:middle}.edu-table td,.edu-table th,.team-table td,.team-table th{display:table-cell}
+
+/* ===== RESPONSIVE TEXT WRAP (No truncation) ===== */
+h1,h2,h3,h4,h5,h6,p,span,a,li,td,th,.section-title,.details-grid div,.contact-card p,.team-table td,.contact-line,.label,.value,.edu-table td,.edu-table th{white-space:normal;word-wrap:break-word;overflow-wrap:break-word;overflow:visible;text-overflow:clip}
