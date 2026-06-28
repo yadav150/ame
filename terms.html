@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms and Conditions - Resume By Dav ♥️ Ame</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-logo">Resume By Dav ♥️ Ame</span>
+            <button class="sidebar-close" id="sidebarClose">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="sidebar-link">🏠 Home</a>
+            <a href="index.html#templates" class="sidebar-link">📄 Templates</a>
+            <a href="contact.html" class="sidebar-link">📧 Contact</a>
+            <a href="login.html" class="sidebar-link" id="sidebarLoginLink">🔑 Login</a>
+            <a href="signup.html" class="sidebar-link" id="sidebarSignupLink">📝 Signup</a>
+            <a href="dashboard.html" class="sidebar-link" id="sidebarDashboardLink" style="display:none;">📊 Dashboard</a>
+            <a href="#" class="sidebar-link" id="sidebarLogoutLink" style="display:none;">🚪 Logout</a>
+        </nav>
+    </aside>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="index.html" class="nav-logo">Resume By Dav ♥️ Ame</a>
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="index.html#templates">Templates</a>
+                <a href="contact.html">Contact</a>
+                <a href="login.html" id="navLogin">Login</a>
+                <a href="signup.html" id="navSignup">Signup</a>
+                <a href="dashboard.html" id="navDashboard" style="display:none;">Dashboard</a>
+                <a href="#" id="navLogout" style="display:none;">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="legal-page">
+        <div class="legal-container fade-in">
+            <h1>Terms and Conditions</h1>
+            <p><strong>Last Updated:</strong> 28 June 2026</p>
+            <hr class="separator">
+            <h2>1. Acceptance of Terms</h2>
+            <p>By accessing and using <strong>Resume By Dav ♥️ Ame</strong> ("the Service"), you agree to be bound by these Terms and Conditions. If you disagree with any part of the terms, you may not access the Service.</p>
+            
+            <h2>2. Description of Service</h2>
+            <p>We provide a free online resume builder that allows you to enter personal and professional information and generate a PDF resume. The Service is provided "as is" and for personal use only.</p>
+            
+            <h2>3. User Conduct</h2>
+            <p>You agree not to use the Service for any unlawful purpose or to violate any laws in your jurisdiction. You must not attempt to gain unauthorised access to any part of the Service.</p>
+            
+            <h2>4. Intellectual Property</h2>
+            <p>The resume templates, designs, and website content are the intellectual property of <strong>Resume By Dav ♥️ Ame</strong>. You may not reproduce, distribute, or create derivative works from the templates for commercial purposes without our express permission.</p>
+            
+            <h2>5. User Data & Photos</h2>
+            <p>You retain full ownership of the data and photos you upload. By using the Service, you grant us a temporary, non‑exclusive licence to process that data solely for the purpose of generating your resume PDF. <strong>We never misuse, sell, or share your photos.</strong></p>
+            
+            <h2>6. Limitation of Liability</h2>
+            <p>In no event shall <strong>Resume By Dav ♥️ Ame</strong> be liable for any indirect, incidental, special, consequential or punitive damages arising out of or relating to the use of our Service.</p>
+            
+            <h2>7. Termination</h2>
+            <p>We may terminate or suspend access to our Service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+            
+            <h2>8. Changes to Terms</h2>
+            <p>We reserve the right to modify or replace these Terms at any time. By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms.</p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>Made with ♥️ by Dav & Ame — © 2026 All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="js/firebase-init.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            initSidebar();
+            initScrollAnimations();
+            updateAuthUI();
+        });
+    </script>
+</body>
+</html>
