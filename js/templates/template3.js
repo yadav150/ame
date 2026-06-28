@@ -1,10 +1,44 @@
-// js/templates/template3.js – Classic Professional (stable, like template4)
-function generateTemplate3PDF(data) {
+// js/templates/template3.js – Classic Professional (circular photo via canvas crop)
+async function generateTemplate3PDF(data) {
   const p = data.personal;
   const fullName = (p.fullName || 'Your Name').trim();
   const fileName = fullName.replace(/\s+/g, '_') + '.pdf';
 
-  // ========== HELPERS ==========
+  // ---------- 1. Circular crop helper (high quality) ----------
+  function createCircleImage(base64) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const size = Math.min(img.width, img.height);
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
+        ctx.drawImage(
+          img,
+          (img.width - size) / 2, (img.height - size) / 2,
+          size, size,
+          0, 0,
+          size, size
+        );
+        resolve(canvas.toDataURL('image/png', 1.0));   // PNG, no compression artefacts
+      };
+      img.src = base64;
+    });
+  }
+
+  // ---------- 2. Process photo if present ----------
+  let photoBase64 = '';
+  if (data.photo && data.photo.length > 0) {
+    photoBase64 = await createCircleImage(data.photo);
+  }
+  const hasPhoto = photoBase64 && photoBase64.length > 0;
+
+  // ---------- 3. Build PDF document (same structure as template4) ----------
   function sectionHeader(text) {
     return {
       table: {
@@ -57,20 +91,28 @@ function generateTemplate3PDF(data) {
     columnGap: 0
   };
 
-  // Education / Qualifications as timeline-style table
+  // Education / Qualifications timeline (using a two‑column table with dots)
   function buildTimelineTable(entries) {
     if (!entries.length) return { text: '—', fontSize: 11, margin: [0, 4, 0, 8] };
     const body = [];
-    entries.forEach(entry => {
+    entries.forEach((entry, idx) => {
       body.push([
-        { canvas: [{ type: 'ellipse', x: 2, y: 5, r1: 3, r2: 3, color: '#4f46e5' }], width: 10, border: [false, false, false, false], margin: [0, 4, 0, 0] },
+        {
+          canvas: [
+            { type: 'ellipse', x: 5, y: 5, r1: 4, r2: 4, color: '#4f46e5' },
+            ...(idx < entries.length - 1 ? [{ type: 'rect', x: 5 - 0.5, y: 9, w: 1, h: 20, color: '#e2e8f0' }] : [])
+          ],
+          width: 10,
+          border: [false, false, false, false],
+          margin: [0, 2, 0, 0]
+        },
         {
           stack: [
             { text: entry.header, bold: true, fontSize: 12, color: '#1e293b', margin: [0, 0, 2, 0] },
             { text: entry.sub1, fontSize: 11, color: '#64748b', margin: [0, 0, 1, 0] },
             ...(entry.sub2 ? [{ text: entry.sub2, fontSize: 11, color: '#64748b', margin: [0, 0, 0, 0] }] : [])
           ],
-          margin: [4, 0, 0, 8]
+          margin: [4, 0, 0, 12]
         }
       ]);
     });
@@ -129,42 +171,22 @@ function generateTemplate3PDF(data) {
   const skillsTags = data.skills.length ? data.skills : [];
   const langTags = data.languages.length ? data.languages : [];
 
-  // Other qualifications (list style)
-  const qualItems = data.qualifications.map(q => ({
-    text: `${q.name || '—'} ${q.institute ? '(' + q.institute + ')' : ''}  |  ${q.year || ''}  ${q.grade ? '| ' + q.grade : ''}  ${q.duration ? '(' + q.duration + ')' : ''}`,
-    margin: [0, 2]
-  }));
-
-  // Declaration
   const declarationText = data.declaration
     ? 'I hereby declare that the information provided above is true and correct to the best of my knowledge and belief.'
     : '';
 
-  // ========== HEADER WITH LARGE CIRCULAR PHOTO ==========
-  const hasPhoto = data.photo && data.photo.length > 0;
-  const circleDiameter = 160;   // slightly smaller to fit nicely
-  const photoCell = {
-    // Image (placed first)
-    ...(hasPhoto ? { image: data.photo, width: circleDiameter, height: circleDiameter } : {}),
-    // White circle overlay to clip corners (drawn after image)
-    canvas: [
-      { type: 'ellipse', x: circleDiameter/2, y: circleDiameter/2, r1: circleDiameter/2, r2: circleDiameter/2, color: '#ffffff', lineWidth: 2, lineColor: '#4f46e5' }
-    ],
-    width: circleDiameter,
-    height: circleDiameter,
-    margin: [0, 0, 15, 0]
-  };
-  // If no photo, just show the white circle as placeholder
-  if (!hasPhoto) {
-    photoCell.canvas = [
-      { type: 'ellipse', x: circleDiameter/2, y: circleDiameter/2, r1: circleDiameter/2, r2: circleDiameter/2, color: '#f1f5f9', lineWidth: 2, lineColor: '#4f46e5' }
-    ];
-    photoCell.text = 'PHOTO';
-    photoCell.fontSize = 18;
-    photoCell.bold = true;
-    photoCell.color = '#4f46e5';
-    photoCell.alignment = 'center';
-  }
+  // ---------- 4. Header with circular photo ----------
+  const circleDiameter = 160;
+  const photoCell = hasPhoto
+    ? { image: photoBase64, width: circleDiameter, height: circleDiameter, margin: [0, 0, 15, 0] }
+    : {
+        canvas: [
+          { type: 'ellipse', x: circleDiameter/2, y: circleDiameter/2, r1: circleDiameter/2, r2: circleDiameter/2, color: '#f1f5f9', lineWidth: 2, lineColor: '#4f46e5' }
+        ],
+        width: circleDiameter,
+        height: circleDiameter,
+        margin: [0, 0, 15, 0]
+      };
 
   const headerTable = {
     table: {
@@ -185,20 +207,34 @@ function generateTemplate3PDF(data) {
     margin: [0, 0, 0, 15]
   };
 
-  // Underline after header
   const headerUnderline = {
     canvas: [
-      { type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 2, lineColor: '#1e293b', dash: { length: 0 } }
+      { type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 2, lineColor: '#1e293b' }
     ],
     margin: [0, 0, 0, 20]
   };
 
-  // ========== FOOTER ==========
+  // ---------- 5. Footer ----------
   const today = new Date();
   const dateStr = today.toLocaleDateString('en-GB');
   const place = data.place || '_______________';
 
-  // ========== FINAL DOCUMENT ==========
+  const footer = {
+    columns: [
+      { width: 'auto', text: 'Place: ' + place, bold: true, fontSize: 11 },
+      {
+        width: '*',
+        alignment: 'right',
+        stack: [
+          { text: 'Date: ' + dateStr, bold: true, fontSize: 11 },
+          { text: '(' + fullName + ')', bold: true, fontSize: 11, margin: [0, 4, 0, 0] }
+        ]
+      }
+    ],
+    margin: [0, 20, 0, 0]
+  };
+
+  // ---------- 6. Assemble document ----------
   const docDefinition = {
     pageSize: 'A4',
     pageMargins: [56.7, 51, 56.7, 51],
@@ -206,49 +242,28 @@ function generateTemplate3PDF(data) {
       headerTable,
       headerUnderline,
 
-      // Objective
       sectionHeader('OBJECTIVE'),
       { text: 'To work in a reputed organization where I can learn new skills, improve my abilities, and contribute to organizational goals while growing professionally.', fontSize: 11, color: '#334155', margin: [4, 0, 0, 8] },
 
-      // Personal Details
       sectionHeader('PERSONAL DETAILS'),
       personalCols,
 
-      // Education (timeline style)
       sectionHeader('EDUCATION'),
       buildTimelineTable(educationEntries),
 
-      // Skills
       sectionHeader('SKILLS'),
       buildTagRow(skillsTags, '#4338ca', '#eef2ff'),
 
-      // Languages
       sectionHeader('LANGUAGES KNOWN'),
       buildTagRow(langTags, '#4338ca', '#eef2ff'),
 
-      // Other Qualifications (timeline style)
       sectionHeader('OTHER QUALIFICATIONS'),
       buildTimelineTable(qualEntries),
 
-      // Declaration
       sectionHeader('DECLARATION'),
       { text: declarationText, fontSize: 11, italics: true, color: '#475569', margin: [4, 0, 0, 12] },
 
-      // Footer
-      {
-        columns: [
-          { width: 'auto', text: 'Place: ' + place, bold: true, fontSize: 11 },
-          {
-            width: '*',
-            alignment: 'right',
-            stack: [
-              { text: 'Date: ' + dateStr, bold: true, fontSize: 11 },
-              { text: '(' + fullName + ')', bold: true, fontSize: 11, margin: [0, 4, 0, 0] }
-            ]
-          }
-        ],
-        margin: [0, 20, 0, 0]
-      }
+      footer
     ],
     styles: {
       tableHeader: { bold: true, color: '#1e293b' }
