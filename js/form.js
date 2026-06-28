@@ -302,17 +302,20 @@ function handleSubmit(e) {
       // ---------- Choose the correct template based on user selection ----------
       const templateId = localStorage.getItem('selectedTemplate') || '4';
       switch (templateId) {
-        case '1':
-          generateTemplate1PDF(formData);   // Modern Sidebar
-          break;
-          case '2':
+    case '1':
+        generateTemplate1PDF(formData);   // Modern Sidebar
+        break;
+    case '2':
         generateTemplate2PDF(formData);   // Elegant Header
         break;
-        case '4':
-        default:
-          generateTemplate4PDF(formData);   // Professional A4 Photo
-          break;
-      }
+    case '3':
+        generateTemplate3PDF(formData);   // Classic Professional
+        break;
+    case '4':
+    default:
+        generateTemplate4PDF(formData);   // Professional A4 Photo
+        break;
+}
     } catch (err) {
       console.error(err);
       alert('Failed to generate PDF. Please check the console for details.');
