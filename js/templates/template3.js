@@ -1,144 +1,46 @@
-// js/templates/template3.js – Classic Professional (circular photo, two‑column, timeline)
+// js/templates/template3.js – Classic Professional (stable, like template4)
 function generateTemplate3PDF(data) {
   const p = data.personal;
   const fullName = (p.fullName || 'Your Name').trim();
   const fileName = fullName.replace(/\s+/g, '_') + '.pdf';
 
-  // ---------- PAGE SETTINGS ----------
-  const pageWidth = 595.28;
-  const leftMargin = 56.7;   // 20mm
-  const topMargin = 51;      // 18mm
-  const rightMargin = 56.7;
-  const bottomMargin = 51;
-
-  const circleDiameter = 200;
-  const circleX = leftMargin;
-  const circleY = topMargin;
-  const radius = circleDiameter / 2;
-  const accentColor = '#4f46e5';
-  const hasPhoto = data.photo && data.photo.length > 0;
-
-  // ---------- HEADER ELEMENTS (absolute) ----------
-  // 1. White circle background (frame)
-  const circleBg = {
-    canvas: [
-      {
-        type: 'ellipse',
-        x: circleX + radius,
-        y: circleY + radius,
-        r1: radius,
-        r2: radius,
-        color: '#ffffff',        // white fill hides photo corners
-        lineColor: accentColor,
-        lineWidth: 2
-      }
-    ],
-    absolutePosition: { x: 0, y: 0 }
-  };
-
-  // 2. Photo (if present) – placed inside the circle, slightly smaller
-  const photoOverlay = hasPhoto
-    ? {
-        image: data.photo,
-        width: circleDiameter - 8,
-        height: circleDiameter - 8,
-        absolutePosition: { x: circleX + 4, y: circleY + 4 }
-      }
-    : {
-        text: 'PHOTO',
-        fontSize: 24,
-        bold: true,
-        color: accentColor,
-        absolutePosition: {
-          x: circleX + radius - 30,
-          y: circleY + radius - 12
-        }
-      };
-
-  // 3. Name & contact (right of photo)
-  const nameX = circleX + circleDiameter + 20;
-  const nameY = circleY + 40;   // vertically align with photo centre
-  const nameContact = {
-    stack: [
-      { text: fullName, fontSize: 36, bold: true, color: '#1e293b', margin: [0, 0, 0, 4] },
-      {
-        text: `Email: ${p.email || ''}  |  Phone: ${p.mobile || ''}`,
-        fontSize: 13,
-        color: '#475569'
+  // ========== HELPERS ==========
+  function sectionHeader(text) {
+    return {
+      table: {
+        widths: [4, '*'],
+        body: [[
+          { canvas: [{ type: 'rect', x: 0, y: 0, w: 4, h: 14, r: 0, color: '#4f46e5' }], margin: [0, 2, 0, 0], border: [false, false, false, false] },
+          { text, bold: true, fontSize: 13, color: '#4f46e5', fillColor: '#f8fafc', margin: [6, 2, 0, 2], border: [false, false, false, false] }
+        ]]
       },
-      {
-        text: `Address: ${p.address || ''}`,
-        fontSize: 13,
-        color: '#475569',
-        margin: [0, 2, 0, 0]
-      }
-    ],
-    absolutePosition: { x: nameX, y: nameY }
-  };
-
-  // 4. Horizontal line under header
-  const lineY = circleY + circleDiameter + 20;
-  const headerLine = {
-    canvas: [
-      {
-        type: 'line',
-        x1: leftMargin,
-        y1: lineY,
-        x2: pageWidth - rightMargin,
-        y2: lineY,
-        lineWidth: 2,
-        lineColor: '#1e293b'
-      }
-    ],
-    absolutePosition: { x: 0, y: 0 }
-  };
-
-  // ---------- SPACER (pushes normal content below the header) ----------
-  const spacerHeight = lineY + 25;   // enough to clear the line
-  const spacer = {
-    canvas: [
-      { type: 'rect', x: 0, y: 0, w: 0, h: spacerHeight, color: '#ffffff' }
-    ]
-  };
-
-  // ---------- HELPERS ----------
-  function sectionTitle(text) {
-    return {
-      text,
-      fontSize: 14,
-      bold: true,
-      color: '#1e293b',
-      margin: [0, 18, 0, 10],
-      border: [false, false, true, false],
-      borderWidth: [0, 0, 2, 0],
-      borderColor: ['#ffffff', '#ffffff', '#cbd5e1', '#ffffff'],
-      padding: [0, 0, 4, 0]
+      layout: 'noBorders',
+      margin: [0, 10, 0, 4]
     };
   }
 
-  function timeline(entries) {
-    if (!entries.length) return { text: '—', fontSize: 12, margin: [0, 0, 0, 10] };
-    const items = entries.map(entry => ({
-      stack: [
-        { text: entry.header, bold: true, fontSize: 13, color: '#1e293b', margin: [0, 0, 2, 0] },
-        { text: entry.sub1, fontSize: 12, color: '#64748b', margin: [0, 0, 1, 0] },
-        ...(entry.sub2 ? [{ text: entry.sub2, fontSize: 12, color: '#64748b', margin: [0, 0, 12, 0] }] : [])
-      ],
-      margin: [18, 0, 0, 0]
-    }));
-    return {
-      stack: items,
-      margin: [0, 0, 0, 10]
-    };
-  }
+  // Personal details (two columns)
+  const personalRows = [
+    ['Father', p.fatherName || '—'],
+    ['Mother', p.motherName || '—'],
+    ['Date of Birth', p.dob || '—'],
+    ['Gender', p.gender || '—'],
+    ['Marital', p.maritalStatus || '—'],
+    ['Category', p.category || '—'],
+    ['Experience', p.experience || '—'],
+    ['Nationality', '—']
+  ];
+  const half = Math.ceil(personalRows.length / 2);
+  const leftRows = personalRows.slice(0, half);
+  const rightRows = personalRows.slice(half);
 
   function buildPersonalTable(rows) {
     return {
       table: {
         widths: ['*', '*'],
         body: rows.map(([l, v]) => [
-          { text: l + ':', bold: true, color: '#334155', fontSize: 12 },
-          { text: v, color: '#1e293b', fontSize: 12, alignment: 'right' }
+          { text: l + ':', bold: true, color: '#334155', fontSize: 11 },
+          { text: v, color: '#1e293b', fontSize: 11, alignment: 'right' }
         ])
       },
       layout: 'noBorders',
@@ -146,34 +48,42 @@ function generateTemplate3PDF(data) {
     };
   }
 
-  function tagRow(tags) {
-    if (!tags.length) return { text: '—', fontSize: 11 };
-    const cells = tags.map(tag => ({
-      text: tag,
-      fontSize: 11,
-      color: '#1e293b',
-      fillColor: '#f1f5f9',
-      alignment: 'center',
-      margin: [0, 0, 6, 0]
-    }));
+  const personalCols = {
+    columns: [
+      { width: '48%', stack: [ buildPersonalTable(leftRows) ] },
+      { width: '4%', text: '' },
+      { width: '48%', stack: [ buildPersonalTable(rightRows) ] }
+    ],
+    columnGap: 0
+  };
+
+  // Education / Qualifications as timeline-style table
+  function buildTimelineTable(entries) {
+    if (!entries.length) return { text: '—', fontSize: 11, margin: [0, 4, 0, 8] };
+    const body = [];
+    entries.forEach(entry => {
+      body.push([
+        { canvas: [{ type: 'ellipse', x: 2, y: 5, r1: 3, r2: 3, color: '#4f46e5' }], width: 10, border: [false, false, false, false], margin: [0, 4, 0, 0] },
+        {
+          stack: [
+            { text: entry.header, bold: true, fontSize: 12, color: '#1e293b', margin: [0, 0, 2, 0] },
+            { text: entry.sub1, fontSize: 11, color: '#64748b', margin: [0, 0, 1, 0] },
+            ...(entry.sub2 ? [{ text: entry.sub2, fontSize: 11, color: '#64748b', margin: [0, 0, 0, 0] }] : [])
+          ],
+          margin: [4, 0, 0, 8]
+        }
+      ]);
+    });
     return {
       table: {
-        widths: Array(tags.length).fill('auto'),
-        body: [cells]
+        widths: [10, '*'],
+        body: body
       },
-      layout: {
-        hLineWidth: () => 0,
-        vLineWidth: () => 0,
-        paddingLeft: () => 10,
-        paddingRight: () => 10,
-        paddingTop: () => 3,
-        paddingBottom: () => 3
-      },
-      margin: [0, 4, 0, 4]
+      layout: 'noBorders',
+      margin: [0, 4, 0, 8]
     };
   }
 
-  // ---------- DATA EXTRACTION ----------
   const educationEntries = data.education.map(e => ({
     header: e.exam || '—',
     sub1: `${e.board || '—'}, ${e.year || '—'}`,
@@ -186,124 +96,163 @@ function generateTemplate3PDF(data) {
     sub2: `${q.grade || '—'} — ${q.duration || '—'}`
   }));
 
-  const personalRows = [
-    ['Father', p.fatherName || '—'],
-    ['Mother', p.motherName || '—'],
-    ['Date of Birth', p.dob || '—'],
-    ['Gender', p.gender || '—'],
-    ['Marital', p.maritalStatus || '—'],
-    ['Category', p.category || '—'],
-    ['Experience', p.experience || '—'],
-    ['Nationality', '—']
-  ];
-  const half = Math.ceil(personalRows.length / 2);
-  const leftPersonal = personalRows.slice(0, half);
-  const rightPersonal = personalRows.slice(half);
+  // Skills / Languages chips
+  function buildTagRow(tags, color, bgColor) {
+    if (!tags.length) return { text: '—', fontSize: 11 };
+    const cells = tags.map(tag => ({
+      text: tag,
+      fontSize: 10,
+      bold: false,
+      color: color,
+      fillColor: bgColor,
+      alignment: 'center',
+      margin: [0, 0, 4, 0]
+    }));
+    return {
+      table: {
+        widths: Array(tags.length).fill('auto'),
+        body: [ cells ]
+      },
+      layout: {
+        hLineWidth: () => 0,
+        vLineWidth: () => 0,
+        paddingLeft: () => 6,
+        paddingRight: () => 6,
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
+        fillColor: () => null
+      },
+      margin: [0, 4, 0, 8]
+    };
+  }
 
-  const skillsTags = data.skills || [];
-  const langTags = data.languages || [];
+  const skillsTags = data.skills.length ? data.skills : [];
+  const langTags = data.languages.length ? data.languages : [];
 
-  const objectiveText =
-    'To work in a reputed organization where I can learn new skills, improve my abilities, and contribute to organizational goals while growing professionally.';
+  // Other qualifications (list style)
+  const qualItems = data.qualifications.map(q => ({
+    text: `${q.name || '—'} ${q.institute ? '(' + q.institute + ')' : ''}  |  ${q.year || ''}  ${q.grade ? '| ' + q.grade : ''}  ${q.duration ? '(' + q.duration + ')' : ''}`,
+    margin: [0, 2]
+  }));
+
+  // Declaration
   const declarationText = data.declaration
-    ? 'I hereby declare that all the information provided above is true, correct, and complete to the best of my knowledge and belief.'
+    ? 'I hereby declare that the information provided above is true and correct to the best of my knowledge and belief.'
     : '';
 
-  // ---------- FOOTER ----------
+  // ========== HEADER WITH LARGE CIRCULAR PHOTO ==========
+  const hasPhoto = data.photo && data.photo.length > 0;
+  const circleDiameter = 160;   // slightly smaller to fit nicely
+  const photoCell = {
+    // Image (placed first)
+    ...(hasPhoto ? { image: data.photo, width: circleDiameter, height: circleDiameter } : {}),
+    // White circle overlay to clip corners (drawn after image)
+    canvas: [
+      { type: 'ellipse', x: circleDiameter/2, y: circleDiameter/2, r1: circleDiameter/2, r2: circleDiameter/2, color: '#ffffff', lineWidth: 2, lineColor: '#4f46e5' }
+    ],
+    width: circleDiameter,
+    height: circleDiameter,
+    margin: [0, 0, 15, 0]
+  };
+  // If no photo, just show the white circle as placeholder
+  if (!hasPhoto) {
+    photoCell.canvas = [
+      { type: 'ellipse', x: circleDiameter/2, y: circleDiameter/2, r1: circleDiameter/2, r2: circleDiameter/2, color: '#f1f5f9', lineWidth: 2, lineColor: '#4f46e5' }
+    ];
+    photoCell.text = 'PHOTO';
+    photoCell.fontSize = 18;
+    photoCell.bold = true;
+    photoCell.color = '#4f46e5';
+    photoCell.alignment = 'center';
+  }
+
+  const headerTable = {
+    table: {
+      widths: ['auto', '*'],
+      body: [[
+        photoCell,
+        {
+          stack: [
+            { text: fullName, fontSize: 26, bold: true, color: '#1e293b', margin: [0, 0, 0, 4] },
+            { text: `Email: ${p.email || ''}  |  Phone: ${p.mobile || ''}`, fontSize: 11, color: '#475569' },
+            { text: `Address: ${p.address || ''}`, fontSize: 11, color: '#475569', margin: [0, 2, 0, 0] }
+          ],
+          margin: [0, 8, 0, 0]
+        }
+      ]]
+    },
+    layout: 'noBorders',
+    margin: [0, 0, 0, 15]
+  };
+
+  // Underline after header
+  const headerUnderline = {
+    canvas: [
+      { type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 2, lineColor: '#1e293b', dash: { length: 0 } }
+    ],
+    margin: [0, 0, 0, 20]
+  };
+
+  // ========== FOOTER ==========
   const today = new Date();
   const dateStr = today.toLocaleDateString('en-GB');
   const place = data.place || '_______________';
-  const footer = {
-    columns: [
-      { width: 'auto', text: 'Place: ' + place, bold: true, fontSize: 13 },
-      {
-        width: '*',
-        alignment: 'right',
-        stack: [
-          { text: 'Date: ' + dateStr, bold: true, fontSize: 13 },
-          { text: '(' + fullName + ')', bold: true, fontSize: 13, margin: [0, 4, 0, 0] }
-        ]
-      }
-    ],
-    margin: [0, 25, 0, 0]
-  };
 
-  // ---------- TWO‑COLUMN LAYOUT ----------
-  const leftColumn = {
-    stack: [
-      sectionTitle('EDUCATION'),
-      timeline(educationEntries),
-      sectionTitle('OTHER QUALIFICATIONS'),
-      timeline(qualEntries)
-    ]
-  };
-
-  const rightColumn = {
-    stack: [
-      sectionTitle('PERSONAL DETAILS'),
-      {
-        columns: [
-          { width: '48%', stack: [buildPersonalTable(leftPersonal)] },
-          { width: '4%', text: '' },
-          { width: '48%', stack: [buildPersonalTable(rightPersonal)] }
-        ],
-        columnGap: 0
-      },
-      sectionTitle('SKILLS'),
-      tagRow(skillsTags),
-      sectionTitle('LANGUAGES'),
-      tagRow(langTags)
-    ]
-  };
-
-  const twoColumns = {
-    columns: [
-      { width: '48%', stack: [leftColumn] },
-      { width: '4%', text: '' },
-      { width: '48%', stack: [rightColumn] }
-    ],
-    columnGap: 0
-  };
-
-  const fullWidthSection = {
-    stack: [
-      sectionTitle('OBJECTIVE'),
-      { text: objectiveText, fontSize: 13, color: '#475569', lineHeight: 1.5, margin: [0, 0, 0, 12] },
-      sectionTitle('DECLARATION'),
-      {
-        text: declarationText,
-        fontSize: 12,
-        italics: true,
-        color: '#64748b',
-        margin: [0, 0, 0, 15],
-        border: [true, false, false, false],
-        borderWidth: [3, 0, 0, 0],
-        borderColor: ['#cbd5e1', '#ffffff', '#ffffff', '#ffffff'],
-        paddingLeft: 10
-      }
-    ],
-    margin: [0, 20, 0, 0]
-  };
-
-  // ---------- ASSEMBLE DOCUMENT ----------
-  const content = [
-    // absolute header elements
-    circleBg,
-    photoOverlay,
-    nameContact,
-    headerLine,
-    // spacer to push body content down
-    spacer,
-    // body
-    twoColumns,
-    fullWidthSection,
-    footer
-  ];
-
+  // ========== FINAL DOCUMENT ==========
   const docDefinition = {
     pageSize: 'A4',
-    pageMargins: [leftMargin, topMargin, rightMargin, bottomMargin],
-    content,
+    pageMargins: [56.7, 51, 56.7, 51],
+    content: [
+      headerTable,
+      headerUnderline,
+
+      // Objective
+      sectionHeader('OBJECTIVE'),
+      { text: 'To work in a reputed organization where I can learn new skills, improve my abilities, and contribute to organizational goals while growing professionally.', fontSize: 11, color: '#334155', margin: [4, 0, 0, 8] },
+
+      // Personal Details
+      sectionHeader('PERSONAL DETAILS'),
+      personalCols,
+
+      // Education (timeline style)
+      sectionHeader('EDUCATION'),
+      buildTimelineTable(educationEntries),
+
+      // Skills
+      sectionHeader('SKILLS'),
+      buildTagRow(skillsTags, '#4338ca', '#eef2ff'),
+
+      // Languages
+      sectionHeader('LANGUAGES KNOWN'),
+      buildTagRow(langTags, '#4338ca', '#eef2ff'),
+
+      // Other Qualifications (timeline style)
+      sectionHeader('OTHER QUALIFICATIONS'),
+      buildTimelineTable(qualEntries),
+
+      // Declaration
+      sectionHeader('DECLARATION'),
+      { text: declarationText, fontSize: 11, italics: true, color: '#475569', margin: [4, 0, 0, 12] },
+
+      // Footer
+      {
+        columns: [
+          { width: 'auto', text: 'Place: ' + place, bold: true, fontSize: 11 },
+          {
+            width: '*',
+            alignment: 'right',
+            stack: [
+              { text: 'Date: ' + dateStr, bold: true, fontSize: 11 },
+              { text: '(' + fullName + ')', bold: true, fontSize: 11, margin: [0, 4, 0, 0] }
+            ]
+          }
+        ],
+        margin: [0, 20, 0, 0]
+      }
+    ],
+    styles: {
+      tableHeader: { bold: true, color: '#1e293b' }
+    },
     defaultStyle: { font: 'Roboto' }
   };
 
