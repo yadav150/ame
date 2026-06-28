@@ -297,18 +297,22 @@ function handleSubmit(e) {
   if (overlay) overlay.style.display = 'flex';
   form.querySelectorAll('input, select, textarea, button').forEach(el => el.disabled = true);
 
-  // Simulate slight delay for PDF generation
-  setTimeout(() => {
+    setTimeout(() => {
     try {
-      // Call template4 PDF generator (must be loaded)
-      if (typeof generateTemplate4PDF === 'function') {
-        generateTemplate4PDF(formData);
-      } else {
-        alert('PDF generator not found. Please include template4.js.');
+      // ---------- Choose the correct template based on user selection ----------
+      const templateId = localStorage.getItem('selectedTemplate') || '4';
+      switch (templateId) {
+        case '1':
+          generateTemplate1PDF(formData);   // Modern Sidebar
+          break;
+        case '4':
+        default:
+          generateTemplate4PDF(formData);   // Professional A4 Photo
+          break;
       }
     } catch (err) {
       console.error(err);
-      alert('Failed to generate PDF.');
+      alert('Failed to generate PDF. Please check the console for details.');
     } finally {
       if (overlay) overlay.style.display = 'none';
       form.querySelectorAll('input, select, textarea, button').forEach(el => el.disabled = false);
