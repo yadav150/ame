@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disclaimer - Resume By Dav ♥️ Ame</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-logo">Resume By Dav ♥️ Ame</span>
+            <button class="sidebar-close" id="sidebarClose">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="sidebar-link">🏠 Home</a>
+            <a href="index.html#templates" class="sidebar-link">📄 Templates</a>
+            <a href="contact.html" class="sidebar-link">📧 Contact</a>
+            <a href="login.html" class="sidebar-link" id="sidebarLoginLink">🔑 Login</a>
+            <a href="signup.html" class="sidebar-link" id="sidebarSignupLink">📝 Signup</a>
+            <a href="dashboard.html" class="sidebar-link" id="sidebarDashboardLink" style="display:none;">📊 Dashboard</a>
+            <a href="#" class="sidebar-link" id="sidebarLogoutLink" style="display:none;">🚪 Logout</a>
+        </nav>
+    </aside>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="index.html" class="nav-logo">Resume By Dav ♥️ Ame</a>
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="index.html#templates">Templates</a>
+                <a href="contact.html">Contact</a>
+                <a href="login.html" id="navLogin">Login</a>
+                <a href="signup.html" id="navSignup">Signup</a>
+                <a href="dashboard.html" id="navDashboard" style="display:none;">Dashboard</a>
+                <a href="#" id="navLogout" style="display:none;">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="legal-page">
+        <div class="legal-container fade-in">
+            <h1>Disclaimer</h1>
+            <p><strong>Last Updated:</strong> 28 June 2026</p>
+            <hr class="separator">
+            <h2>1. General Information</h2>
+            <p>The information provided by <strong>Resume By Dav ♥️ Ame</strong> ("we," "us," or "our") on this website is for general informational purposes only. All information on the site is provided in good faith; however, we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information on the site.</p>
+            
+            <h2>2. No Professional Advice</h2>
+            <p>The resume templates, suggestions, and tools provided on this website are not a substitute for professional career advice. You should consult with a qualified career counsellor or HR professional for specific guidance tailored to your situation.</p>
+            
+            <h2>3. External Links Disclaimer</h2>
+            <p>The site may contain links to external websites that are not provided or maintained by or in any way affiliated with us. We do not guarantee the accuracy, relevance, timeliness, or completeness of any information on these external websites.</p>
+            
+            <h2>4. Photo Storage & Usage</h2>
+            <p>When you upload a photograph for your resume, the image may be temporarily stored on our server for processing purposes. <strong>We never misuse, sell, share, or distribute your photos.</strong> They are used solely to generate your PDF resume and are deleted immediately after processing. Your privacy and trust are extremely important to us.</p>
+            
+            <h2>5. No Guarantees</h2>
+            <p>We do not guarantee that the use of our resume builder will result in employment, interviews, or any other professional outcomes. The effectiveness of a resume depends on many factors beyond our control.</p>
+            
+            <h2>6. Consent</h2>
+            <p>By using our website, you hereby consent to this disclaimer and agree to its terms.</p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>Made with ♥️ by Dav & Ame — © 2026 All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="js/firebase-init.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            initSidebar();
+            initScrollAnimations();
+            updateAuthUI();
+        });
+    </script>
+</body>
+</html>
