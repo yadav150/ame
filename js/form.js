@@ -305,6 +305,9 @@ function handleSubmit(e) {
         case '1':
           generateTemplate1PDF(formData);   // Modern Sidebar
           break;
+          case '2':
+        generateTemplate2PDF(formData);   // Elegant Header
+        break;
         case '4':
         default:
           generateTemplate4PDF(formData);   // Professional A4 Photo
