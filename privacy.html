@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Resume By Dav ♥️ Ame</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-logo">Resume By Dav ♥️ Ame</span>
+            <button class="sidebar-close" id="sidebarClose">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="sidebar-link">🏠 Home</a>
+            <a href="index.html#templates" class="sidebar-link">📄 Templates</a>
+            <a href="contact.html" class="sidebar-link">📧 Contact</a>
+            <a href="login.html" class="sidebar-link" id="sidebarLoginLink">🔑 Login</a>
+            <a href="signup.html" class="sidebar-link" id="sidebarSignupLink">📝 Signup</a>
+            <a href="dashboard.html" class="sidebar-link" id="sidebarDashboardLink" style="display:none;">📊 Dashboard</a>
+            <a href="#" class="sidebar-link" id="sidebarLogoutLink" style="display:none;">🚪 Logout</a>
+        </nav>
+    </aside>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="index.html" class="nav-logo">Resume By Dav ♥️ Ame</a>
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="index.html#templates">Templates</a>
+                <a href="contact.html">Contact</a>
+                <a href="login.html" id="navLogin">Login</a>
+                <a href="signup.html" id="navSignup">Signup</a>
+                <a href="dashboard.html" id="navDashboard" style="display:none;">Dashboard</a>
+                <a href="#" id="navLogout" style="display:none;">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="legal-page">
+        <div class="legal-container fade-in">
+            <h1>Privacy Policy</h1>
+            <p><strong>Last Updated:</strong> 28 June 2026</p>
+            <hr class="separator">
+            <h2>1. Information We Collect</h2>
+            <p>We may collect the following types of information when you use our service:</p>
+            <ul>
+                <li><strong>Personal Information:</strong> Name, email address, phone number, and address provided in the resume form.</li>
+                <li><strong>Resume Content:</strong> Education history, work experience, skills, and other details you fill in the resume builder.</li>
+                <li><strong>Uploaded Photos:</strong> Photographs you upload for your resume.</li>
+                <li><strong>Account Information:</strong> Email address used for login/signup via Firebase Authentication.</li>
+            </ul>
+
+            <h2>2. How We Use Your Information</h2>
+            <p>We use the collected information solely for the following purposes:</p>
+            <ul>
+                <li>To generate your resume PDF.</li>
+                <li>To provide access to your dashboard and saved resumes (if logged in).</li>
+                <li>To improve our service and fix bugs.</li>
+            </ul>
+
+            <h2>3. Data Storage & Security</h2>
+            <p>Your data is stored temporarily in your browser's localStorage. If you log in, your resume data is stored in your browser's localStorage under your email key. We do not transfer your personal data to external servers except for photo processing (if applicable). <strong>Photos are processed in‑memory whenever possible and are never shared with third parties.</strong></p>
+            
+            <h2>4. Photo Usage</h2>
+            <p>Any photograph you upload is used only for embedding into your resume PDF. <strong>We do not store, retain, or share your photo after the PDF is generated.</strong> The image is processed entirely on the client side (in your browser) or on a temporary server, and is never used for any other purpose.</p>
+
+            <h2>5. Third‑Party Services</h2>
+            <p>We use Firebase Authentication (by Google) for login functionality. Please refer to Google's Privacy Policy for information on how Firebase handles your data.</p>
+
+            <h2>6. Your Rights</h2>
+            <p>You have the right to access, update, or delete your personal information. To do so, please contact us at <a href="mailto:yadavsubba2003@gnail.com">yadavsubba2003@gnail.com</a>.</p>
+
+            <h2>7. Changes to This Policy</h2>
+            <p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.</p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>Made with ♥️ by Dav & Ame — © 2026 All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="js/firebase-init.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            initSidebar();
+            initScrollAnimations();
+            updateAuthUI();
+        });
+    </script>
+</body>
+</html>
