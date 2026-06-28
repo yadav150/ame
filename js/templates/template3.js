@@ -1,44 +1,10 @@
-// js/templates/template3.js – Classic Professional (circular photo via canvas crop)
-async function generateTemplate3PDF(data) {
+// js/templates/template3.js – Classic Professional (synchronous, circular mask)
+function generateTemplate3PDF(data) {
   const p = data.personal;
   const fullName = (p.fullName || 'Your Name').trim();
   const fileName = fullName.replace(/\s+/g, '_') + '.pdf';
 
-  // ---------- 1. Circular crop helper (high quality) ----------
-  function createCircleImage(base64) {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.onload = () => {
-        const size = Math.min(img.width, img.height);
-        const canvas = document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.clip();
-        ctx.drawImage(
-          img,
-          (img.width - size) / 2, (img.height - size) / 2,
-          size, size,
-          0, 0,
-          size, size
-        );
-        resolve(canvas.toDataURL('image/png', 1.0));   // PNG, no compression artefacts
-      };
-      img.src = base64;
-    });
-  }
-
-  // ---------- 2. Process photo if present ----------
-  let photoBase64 = '';
-  if (data.photo && data.photo.length > 0) {
-    photoBase64 = await createCircleImage(data.photo);
-  }
-  const hasPhoto = photoBase64 && photoBase64.length > 0;
-
-  // ---------- 3. Build PDF document (same structure as template4) ----------
+  // ---------- HELPERS ----------
   function sectionHeader(text) {
     return {
       table: {
@@ -84,14 +50,14 @@ async function generateTemplate3PDF(data) {
 
   const personalCols = {
     columns: [
-      { width: '48%', stack: [ buildPersonalTable(leftRows) ] },
+      { width: '48%', stack: [buildPersonalTable(leftRows)] },
       { width: '4%', text: '' },
-      { width: '48%', stack: [ buildPersonalTable(rightRows) ] }
+      { width: '48%', stack: [buildPersonalTable(rightRows)] }
     ],
     columnGap: 0
   };
 
-  // Education / Qualifications timeline (using a two‑column table with dots)
+  // Timeline table (education/qualifications)
   function buildTimelineTable(entries) {
     if (!entries.length) return { text: '—', fontSize: 11, margin: [0, 4, 0, 8] };
     const body = [];
@@ -100,7 +66,7 @@ async function generateTemplate3PDF(data) {
         {
           canvas: [
             { type: 'ellipse', x: 5, y: 5, r1: 4, r2: 4, color: '#4f46e5' },
-            ...(idx < entries.length - 1 ? [{ type: 'rect', x: 5 - 0.5, y: 9, w: 1, h: 20, color: '#e2e8f0' }] : [])
+            ...(idx < entries.length - 1 ? [{ type: 'rect', x: 4.5, y: 9, w: 1, h: 20, color: '#e2e8f0' }] : [])
           ],
           width: 10,
           border: [false, false, false, false],
@@ -153,7 +119,7 @@ async function generateTemplate3PDF(data) {
     return {
       table: {
         widths: Array(tags.length).fill('auto'),
-        body: [ cells ]
+        body: [cells]
       },
       layout: {
         hLineWidth: () => 0,
@@ -175,18 +141,39 @@ async function generateTemplate3PDF(data) {
     ? 'I hereby declare that the information provided above is true and correct to the best of my knowledge and belief.'
     : '';
 
-  // ---------- 4. Header with circular photo ----------
+  // ---------- HEADER WITH CIRCULAR PHOTO (synchronous mask) ----------
+  const hasPhoto = data.photo && data.photo.length > 0;
   const circleDiameter = 160;
-  const photoCell = hasPhoto
-    ? { image: photoBase64, width: circleDiameter, height: circleDiameter, margin: [0, 0, 15, 0] }
-    : {
-        canvas: [
-          { type: 'ellipse', x: circleDiameter/2, y: circleDiameter/2, r1: circleDiameter/2, r2: circleDiameter/2, color: '#f1f5f9', lineWidth: 2, lineColor: '#4f46e5' }
-        ],
-        width: circleDiameter,
-        height: circleDiameter,
-        margin: [0, 0, 15, 0]
-      };
+  let photoCell;
+
+  if (hasPhoto) {
+    // Stack the image, then overlay a white ellipse to create the circular frame
+    photoCell = {
+      stack: [
+        { image: data.photo, width: circleDiameter, height: circleDiameter },
+        {
+          canvas: [
+            { type: 'ellipse', x: circleDiameter/2, y: circleDiameter/2, r1: circleDiameter/2, r2: circleDiameter/2, color: '#ffffff', lineWidth: 2, lineColor: '#4f46e5' }
+          ],
+          width: circleDiameter,
+          height: circleDiameter,
+          absolutePosition: { x: 0, y: 0 }
+        }
+      ],
+      width: circleDiameter,
+      height: circleDiameter,
+      margin: [0, 0, 15, 0]
+    };
+  } else {
+    photoCell = {
+      canvas: [
+        { type: 'ellipse', x: circleDiameter/2, y: circleDiameter/2, r1: circleDiameter/2, r2: circleDiameter/2, color: '#f1f5f9', lineWidth: 2, lineColor: '#4f46e5' }
+      ],
+      width: circleDiameter,
+      height: circleDiameter,
+      margin: [0, 0, 15, 0]
+    };
+  }
 
   const headerTable = {
     table: {
@@ -214,7 +201,7 @@ async function generateTemplate3PDF(data) {
     margin: [0, 0, 0, 20]
   };
 
-  // ---------- 5. Footer ----------
+  // ---------- FOOTER ----------
   const today = new Date();
   const dateStr = today.toLocaleDateString('en-GB');
   const place = data.place || '_______________';
@@ -234,7 +221,7 @@ async function generateTemplate3PDF(data) {
     margin: [0, 20, 0, 0]
   };
 
-  // ---------- 6. Assemble document ----------
+  // ---------- ASSEMBLE DOCUMENT ----------
   const docDefinition = {
     pageSize: 'A4',
     pageMargins: [56.7, 51, 56.7, 51],
